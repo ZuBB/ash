@@ -1,0 +1,27 @@
+{
+    "curly": true,
+    "eqeqeq": true,
+    "forin": true,
+    "indent": 4,
+    "latedef": true,
+    "maxdepth": 3,
+    "undef": true,
+    "unused": true,
+    "multistr": true,
+    "passfail": false,
+    "globals": {
+        "ActiveXObject": false,
+        "Enumerator": false,
+        "Host": false,
+        "ReportOut": false,
+        "SetMarker": false,
+        "CanContinue": false,
+        "CreateGraphic": false,
+        "Frequency": false,
+        "SynchByEx": false,
+        "ValueAt": false,
+        "CreateGraphicView": false,
+        "CreateConfigure": false,
+        "GetCurLanguage": false
+    }
+}

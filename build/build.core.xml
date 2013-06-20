@@ -1,0 +1,484 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ash">
+    <description>
+        Autoscope Script Helper is a...
+    </description>
+
+    <property file="core/build/build.core.properties"/>
+    <property file="build/build.smtp.properties"/>
+
+    <target name="dev" depends="concat, replace, encoding">
+        <local name="output.file"/>
+        <antcallback target="ash.create-target-file" return="output.file">
+            <param name="codepage" value="external"/>
+            <param name="phase" value="dev"/>
+        </antcallback>
+    </target>
+
+    <target name="test-sources" depends="concat, replace">
+        <local name="input.file"/>
+        <pathconvert property="input.file" refid="build.last.file"/>
+
+        <exec executable="jshint">
+            <arg value="--config"/>
+            <arg value="${JSHINTRF.FILE}"/>
+            <arg value="${input.file}"/>
+        </exec>
+    </target>
+
+    <target name="rqbuild" depends="vcs, dev, strip, check-log-calls, compress">
+        <local name="output.file"/>
+        <antcallback target="ash.create-target-file" return="output.file">
+            <param name="codepage" value="external"/>
+            <param name="phase" value="release.${BRANCH}-${CHANGESETS}"/>
+        </antcallback>
+    </target>
+
+    <target name="send" depends="check-mail-deps, get-mail-deps">
+        <local name="input.file"/>
+        <pathconvert property="input.file" refid="build.last.file"/>
+
+        <mail
+            tolist="${MAIL.TO}"
+            from="${MAIL.FROM}"
+            subject="${subject}"
+            mailhost="${SMTP.HOST}" mailport="${SMTP.PORT}" ssl="${SMTP.SSL}"
+            user="${SMTP.USER}" password="${SMTP.PSWD}"
+            files="${input.file}">
+            <message>${om}${EMAIL_SIGNATURE}</message>
+        </mail>
+    </target>
+
+    <target name="concat" depends="vars, i18n">
+        <mkdir dir="${OUTPUT.DIR}"/>
+        <delete verbose="false" quiet="true">
+            <fileset dir="${OUTPUT.DIR}" includes="*"/>
+        </delete>
+
+        <local name="output.file"/>
+        <antcallback target="ash.create-target-file" return="output.file">
+            <param name="codepage" value=""/>
+            <param name="phase" value="concat"/>
+            <param name="only.filename" value="true"/>
+        </antcallback>
+
+        <echo message="${header}" output="${output.file}"></echo>
+
+        <concat destfile="${output.file}" fixlastline="true" append="true"
+            encoding="${INT_CP}" outputencoding="${INT_CP}">
+
+            <fileset dir="javascript">
+                <filename name="power_sprint_definitions.js"/>
+            </fileset>
+            <fileset dir="core/src/core" includes="*.js"/>
+            <fileset dir="core/src/extension" includes="*.js"/>
+            <fileset dir="core/src/third party/json">
+                <selector unless="testing">
+                    <filename name="json2.js"/>
+                </selector>
+            </fileset>
+            <fileset dir="build/tmp" includes="lang*.js"/>
+            <fileset dir="tasks">
+                <or>
+                    <selector if="releasing">
+                        <none>
+                            <filename name="03_abs_*.js"/>
+                            <filename name="06_lpg_*.js"/>
+                            <filename name="08_dots_*.js"/>
+
+                            <filename name="04_rpm_27_rpm_draw.js"/>
+
+                            <filename name="07_power_02_usage_adjusted_point.js"/>
+                            <filename name="07_power_03_usage_adjusted_check.js"/>
+                            <filename name="07_power_04_usage_adjusted_data.js"/>
+                            <filename name="07_power_05_usage_adjusted_data_draw.js"/>
+                            <filename name="07_power_06_power_scope.js"/>
+                            <filename name="07_power_07_disabled_scope.js"/>
+                            <filename name="07_power_08_allowed_scope.js"/>
+                        </none>
+                    </selector>
+                    <selector unless="releasing">
+                        <filename name="*.js"/>
+                    </selector>
+                </or>
+            </fileset>
+            <fileset dir="javascript">
+                <and>
+                    <filename name="*.js"/>
+                    <not>
+                        <selector>
+                            <filename name="power_sprint_definitions.js"/>
+                        </selector>
+                    </not>
+                </and>
+            </fileset>
+        </concat>
+    </target>
+
+    <target name="i18n" depends="check-props2js, get-props2js">
+        <if>
+            <not>
+                <available file="./build/tmp/storage" type="dir"/>
+            </not>
+            <then>
+                <mkdir dir="./build/tmp/storage"/>
+            </then>
+        </if>
+
+        <for param="file">
+            <fileset dir="resources">
+                <include name="lang-*.properties"/>
+                <different targetdir='./build/tmp/storage' />
+            </fileset>
+            <sequential>
+                <propertyregex override="yes" input="@{file}"
+                    regexp="-([a-z]{2})." property="LANG" select="\1"/>
+
+                <propertyregex override="yes" input="@{file}"
+                    regexp="\.(\d+)\." property="LANG_CODE" select="\1"/>
+
+                <!--
+                    here we converting localization file that is in
+                    java properties file into json
+                    all trick is done by this lib
+                    https://github.com/nzakas/props2js
+                -->
+                <exec executable="java">
+                    <arg value="-jar"/>
+                    <arg value="./build/lib/props2js-0.1.0.jar"/>
+                    <arg value="@{file}"/>
+                    <arg value="-t"/>
+                    <arg value="json"/>
+                    <arg value="-o"/>
+                    <arg value="./build/tmp/lang.${LANG}.p2.txt"/>
+                </exec>
+
+                <echo message="${I18N_HEADER}${LANG_CODE},"
+                    file="./build/tmp/lang.${LANG}.p1.txt"/>
+
+                <echo message=");${line.separator}"
+                    file="./build/tmp/lang.${LANG}.p3.txt"/>
+
+                <concat destfile="./build/tmp/lang.${LANG}.js"
+                    encoding="${INT_CP}" outputencoding="${INT_CP}">
+                        <fileset dir="./build/tmp/">
+                            <include name="lang.${LANG}.p*.txt"/>
+                        </fileset>
+                </concat>
+            </sequential>
+        </for>
+
+        <copy todir='./build/tmp/storage'>
+            <fileset dir="resources">
+                <include name="lang-*.properties"/>
+                <different targetdir='./build/tmp/storage'
+                    ignoreFileTimes='true' ignoreContents='false'/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="replace">
+        <local name="output.file"/>
+        <antcallback target="ash.create-target-file" return="output.file">
+            <param name="codepage" value="internal"/>
+            <param name="phase" value="replace"/>
+        </antcallback>
+
+        <replace file="${output.file}" encoding="${INT_CP}"
+            replacefilterfile="resources/colors.properties">
+        </replace>
+
+        <tstamp>
+            <format property="TIMESTAMP" pattern="yyyy, M, d, H, m, s, S"/>
+        </tstamp>
+
+        <replace file="${output.file}" encoding="${INT_CP}"
+            token="TIMESTAMP" value="${TIMESTAMP}">
+        </replace>
+
+        <replace file="${output.file}" encoding="${INT_CP}"
+            token="VERSION" value="${VERSION}">
+        </replace>
+
+        <replace file="${output.file}" encoding="${INT_CP}"
+            token="GRAPHIC_TYPE" value="${DEFAULT_GRAPHIC_TYPE}">
+        </replace>
+    </target>
+
+    <target name="encoding">
+        <local name="output.file"/>
+        <antcallback target="ash.create-target-file" return="output.file">
+            <param name="codepage" value="change"/>
+            <param name="phase" value="encoding"/>
+        </antcallback>
+    </target>
+
+    <target name="strip">
+        <local name="output.file"/>
+        <antcallback target="ash.create-target-file" return="output.file">
+            <param name="codepage" value="external"/>
+            <param name="phase" value="strip"/>
+        </antcallback>
+
+        <replaceregexp file="${output.file}" encoding="${EXT_CP}"
+            flags="gs" match="\/\/DEBUG_START.*?\/\/DEBUG_STOP" replace="">
+        </replaceregexp>
+    </target>
+
+    <target name="check-log-calls">
+        <local name="input.file"/>
+        <pathconvert property="input.file" refid="build.last.file"/>
+
+        <loadfile property="LOG_CALLS" srcfile="${input.file}">
+            <filterchain>
+                <linecontainsregexp>
+                    <regexp pattern="^[^\/]*_(d|i|p|w|e|f)\("/>
+                </linecontainsregexp>
+            </filterchain>
+        </loadfile>
+
+        <fail message="Found next log calls in ${output.file}${line.separator}${LOG_CALLS}">
+            <condition>
+                <and>
+                    <isset property="LOG_CALLS"/>
+                    <not>
+                        <equals arg1="${LOG_CALLS}" arg2=""/>
+                    </not>
+                </and>
+            </condition>
+        </fail>
+    </target>
+
+    <target name="compress" depends="check-closure-compiler, get-closure-compiler">
+        <taskdef name="jscomp" classpath="${LIB.DIR}/compiler.jar"
+            classname="com.google.javascript.jscomp.ant.CompileTask"/>
+
+        <local name="output.file"/>
+        <antcallback target="ash.create-target-file" return="output.file">
+            <param name="codepage" value=""/>
+            <param name="phase" value="compress"/>
+        </antcallback>
+
+        <local name="input.file"/>
+        <pathconvert property="input.file" refid="build.last.file"/>
+
+        <jscomp compilationLevel="simple" output="${output.file}"
+            encoding="${EXT_CP}" outputencoding="${EXT_CP}" debug="false">
+
+            <externs dir="./">
+                <file name="${CCEXTERN.FILE}"/>
+            </externs>
+
+            <path refid="build.last.file"/>
+        </jscomp>
+    </target>
+
+    <target name="uib" depends="dev, vcs">
+        <local name="output.file"/>
+        <antcallback target="ash.create-target-file" return="output.file">
+            <param name="codepage" value="external"/>
+            <param name="phase" value="dev.${BRANCH}-${CHANGESETS}"/>
+        </antcallback>
+    </target>
+
+    <target name="vcs" depends="vars">
+        <exec executable="git" outputproperty="BRANCH">
+            <arg value="rev-parse"/>
+            <arg value="--abbrev-ref"/>
+            <arg value="HEAD"/>
+        </exec>
+
+        <exec executable="git" outputproperty="CHANGESETS">
+            <arg value="rev-list"/>
+            <arg value="--count"/>
+            <arg value="HEAD"/>
+        </exec>
+
+        <if>
+            <equals arg1="${releasing}" arg2="true"/>
+            <then>
+                <exec executable="git" outputproperty="VERSION">
+                    <arg value="describe"/>
+                    <arg value="--abbrev=0"/>
+                    <arg value="--tags"/>
+                </exec>
+
+                <exec executable="git" outputproperty="MODIFIED">
+                    <arg value="status"/>
+                    <arg value="--porcelain"/>
+                    <arg value="-uno"/>
+                </exec>
+            </then>
+        </if>
+    </target>
+
+    <target name="vars" depends="check-antcontrib, get-antcontrib">
+        <taskdef resource="net/sf/antcontrib/antlib.xml"
+            classpathref="antcontrib.path"/>
+
+        <if>
+            <contains string="${ant.project.invoked-targets}" substring="test"/>
+            <then>
+                <property name="header" value="${JSHINT.HEADER}"/>
+                <property name="testing" value="true"/>
+            </then>
+            <else>
+                <property name="header" value=""/>
+            </else>
+        </if>
+
+        <if>
+            <or>
+                <contains string="${ant.project.invoked-targets}" substring="rqbuild"/>
+                <equals arg1="${ant.project.invoked-targets}" arg2="2host"/>
+            </or>
+            <then>
+                <property name="releasing" value="true"/>
+            </then>
+        </if>
+
+        <if>
+            <isset property="releasing"/>
+            <then>
+                <property name="DEFAULT_GRAPHIC_TYPE" value="0"/>
+            </then>
+            <else>
+                <property name="DEFAULT_GRAPHIC_TYPE" value="2"/>
+            </else>
+        </if>
+    </target>
+
+    <target name="create-target-file">
+        <if>
+            <equals arg1="${codepage}" arg2="internal"/>
+            <then>
+                <property name="cp1" value="${INT_CP}"/>
+                <property name="cp2" value="${INT_CP}"/>
+            </then>
+            <elseif>
+                <equals arg1="${codepage}" arg2="external"/>
+                <then>
+                    <property name="cp1" value="${EXT_CP}"/>
+                    <property name="cp2" value="${EXT_CP}"/>
+                </then>
+            </elseif>
+            <else>
+                <property name="cp1" value="${INT_CP}"/>
+                <property name="cp2" value="${EXT_CP}"/>
+            </else>
+        </if>
+
+        <if>
+            <and>
+                <isset property="phase"/>
+                <not>
+                    <equals arg1="${phase}" arg2=""/>
+                </not>
+            </and>
+            <then>
+                <property name="output.file"
+                    value="${OUTPUT.DIR}/${ant.project.name}.${phase}.${FILE.EXT}"/>
+            </then>
+            <else>
+                <property name="output.file"
+                    value="${OUTPUT.DIR}/${ant.project.name}.${FILE.EXT}"/>
+            </else>
+        </if>
+
+        <local name="input.file"/>
+        <pathconvert property="input.file" refid="build.last.file"/>
+
+        <if>
+            <not>
+                <equals arg1="${only.filename}" arg2="true"/>
+            </not>
+            <then>
+                <copy encoding="${cp1}" outputencoding="${cp2}"
+                    file="${input.file}" tofile="${output.file}"/>
+            </then>
+        </if>
+    </target>
+
+    <path id="build.last.file">
+        <last>
+            <sort>
+                <date xmlns="antlib:org.apache.tools.ant.types.resources.comparators"/>
+                <resources>
+                    <fileset file="${OUTPUT.DIR}*"/>
+                </resources>
+            </sort>
+        </last>
+    </path>
+
+    <path id="antcontrib.path">
+        <fileset dir="${user.home}/.ant/lib/">
+            <include name="ant-contrib*.jar"/>
+        </fileset>
+    </path>
+
+    <target name="get-antcontrib" unless="${antcontrib}">
+        <get verbose="false"
+            src="http://goo.gl/ftYh6n" dest="${java.io.tmpdir}/"/>
+
+        <unzip src="${java.io.tmpdir}/ftYh6n" dest="${user.home}/.ant/lib/">
+            <patternset>
+                <include name="**/ant-contrib*.jar"/>
+            </patternset>
+            <mapper type="flatten"/>
+        </unzip>
+    </target>
+
+    <target name="check-antcontrib">
+        <available property="antcontrib"
+            resource="net/sf/antcontrib/antlib.xml"
+            classpathref="antcontrib.path"/>
+    </target>
+
+    <target name="get-props2js" unless="${antcontrib}">
+        <mkdir dir="${LIB.DIR}"/>
+
+        <get verbose="false" src="http://db.tt/bJoLen6l"
+            dest="${LIB.DIR}/props2js-0.1.0.jar"/>
+    </target>
+
+    <target name="check-props2js">
+        <available property="antcontrib" file="${LIB.DIR}/props2js-0.1.0.jar"/>
+    </target>
+
+    <target name="get-closure-compiler" unless="${closure-compiler}">
+        <mkdir dir="${LIB.DIR}"/>
+
+        <get verbose="false" dest="${java.io.tmpdir}/"
+            src="http://dl.google.com/closure-compiler/compiler-latest.zip"/>
+
+        <unzip src="${java.io.tmpdir}/compiler-latest.zip" dest="${LIB.DIR}">
+            <patternset>
+                <include name="compiler.jar"/>
+            </patternset>
+        </unzip>
+    </target>
+
+    <target name="check-closure-compiler">
+        <available property="closure-compiler" file="${LIB.DIR}/compiler.jar"/>
+    </target>
+
+    <target name="get-mail-deps" unless="${mail.deps}">
+        <mkdir dir="${LIB.DIR}"/>
+
+        <get verbose="false" dest="${user.home}/.ant/lib/"
+            src="http://download.java.net/maven/1/javax.activation/jars/activation-1.1.1.jar"/>
+
+        <get verbose="false" dest="${user.home}/.ant/lib/"
+            src="https://maven.java.net/content/repositories/releases/com/sun/mail/javax.mail/1.5.0/javax.mail-1.5.0.jar"/>
+    </target>
+
+    <target name="check-mail-deps">
+        <condition property="mail.deps">
+            <and>
+                <available file="${user.home}/.ant/lib/activation-1.1.1.jar"/>
+                <available file="${user.home}/.ant/lib/javax.mail-1.5.0.jar"/>
+            </and>
+        </condition>
+    </target>
+</project>
+
