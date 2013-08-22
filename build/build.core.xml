@@ -434,7 +434,7 @@
             classpathref="antcontrib.path"/>
     </target>
 
-    <target name="get-props2js" unless="${antcontrib}">
+    <target name="get-props2js" unless="${props2js}">
         <mkdir dir="${LIB.DIR}"/>
 
         <get verbose="false" src="http://db.tt/bJoLen6l"
@@ -442,10 +442,10 @@
     </target>
 
     <target name="check-props2js">
-        <available property="antcontrib" file="${LIB.DIR}/props2js-0.1.0.jar"/>
+        <available property="props2js" file="${LIB.DIR}/props2js-0.1.0.jar"/>
     </target>
 
-    <target name="get-closure-compiler" unless="${closure-compiler}">
+    <target name="get-closure-compiler" unless="${closure.compiler}">
         <mkdir dir="${LIB.DIR}"/>
 
         <get verbose="false" dest="${java.io.tmpdir}/"
@@ -459,7 +459,7 @@
     </target>
 
     <target name="check-closure-compiler">
-        <available property="closure-compiler" file="${LIB.DIR}/compiler.jar"/>
+        <available property="closure.compiler" file="${LIB.DIR}/compiler.jar"/>
     </target>
 
     <target name="get-mail-deps" unless="${mail.deps}">
