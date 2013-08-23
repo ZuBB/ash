@@ -206,17 +206,34 @@ Utils.convertReportMessage2Obj = function(message) {
  */
 Utils.getColorForPercentage = function(percentColors, pct) {
     var lower = percentColors[0];
-    var upper = percentColors[1];
-    var rangePct = (pct - lower.pct) / upper.pct - lower.pct;
-    var pctLower = 1 - rangePct;
-    var pctUpper = rangePct;
+    var upper = percentColors.slice(-1);
 
-    var color = {
-        r: Math.floor(lower.color.r * pctLower + upper.color.r * pctUpper),
-        g: Math.floor(lower.color.g * pctLower + upper.color.g * pctUpper),
-        b: Math.floor(lower.color.b * pctLower + upper.color.b * pctUpper)
-    };
+    if (pct < lower.pct) {
+        return 'rgb(' +
+                [ lower.color.r, lower.color.g, lower.color.b].join(', ') + ')';
+    }
 
-    return 'rgb(' + [color.r, color.g, color.b].join(', ') + ')';
+    if (pct > upper.pct) {
+        return 'rgb(' +
+                [ upper.color.r, upper.color.g, upper.color.b].join(', ') + ')';
+    }
+
+    for (var ii = 1; ii < percentColors.length; ii++) {
+        if (pct > percentColors[ii - 1].pct && pct <= percentColors[ii].pct) {
+            lower = percentColors[ii - 1];
+            upper = percentColors[ii];
+
+            var pctUpper = (pct - lower.pct) / (upper.pct - lower.pct);
+            var pctLower = 1 - pctUpper;
+
+            var color = {
+                r: Math.floor(lower.color.r * pctLower + upper.color.r * pctUpper),
+                g: Math.floor(lower.color.g * pctLower + upper.color.g * pctUpper),
+                b: Math.floor(lower.color.b * pctLower + upper.color.b * pctUpper)
+            };
+
+            return 'rgb(' + [color.r, color.g, color.b].join(', ') + ')';
+        }
+    }
 };
 
