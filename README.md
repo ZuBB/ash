@@ -1,4 +1,8 @@
-This repository contains set of plugins for [USB Oscilloscope application](http://injectorservice.com.ua/)
+[USB Oscilloscope application](http://injectorservice.com.ua/) has ability to run scripts written in JavaScript.
 
-Programming is being done by [me](https://bitbucket.org/ZuBB). All math that is used inside scripts/specs are done by repository [owner](https://bitbucket.org/vkizima)
+Development of large script assumes large amount of repetitive code snippets
+
+To help developer avoid boring copy/pastes I have created micro-framework called ash (**a**utoscope **s**cript **h**elper).
+
+It solves all low-level tasks itself still providing convinent API to developer to manage that process
 
