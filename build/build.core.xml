@@ -79,28 +79,9 @@
             </fileset>
             <fileset dir="build/tmp" includes="lang*.js"/>
             <fileset dir="tasks">
-                <or>
-                    <selector if="releasing">
-                        <none>
-                            <filename name="03_abs_*.js"/>
-                            <filename name="06_lpg_*.js"/>
-                            <filename name="08_dots_*.js"/>
-
-                            <filename name="04_rpm_27_rpm_draw.js"/>
-
-                            <filename name="07_power_02_usage_adjusted_point.js"/>
-                            <filename name="07_power_03_usage_adjusted_check.js"/>
-                            <filename name="07_power_04_usage_adjusted_data.js"/>
-                            <filename name="07_power_05_usage_adjusted_data_draw.js"/>
-                            <filename name="07_power_06_power_scope.js"/>
-                            <filename name="07_power_07_disabled_scope.js"/>
-                            <filename name="07_power_08_allowed_scope.js"/>
-                        </none>
-                    </selector>
-                    <selector unless="releasing">
-                        <filename name="*.js"/>
-                    </selector>
-                </or>
+                <selector>
+                    <filename name="*.js"/>
+                </selector>
             </fileset>
             <fileset dir="javascript">
                 <and>
