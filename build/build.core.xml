@@ -259,11 +259,13 @@
     </target>
 
     <target name="uib" depends="dev, vcs">
+        <local name="new.file"/>
         <antcallback target="ash.create-target-file" return="new.file">
             <param name="phase" value="dev.${BRANCH}-${CHANGESETS}"/>
             <param name="codepage" value="external"/>
             <param name="old.file" value="${output.file}"/>
         </antcallback>
+        <var name="output.file" value="${new.file}"/>
     </target>
 
     <target name="vcs" depends="vars">
