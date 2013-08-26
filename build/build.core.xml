@@ -68,7 +68,7 @@
             encoding="${INT_CP}" outputencoding="${INT_CP}">
 
             <fileset dir="javascript">
-                <filename name="power_sprint_definitions.js"/>
+                <filename name="definitions.js"/>
             </fileset>
             <fileset dir="core/src/core" includes="*.js"/>
             <fileset dir="core/src/extension" includes="*.js"/>
@@ -88,7 +88,7 @@
                     <filename name="*.js"/>
                     <not>
                         <selector>
-                            <filename name="power_sprint_definitions.js"/>
+                            <filename name="definitions.js"/>
                         </selector>
                     </not>
                 </and>
