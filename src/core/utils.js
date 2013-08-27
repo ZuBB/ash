@@ -206,7 +206,7 @@ Utils.convertReportMessage2Obj = function(message) {
  */
 Utils.getColorForPercentage = function(percentColors, pct) {
     var lower = percentColors[0];
-    var upper = percentColors.slice(-1);
+    var upper = percentColors.slice(-1)[0];
 
     if (pct < lower.pct) {
         return 'rgb(' +
