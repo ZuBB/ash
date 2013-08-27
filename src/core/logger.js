@@ -53,7 +53,8 @@ Logger.log = function(b_lf, level, value, desc) {
     try {
         // nice to have some free space before each announce
         if (output_str.indexOf('>>>>>>>>>>>>>>>') > 0) {
-            output_str = '\n\n\n' + output_str;
+            // TODO platform specific code
+            output_str = '\r\n\r\n\r\n' + output_str;
         }
 
         this._fileHandler.Write(output_str);
@@ -105,9 +106,9 @@ Logger._initFSHandler = function() {
                 backname.getFullYear() + '.' +
                 (backname.getMonth() + 1).toString().lpad('0', 2) + '.' +
                 backname.getDate().toString().lpad('0', 2) + '_' +
-                backname.getHours() + '-' +
-                backname.getMinutes() + '-' +
-                backname.getSeconds();
+                backname.getHours().toString().lpad('0', 2) + '-' +
+                backname.getMinutes().toString().lpad('0', 2) + '-' +
+                backname.getSeconds().toString().lpad('0', 2);
 
             backname = this._filename.replace(/last/, backname);
 
@@ -115,7 +116,7 @@ Logger._initFSHandler = function() {
             FileObj.MoveFile(backname, this._backDirName);
         }
 
-        this._fileHandler = FileObj.CreateTextFile(this._filename, true);
+        this._fileHandler = FileObj.CreateTextFile(this._filename, true, true);
         _rp('File: \'' + this._filename + '\' will be used for external logging');
         this.dump2FS = true;
     } catch(e) {
@@ -153,7 +154,9 @@ Logger._createOutputStr = function(b_lf, level, value, desc) {
     }
 
     return Utils.createOutputStr(b_lf, true, value, desc)
-        .replace(/^(\n)?/, '$1' + this._levels[level] + ' ');
+        .replace(/^(\n)?/, '$1' + this._levels[level] + ' ')
+        // TODO platform specific code
+        .replace(/(\n)$/, '\r$1');
 };
 
 /**
