@@ -137,3 +137,55 @@ if (!Array.prototype.getValueNeighboursPositions) {
     };
 }
 
+/**
+ * helper function that ...
+ * http://goo.gl/kHr0L
+ *
+ * @method getUnique
+ * @param {Float} raw_value - value itself
+ */
+if (!Array.prototype.mode) {
+    Array.prototype.mode = function(mapFunction, itemIndex) {
+        if (this.length === 0) {
+            // original source used null here
+            return 0;
+        }
+
+        if (typeof mapFunction === 'function') {
+            // noop
+        } else if (!Utils.isNumberInvalid(mapFunction)) {
+            itemIndex = parseInt(mapFunction, 10);
+            mapFunction = function(a) { return a; };
+        } else {
+            mapFunction = function(a) { return a; };
+        }
+
+        if (Utils.isNumberInvalid(itemIndex)) {
+            itemIndex = 1;
+        }
+
+        var modeMap = {};
+        var maxCount = 1;
+        var modes = [mapFunction(this[0])];
+
+        for (var ii = 0; ii < this.length; ii++) {
+            var el = mapFunction(this[ii]);
+
+            if (modeMap[el] === null) {
+                modeMap[el] = 1;
+            } else {
+                modeMap[el]++;
+            }
+
+            if (modeMap[el] > maxCount) {
+                modes = [el];
+                maxCount = modeMap[el];
+            } else if (modeMap[el] === maxCount) {
+                modes.push(el);
+                maxCount = modeMap[el];
+            }
+        }
+
+        return itemIndex > 0 ? modes[itemIndex - 1] : modes;
+    };
+}
