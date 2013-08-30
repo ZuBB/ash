@@ -8,16 +8,18 @@
     <property file="build/build.smtp.properties"/>
 
     <target name="dev" depends="concat, replace, encoding">
+        <local name="new.cp"/>
         <local name="new.file"/>
-        <antcallback target="ash.create-target-file" return="new.file">
+        <antcallback target="ash.create-target-file" return="new.file, new.cp">
             <param name="phase" value="dev"/>
-            <param name="codepage" value="external"/>
+            <param name="old.cp" value="${current.cp}"/>
             <param name="old.file" value="${output.file}"/>
         </antcallback>
         <var name="output.file" value="${new.file}"/>
+        <var name="current.cp" value="${new.cp}"/>
     </target>
 
-    <target name="test-sources" depends="concat, replace">
+    <target name="test-sources" depends="concat, replace, strip">
         <exec executable="jshint">
             <arg value="--config"/>
             <arg value="${JSHINTRF.FILE}"/>
@@ -26,13 +28,15 @@
     </target>
 
     <target name="rqbuild" depends="vcs, dev, strip, check-log-calls, compress">
+        <local name="new.cp"/>
         <local name="new.file"/>
-        <antcallback target="ash.create-target-file" return="new.file">
+        <antcallback target="ash.create-target-file" return="new.file, new.cp">
             <param name="phase" value="release.${BRANCH}-${CHANGESETS}"/>
-            <param name="codepage" value="external"/>
+            <param name="old.cp" value="current.cp"/>
             <param name="old.file" value="${output.file}"/>
         </antcallback>
         <var name="output.file" value="${new.file}"/>
+        <var name="current.cp" value="${new.cp}"/>
     </target>
 
     <target name="send" depends="check-mail-deps, get-mail-deps" unless="${output.file}">
@@ -56,9 +60,7 @@
         <local name="new.file"/>
         <antcallback target="ash.create-target-file" return="new.file">
             <param name="phase" value="concat"/>
-            <param name="codepage" value=""/>
             <param name="only.filename" value="true"/>
-            <param name="old.file" value="${output.file}"/>
         </antcallback>
         <var name="output.file" value="${new.file}"/>
 
@@ -159,13 +161,15 @@
     </target>
 
     <target name="replace">
+        <local name="new.cp"/>
         <local name="new.file"/>
-        <antcallback target="ash.create-target-file" return="new.file">
+        <antcallback target="ash.create-target-file" return="new.file, new.cp">
             <param name="phase" value="replace"/>
-            <param name="codepage" value="internal"/>
+            <param name="old.cp" value="${current.cp}"/>
             <param name="old.file" value="${output.file}"/>
         </antcallback>
         <var name="output.file" value="${new.file}"/>
+        <var name="current.cp" value="${new.cp}"/>
 
         <replace file="${output.file}" encoding="${INT_CP}"
             replacefilterfile="resources/colors.properties">
@@ -189,25 +193,30 @@
     </target>
 
     <target name="encoding">
+        <local name="new.cp"/>
         <local name="new.file"/>
-        <antcallback target="ash.create-target-file" return="new.file">
+        <antcallback target="ash.create-target-file" return="new.file, new.cp">
             <param name="phase" value="encoding"/>
-            <param name="codepage" value="change"/>
+            <param name="old.cp" value="${current.cp}"/>
             <param name="old.file" value="${output.file}"/>
+            <param name="change.cp" value="true"/>
         </antcallback>
         <var name="output.file" value="${new.file}"/>
+        <var name="current.cp" value="${new.cp}"/>
     </target>
 
     <target name="strip">
+        <local name="new.cp"/>
         <local name="new.file"/>
-        <antcallback target="ash.create-target-file" return="new.file">
+        <antcallback target="ash.create-target-file" return="new.file, new.cp">
             <param name="phase" value="strip"/>
-            <param name="codepage" value="external"/>
+            <param name="old.cp" value="${current.cp}"/>
             <param name="old.file" value="${output.file}"/>
         </antcallback>
         <var name="output.file" value="${new.file}"/>
+        <var name="current.cp" value="${new.cp}"/>
 
-        <replaceregexp file="${output.file}" encoding="${EXT_CP}"
+        <replaceregexp file="${output.file}" encoding="${current.cp}"
             flags="gs" match="\/\/DEBUG_START.*?\/\/DEBUG_STOP" replace="">
         </replaceregexp>
     </target>
@@ -241,10 +250,11 @@
         <antcallback target="ash.create-target-file" return="new.file">
             <param name="phase" value="compress"/>
             <param name="only.filename" value="true"/>
+            <param name="old.file" value="${output.file}"/>
         </antcallback>
 
         <jscomp compilationLevel="simple" output="${new.file}"
-            encoding="${EXT_CP}" outputencoding="${EXT_CP}" debug="false">
+            encoding="${current.cp}" outputencoding="${current.cp}" debug="false">
 
             <externs dir="./">
                 <file name="${CCEXTERN.FILE}"/>
@@ -259,13 +269,15 @@
     </target>
 
     <target name="uib" depends="dev, vcs">
+        <local name="new.cp"/>
         <local name="new.file"/>
-        <antcallback target="ash.create-target-file" return="new.file">
+        <antcallback target="ash.create-target-file" return="new.file, new.cp">
             <param name="phase" value="dev.${BRANCH}-${CHANGESETS}"/>
-            <param name="codepage" value="external"/>
+            <param name="old.cp" value="${current.cp}"/>
             <param name="old.file" value="${output.file}"/>
         </antcallback>
         <var name="output.file" value="${new.file}"/>
+        <var name="current.cp" value="${new.cp}"/>
     </target>
 
     <target name="vcs" depends="vars">
@@ -304,6 +316,7 @@
             classpathref="antcontrib.path"/>
 
         <var name="output.file" value=""/>
+        <var name="current.cp" value="${INT_CP}"/>
 
         <if>
             <contains string="${ant.project.invoked-targets}" substring="test"/>
@@ -339,21 +352,14 @@
 
     <target name="create-target-file">
         <if>
-            <equals arg1="${codepage}" arg2="internal"/>
+            <equals arg1="${change.cp}" arg2="true"/>
             <then>
-                <property name="cp1" value="${INT_CP}"/>
-                <property name="cp2" value="${INT_CP}"/>
+                <property name="cp1" value="${old.cp}"/>
+                <property name="new.cp" value="${EXT_CP}"/>
             </then>
-            <elseif>
-                <equals arg1="${codepage}" arg2="external"/>
-                <then>
-                    <property name="cp1" value="${EXT_CP}"/>
-                    <property name="cp2" value="${EXT_CP}"/>
-                </then>
-            </elseif>
             <else>
-                <property name="cp1" value="${INT_CP}"/>
-                <property name="cp2" value="${EXT_CP}"/>
+                <property name="cp1" value="${old.cp}"/>
+                <property name="new.cp" value="${old.cp}"/>
             </else>
         </if>
 
@@ -379,7 +385,7 @@
                 <equals arg1="${only.filename}" arg2="true"/>
             </not>
             <then>
-                <copy encoding="${cp1}" outputencoding="${cp2}"
+                <copy encoding="${cp1}" outputencoding="${new.cp}"
                     file="${old.file}" tofile="${new.file}"/>
             </then>
         </if>
