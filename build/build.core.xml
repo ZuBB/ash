@@ -41,8 +41,10 @@
 
     <target name="send" depends="check-mail-deps, get-mail-deps" unless="${output.file}">
         <mail
-            tolist="${MAIL.TO}"
             from="${MAIL.FROM}"
+            tolist="${mail.to}"
+            cclist="${mail.cc}"
+            bcclist="${mail.bcc}"
             subject="${subject}"
             mailhost="${SMTP.HOST}" mailport="${SMTP.PORT}" ssl="${SMTP.SSL}"
             user="${SMTP.USER}" password="${SMTP.PSWD}"
@@ -81,9 +83,12 @@
             </fileset>
             <fileset dir="build/tmp" includes="lang*.js"/>
             <fileset dir="tasks">
-                <selector>
-                    <filename name="*.js"/>
-                </selector>
+                <and>
+                    <selector>
+                        <filename name="*.js"/>
+                    </selector>
+                    <selector refid="excludes.list" />
+                </and>
             </fileset>
             <fileset dir="javascript">
                 <and>
@@ -128,7 +133,7 @@
                 -->
                 <exec executable="java">
                     <arg value="-jar"/>
-                    <arg value="./build/lib/props2js-0.1.0.jar"/>
+                    <arg value="${LIB.DIR}/props2js-0.1.0.jar"/>
                     <arg value="@{file}"/>
                     <arg value="-t"/>
                     <arg value="json"/>
@@ -315,6 +320,9 @@
         <taskdef resource="net/sf/antcontrib/antlib.xml"
             classpathref="antcontrib.path"/>
 
+        <var name="MAIL.TO"  value=""/>
+        <var name="MAIL.CC"  value=""/>
+        <var name="MAIL.BCC" value=""/>
         <var name="output.file" value=""/>
         <var name="current.cp" value="${INT_CP}"/>
 
@@ -390,6 +398,12 @@
             </then>
         </if>
     </target>
+
+    <selector id="excludes.list">
+        <not>
+            <selector if="releasing"></selector>
+        </not>
+    </selector>
 
     <path id="antcontrib.path">
         <fileset dir="${user.home}/.ant/lib/">
