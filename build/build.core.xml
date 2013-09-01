@@ -340,6 +340,7 @@
         <if>
             <or>
                 <contains string="${ant.project.invoked-targets}" substring="rqbuild"/>
+                <equals arg1="${ant.project.invoked-targets}" arg2="sr2vlad"/>
                 <equals arg1="${ant.project.invoked-targets}" arg2="2host"/>
             </or>
             <then>
