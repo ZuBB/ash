@@ -23,7 +23,7 @@ Dispatcher = {
  *
  * @method announce
  */
-Dispatcher.announce = function(version, buildTime) {
+Dispatcher.announce = function(version, buildID, buildTime) {
     var fixedbuildTime = new Date(buildTime);
     // Ant's tstamp task returns month that starts from 1
     // since JavaScript treats month as zero-based number
@@ -35,7 +35,7 @@ Dispatcher.announce = function(version, buildTime) {
     // raw variable's definition. this means string with version data
     // was not available. so this is a developer version/build
     var message = "${\x56\x45\x52\x53\x49\x4F\x4E}" === version ?
-        _t('report.version.dev', fixedbuildTime.toLocaleString()) :
+        _t('report.version.dev', buildID, fixedbuildTime.toLocaleString()) :
         _t('report.version.rel', version, fixedbuildTime.toLocaleString());
 
     _rp(message);
