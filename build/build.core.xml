@@ -193,6 +193,10 @@
         </replace>
 
         <replace file="${output.file}" encoding="${current.cp}"
+            token="BUILD_ID" value="${BRANCH}-${CHANGESETS}">
+        </replace>
+
+        <replace file="${output.file}" encoding="${current.cp}"
             token="GRAPHIC_TYPE" value="${DEFAULT_GRAPHIC_TYPE}">
         </replace>
     </target>
@@ -273,7 +277,7 @@
         <var name="output.file" value="${new.file}"/>
     </target>
 
-    <target name="uib" depends="dev, vcs">
+    <target name="uib" depends="vcs, dev">
         <local name="new.cp"/>
         <local name="new.file"/>
         <antcallback target="ash.create-target-file" return="new.file, new.cp">
