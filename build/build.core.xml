@@ -69,7 +69,7 @@
         <echo message="${header}" output="${output.file}"></echo>
 
         <concat destfile="${output.file}" fixlastline="true" append="true"
-            encoding="${INT_CP}" outputencoding="${INT_CP}">
+            encoding="${current.cp}" outputencoding="${current.cp}">
 
             <fileset dir="javascript">
                 <filename name="definitions.js"/>
@@ -148,7 +148,7 @@
                     file="./build/tmp/lang.${LANG}.p3.txt"/>
 
                 <concat destfile="./build/tmp/lang.${LANG}.js"
-                    encoding="${INT_CP}" outputencoding="${INT_CP}">
+                    encoding="${current.cp}" outputencoding="${current.cp}">
                         <fileset dir="./build/tmp/">
                             <include name="lang.${LANG}.p*.txt"/>
                         </fileset>
@@ -176,7 +176,7 @@
         <var name="output.file" value="${new.file}"/>
         <var name="current.cp" value="${new.cp}"/>
 
-        <replace file="${output.file}" encoding="${INT_CP}"
+        <replace file="${output.file}" encoding="${current.cp}"
             replacefilterfile="resources/colors.properties">
         </replace>
 
@@ -184,15 +184,15 @@
             <format property="TIMESTAMP" pattern="yyyy, M, d, H, m, s, S"/>
         </tstamp>
 
-        <replace file="${output.file}" encoding="${INT_CP}"
+        <replace file="${output.file}" encoding="${current.cp}"
             token="TIMESTAMP" value="${TIMESTAMP}">
         </replace>
 
-        <replace file="${output.file}" encoding="${INT_CP}"
+        <replace file="${output.file}" encoding="${current.cp}"
             token="VERSION" value="${VERSION}">
         </replace>
 
-        <replace file="${output.file}" encoding="${INT_CP}"
+        <replace file="${output.file}" encoding="${current.cp}"
             token="GRAPHIC_TYPE" value="${DEFAULT_GRAPHIC_TYPE}">
         </replace>
     </target>
