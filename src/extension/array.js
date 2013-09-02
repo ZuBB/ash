@@ -189,3 +189,37 @@ if (!Array.prototype.mode) {
         return itemIndex > 0 ? modes[itemIndex - 1] : modes;
     };
 }
+
+/**
+ * function that finds average absolute deviation
+ *
+ * http://en.wikipedia.org/wiki/Absolute_deviation
+ */
+if (!Array.prototype.aad) {
+    Array.prototype.aad = function(stopFunc) {
+        if (typeof stopFunc !== 'function') {
+            stopFunc = function() { return false; };
+        }
+
+        for (var ii = 0; ii < this.length; ii++) {
+            if (stopFunc(this[ii])) {
+                break;
+            }
+        }
+
+        var avgVal = this.slice(0, ii).avg();
+        var diffs  = [];
+        var result = {
+            trimmed: ii !== this.length,
+            length: ii
+        };
+
+        for (ii -= 1; ii >= 0; ii--) {
+            diffs.push(this[ii] - avgVal);
+        }
+
+        result.avgDiff = diffs.avg(true);
+        return result;
+    };
+}
+
