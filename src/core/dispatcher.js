@@ -42,6 +42,28 @@ Dispatcher.announce = function(version, buildID, buildTime) {
     _rp(_t('report.date', this.runTimestamp.toLocaleString()));
 };
 
+//DEBUG_START
+/**
+ * function that ...
+ *
+ * @method announce
+ */
+Dispatcher.logIncomingParams = function() {
+    _d('');
+    _d(Host.CurFileName, 'current file');
+    _d(Host.Frequency, 'frequency');
+    _d(Host.NumberOfSamples, 'samples');
+    _d(Host.NumberOfSamples / Host.Frequency, 'duration');
+
+    for (var ii = 0, input; ii < Input.createdInputs.length; ii++) {
+        input = Input.createdInputs[ii];
+        _d(Input.getValue(input), input);
+    }
+
+    _d('');
+};
+//DEBUG_STOP
+
 /**
  * function that ...
  *

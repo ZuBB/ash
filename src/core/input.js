@@ -1,6 +1,7 @@
 Input = {
     dialogIndex:   0,
     input2dialogMap: {},
+    createdInputs: [],
     dialogs: []
 };
 
@@ -73,6 +74,7 @@ Input.createConfiguration = function(items, possibleInputs) {
                 var i18n_name = this.getInputI18Name(internal_name);
                 var value = this.getDefaultValue(internal_name);
                 currentDialog.AddItem(i18n_name, value);
+                this.createdInputs.push(internal_name);
                 dialogItems++;
             } else {
                 //DEBUG_START
