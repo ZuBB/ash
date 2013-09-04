@@ -9,6 +9,7 @@ var Reporter   = null;
 var Profiler   = null;
 var Utils      = {};
 var MathHelper = {};
+var AHF = {};
 
 // i18n
 var _t = null;
