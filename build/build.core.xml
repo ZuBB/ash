@@ -75,12 +75,17 @@
                 <filename name="definitions.js"/>
             </fileset>
             <fileset dir="core/src/core" includes="*.js"/>
-            <fileset dir="core/src/extension" includes="*.js"/>
             <fileset dir="core/src/third party/json">
                 <selector unless="testing">
                     <filename name="json2.js"/>
                 </selector>
             </fileset>
+            <fileset dir="core/src/third party/es5-shim">
+                <selector unless="testing">
+                    <filename name="es5-shim.js"/>
+                </selector>
+            </fileset>
+            <fileset dir="core/src/extension" includes="*.js"/>
             <fileset dir="build/tmp" includes="lang*.js"/>
             <fileset dir="tasks">
                 <and>
