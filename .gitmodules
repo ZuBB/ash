@@ -1,3 +1,6 @@
 [submodule "src/third party/json"]
 	path = src/third party/json
 	url = https://github.com/douglascrockford/JSON-js.git
+[submodule "src/third party/es5-shim"]
+	path = src/third party/es5-shim
+	url = https://github.com/kriskowal/es5-shim.git
