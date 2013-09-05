@@ -193,7 +193,8 @@ if (!Array.prototype.aad) {
         var diffs  = [];
         var result = {
             trimmed: ii !== this.length,
-            length: ii
+            avgVal:  avgVal,
+            length:  ii
         };
 
         for (ii -= 1; ii >= 0; ii--) {
