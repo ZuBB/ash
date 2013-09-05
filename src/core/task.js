@@ -391,6 +391,11 @@ Task.prototype.loadGraphicsData = function() {
     return this.readGraphicsData(filename);
 };
 
+/**
+ * function that ...
+ *
+ * @method loadGraphicsData
+ */
 Task.prototype.readGraphicsData = function(filename) {
     var FSObject = new ActiveXObject('Scripting.FileSystemObject');
     var dataKey = this.getFullName();
@@ -618,16 +623,15 @@ Task.prototype.parseViewIndex = function() {
     for (var ii = 0; ii < viewIndexes.length; ii++) {
         var parts = viewIndexes[ii].split(':');
         var position = parseInt(parts[1], 10);
-        if (!isNaN(position) && position > 0) {
-            position--;
-        } else {
+        var view = parts[0].match(/\w+/)[0];
+
+        if (isNaN(position) || position < 1) {
             //DEBUG_START
             _e('Current spec has invalid viewIndex');
             //DEBUG_STOP
             continue;
         }
 
-        var view = parts[0].match(/\w+/)[0];
         if (!view) {
             //DEBUG_START
             _e('Current spec has invalid viewIndex');
@@ -637,7 +641,7 @@ Task.prototype.parseViewIndex = function() {
 
         result.push({
             'view': view,
-            'index': position,
+            'index': --position,
             'orig': viewIndexes[ii]
         });
     }
@@ -871,4 +875,125 @@ Task.prototype.getConfirmedView = function() {
     }
 
     return null;
+};
+
+/**
+ * function that ...
+ *
+ * @method addDataSet
+ */
+Task.prototype.addDataSet = function(dataSet) {
+    // check if dataSet is hash
+    if (dataSet) {
+        // check if dataSet has 'dataX' and 'dataY' keys
+        if (Array.isArray(dataSet.dataX) && Array.isArray(dataSet.dataY)) {
+            this.graphics.push(dataSet);
+            return true;
+        }
+    }
+
+    return false;
+};
+
+/**
+ * function that ...
+ *
+ * @method addDataSets
+ */
+Task.prototype.addDataSets = function(dataSets) {
+    // check if dataSet is array
+    if (Array.isArray(dataSets) === false) {
+        return false;
+    }
+
+    var prevSize = this.graphics.length;
+
+    for (var ii = 0; ii < dataSets.length; ii++) {
+        this.addDataSet(dataSets[ii]);
+    }
+
+    return this.graphics.length > prevSize;
+};
+
+/**
+ * function that ...
+ *
+ * @method getDataSet
+ */
+Task.prototype.getDataSet = function(index, key) {
+    var start = Number(index);
+    var sliceParams = start < 0 ? [start] : [start. start + 1];
+    var dataSet = Array.prototype.slice.apply(this.graphics, sliceParams)[0];
+
+    if (key) {
+        if (['dataX', 'datax', 'X', 'x'].indexOf(key) > -1) {
+            return dataSet.dataX;
+        }
+
+        if (['dataY', 'datay', 'Y', 'y'].indexOf(key) > -1) {
+            return dataSet.dataY;
+        }
+    }
+
+    return dataSet;
+};
+
+/**
+ * function that ...
+ *
+ * @method addDataSets
+ */
+Task.prototype.addX = function(number, dataSetIndex) {
+    dataSetIndex = Number(dataSetIndex);
+
+    if (typeof this.graphics[dataSetIndex] === 'undefined') {
+        this.graphics[dataSetIndex] = {};
+    }
+
+    if (typeof this.graphics[dataSetIndex].dataX === 'undefined') {
+        this.graphics[dataSetIndex].dataX = [];
+    }
+
+    this.graphics[dataSetIndex].dataX.push(number);
+};
+
+/**
+ * function that ...
+ *
+ * @method addDataSets
+ */
+Task.prototype.addY = function(number, dataSetIndex) {
+    dataSetIndex = Number(dataSetIndex);
+
+    if (typeof this.graphics[dataSetIndex] === 'undefined') {
+        this.graphics[dataSetIndex] = {};
+    }
+
+    if (typeof this.graphics[dataSetIndex].dataY === 'undefined') {
+        this.graphics[dataSetIndex].dataY = [];
+    }
+
+    this.graphics[dataSetIndex].dataY.push(number);
+};
+
+/**
+ * function that ...
+ *
+ * @method addDataSets
+ */
+Task.prototype.getX = function(index, dataSetIndex) {
+    index = Number(index);
+    dataSetIndex = Number(dataSetIndex);
+    return this.graphics[dataSetIndex].dataX[index];
+};
+
+/**
+ * function that ...
+ *
+ * @method addDataSets
+ */
+Task.prototype.getX = function(index, dataSetIndex) {
+    index = Number(index);
+    dataSetIndex = Number(dataSetIndex);
+    return this.graphics[dataSetIndex].dataX[index];
 };
