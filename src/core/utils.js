@@ -237,3 +237,27 @@ Utils.getColorForPercentage = function(percentColors, pct) {
     }
 };
 
+/**
+ * function that ...
+ *
+ * @method convertReportMessage2Obj
+ * https://github.com/jashkenas/underscore/blob/master/underscore.js#L570
+ */
+Utils.range = function(start, stop, step) {
+    if (arguments.length <= 1) {
+        stop = start || 0;
+        start = 0;
+    }
+
+    step = arguments[2] || 1;
+    var length = Math.max(Math.ceil((stop - start) / step), 0);
+    var range = new Array(length);
+    var idx = 0;
+
+    while (idx < length) {
+        range[idx++] = start;
+        start += step;
+    }
+
+    return range;
+};
