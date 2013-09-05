@@ -119,11 +119,12 @@ MathHelper.changeDataTimeline = function(srcXObj, srcYObj) {
  * @param {Object} graphicObj - value itself
  * @param {number} aveItems - кількість точок для усереднення із кожного боку
  */
-MathHelper.smoothData = function(srcObj, passCount) {
+MathHelper.smoothData = function(srcObj, passCount, returnAll) {
     passCount = parseInt(passCount, 10) || 1;
     var dataObj = Utils.mergeRecursive({}, srcObj);
     var timeObj = { 'dataX': [], 'dataY': [] };
     var tmpObj1 = null;
+    var results = [];
 
     for (var ii = 1; ii < srcObj.dataX.length && Host.CanContinue(); ii++) {
         timeObj.dataX.push((srcObj.dataX[ii] + srcObj.dataX[ii - 1]) / 2);
@@ -132,11 +133,19 @@ MathHelper.smoothData = function(srcObj, passCount) {
     for (ii = 0; ii < passCount; ii++) {
         tmpObj1 = MathHelper.changeDataTimeline(timeObj, dataObj);
         dataObj = MathHelper.changeDataTimeline(dataObj, tmpObj1);
+
+        if (returnAll) {
+            results.push(dataObj);
+        }
     }
 
-    srcObj.dataX = dataObj.dataX;
-    srcObj.dataY = dataObj.dataY;
-    return srcObj;
+    if (returnAll) {
+        return results;
+    } else {
+        srcObj.dataX = dataObj.dataX;
+        srcObj.dataY = dataObj.dataY;
+        return srcObj;
+    }
 };
 
 /**
