@@ -22,24 +22,6 @@ if (!Array.prototype.unique) {
 /**
  * helper function that ...
  *
- * @method _clone_hash
- * @param {any type} value - value itself
- * @param {String} descr - string that will be print before value
- */
-if (!Array.prototype.indexOf) {
-    Array.prototype.indexOf = function(obj, start) {
-        for (var ii = (start || 0); ii < this.length; ii++) {
-            if (this[ii] === obj) {
-                return ii;
-            }
-        }
-        return -1;
-    };
-}
-
-/**
- * helper function that ...
- *
  * @method getUnique
  * @param {Float} raw_value - value itself
  */
