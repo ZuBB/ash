@@ -1,17 +1,24 @@
 // AHF is namespace for Autoscope Helper Functions
 
 AHF.aveValueAt = function(channel, samples, mergeFirst, skipTrailing) {
-    var result = { 'dataX': [], 'dataY': [] };
-    // we need `ceil` here because `for`s condition we use strict checking
-    // we need ' - 1' here to have fall back in case of leaveFirst is true
-    var length = Math.ceil((Host.NumberOfSamples - 1) / samples);
-    var fstVal = Number(!Boolean(mergeFirst));
+    var result = { 'dataX': [0], 'dataY': [0] };
+
+    if (!mergeFirst) {
+        result.dataX.unshift(1 / Host.Frequency);
+        result.dataY.unshift(Host.ValueAt(channel, 0));
+    }
+
     var _shift = Math.floor(samples / 2);
+    var fstVal = Number(!Boolean(mergeFirst));
+    // we need `ceil` here because `for`s condition we use strict checking
+    var length = Math.ceil((Host.NumberOfSamples - fstVal) / samples);
 
     for (var ii = 0, aveVal, position; ii < length; ii++) {
         position = fstVal + (samples * ii) + _shift;
         aveVal = Host.AveValueAt(channel, position, samples);
-        result.dataX.push(position / Host.Frequency);
+        // 2 is because this first value calculated in loop
+        // will be 2nd real value in sample
+        result.dataX.push((position + 2) / Host.Frequency);
         result.dataY.push(aveVal);
 
         if (!Host.CanContinue()) {
@@ -20,11 +27,6 @@ AHF.aveValueAt = function(channel, samples, mergeFirst, skipTrailing) {
             //DEBUG_STOP
             break;
         }
-    }
-
-    if (!mergeFirst) {
-        result.dataX.unshift(0);
-        result.dataY.unshift(Host.ValueAt(channel, 0));
     }
 
     if (skipTrailing) {
