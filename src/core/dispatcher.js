@@ -117,10 +117,14 @@ Dispatcher.registerNewTask = function(taskDefObj) {
  * @method process
  */
 Dispatcher.process = function() {
+    Host.ShowProgress(_t('core.status.start'), this.specs.length);
+
     this.loopThroughRegisteredSpecs();
     this.createGraphicViews();
     this.processGraphicsViewProps();
+
     Host.ShowReport();
+    Host.HideProgress();
 };
 
 /**
@@ -174,6 +178,8 @@ Dispatcher.announceSpecStatus = function(_status, ii) {
  */
 Dispatcher.loopThroughRegisteredSpecs = function() {
     for (var ii = 0; ii < this.specs.length; ii++) {
+        Host.SetStatusText(_t('core.status.message', ii));
+
         var specObj = this.specs[ii];
         //DEBUG_START
         var specName = specObj.getFullName();
@@ -189,6 +195,8 @@ Dispatcher.loopThroughRegisteredSpecs = function() {
         this.announceSpecStatus(specObj.getSpecStatus(), ii);
         _d('Processing finished! Passed (ms) ' + Profiler.stop(specName));
         //DEBUG_STOP
+
+        Host.SetProgress(ii);
     }
 };
 
