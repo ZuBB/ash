@@ -1,7 +1,8 @@
 // AHF is namespace for Autoscope Helper Functions
 
 AHF.aveValueAt = function(channel, samples, mergeFirst, skipTrailing) {
-    var result = { 'dataX': [0], 'dataY': [0] };
+    // TODO restore zero point at another place
+    var result = { 'dataX': [], 'dataY': [] };
 
     if (!mergeFirst) {
         result.dataX.unshift(1 / Host.Frequency);
