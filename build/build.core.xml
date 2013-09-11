@@ -425,7 +425,6 @@
         <get verbose="false"
             src="http://goo.gl/ftYh6n" dest="${java.io.tmpdir}/"/>
 
-        <mkdir dir="${user.home}/.ant/lib/"/>
         <unzip src="${java.io.tmpdir}/ftYh6n" dest="${user.home}/.ant/lib/">
             <patternset>
                 <include name="**/ant-contrib*.jar"/>
@@ -435,6 +434,7 @@
     </target>
 
     <target name="check-antcontrib">
+        <mkdir dir="${user.home}/.ant/lib/"/>
         <available property="antcontrib"
             resource="net/sf/antcontrib/antlib.xml"
             classpathref="antcontrib.path"/>
