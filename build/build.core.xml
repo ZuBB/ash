@@ -425,6 +425,7 @@
         <get verbose="false"
             src="http://goo.gl/ftYh6n" dest="${java.io.tmpdir}/"/>
 
+        <mkdir dir="${user.home}/.ant/lib/"/>
         <unzip src="${java.io.tmpdir}/ftYh6n" dest="${user.home}/.ant/lib/">
             <patternset>
                 <include name="**/ant-contrib*.jar"/>
@@ -470,6 +471,7 @@
     <target name="get-mail-deps" unless="${mail.deps}">
         <mkdir dir="${LIB.DIR}"/>
 
+        <mkdir dir="${user.home}/.ant/lib/"/>
         <get verbose="false" dest="${user.home}/.ant/lib/"
             src="http://download.java.net/maven/1/javax.activation/jars/activation-1.1.1.jar"/>
 
