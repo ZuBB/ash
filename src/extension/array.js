@@ -121,7 +121,7 @@ if (!Array.prototype.getValueNeighboursPositions) {
 
 /**
  * helper function that ...
- * http://goo.gl/kHr0L
+ * http://goo.gl/TA8i8T
  *
  * @method getUnique
  * @param {Float} raw_value - value itself
@@ -153,10 +153,10 @@ if (!Array.prototype.mode) {
         for (var ii = 0; ii < this.length; ii++) {
             var el = mapFunction(this[ii]);
 
-            if (modeMap[el] === null) {
-                modeMap[el] = 1;
-            } else {
+            if (modeMap.hasOwnProperty(el)) {
                 modeMap[el]++;
+            } else {
+                modeMap[el] = 1;
             }
 
             if (modeMap[el] > maxCount) {
@@ -164,7 +164,6 @@ if (!Array.prototype.mode) {
                 maxCount = modeMap[el];
             } else if (modeMap[el] === maxCount) {
                 modes.push(el);
-                maxCount = modeMap[el];
             }
         }
 
