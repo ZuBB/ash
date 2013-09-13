@@ -96,14 +96,8 @@
                 </and>
             </fileset>
             <fileset dir="javascript">
-                <and>
-                    <filename name="*.js"/>
-                    <not>
-                        <selector>
-                            <filename name="definitions.js"/>
-                        </selector>
-                    </not>
-                </and>
+                <include name="*.js"/>
+                <exclude name="definitions.js"/>
             </fileset>
         </concat>
     </target>
