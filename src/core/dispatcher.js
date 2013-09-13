@@ -39,7 +39,9 @@ Dispatcher.announce = function(version, buildID, buildTime) {
         _t('report.version.rel', version, fixedbuildTime.toLocaleString());
 
     _rp(message);
+    //DEBUG_START
     _rp(_t('report.date', this.runTimestamp.toLocaleString()));
+    //DEBUG_STOP
 };
 
 //DEBUG_START
