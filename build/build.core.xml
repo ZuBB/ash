@@ -8,38 +8,30 @@
     <property file="build/build.smtp.properties"/>
 
     <target name="dev" depends="concat, replace, encoding">
-        <local name="new.cp"/>
-        <local name="new.file"/>
-        <antcallback target="ash.create-target-file" return="new.file, new.cp">
-            <param name="phase" value="dev"/>
-            <param name="old.cp" value="${current.cp}"/>
-            <param name="old.file" value="${output.file}"/>
-        </antcallback>
-        <var name="output.file" value="${new.file}"/>
-        <var name="current.cp" value="${new.cp}"/>
+        <var name="old.file" value="${new.file}"/>
+        <var name="new.file" value="${OUTPUT.DIR}/${script}.dev.${FILE.EXT}"/>
+
+        <copy encoding="${current.cp}" outputencoding="${current.cp}"
+            file="${old.file}" tofile="${new.file}"/>
     </target>
 
     <target name="test-sources" depends="concat, replace, strip">
         <exec executable="jshint">
             <arg value="--config"/>
             <arg value="${JSHINTRF.FILE}"/>
-            <arg value="${output.file}"/>
+            <arg value="${new.file}"/>
         </exec>
     </target>
 
     <target name="rqbuild" depends="vcs, dev, strip, check-log-calls, compress">
-        <local name="new.cp"/>
-        <local name="new.file"/>
-        <antcallback target="ash.create-target-file" return="new.file, new.cp">
-            <param name="phase" value="release.${BRANCH}-${CHANGESETS}"/>
-            <param name="old.cp" value="current.cp"/>
-            <param name="old.file" value="${output.file}"/>
-        </antcallback>
-        <var name="output.file" value="${new.file}"/>
-        <var name="current.cp" value="${new.cp}"/>
+        <var name="old.file" value="${new.file}"/>
+        <var name="new.file" value="${OUTPUT.DIR}/${script}.release.${BRANCH}-${CHANGESETS}.${FILE.EXT}"/>
+
+        <copy encoding="${current.cp}" outputencoding="${current.cp}"
+            file="${old.file}" tofile="${new.file}"/>
     </target>
 
-    <target name="send" depends="check-mail-deps, get-mail-deps" unless="${output.file}">
+    <target name="send" depends="check-mail-deps, get-mail-deps" unless="${new.file}">
         <mail
             from="${MAIL.FROM}"
             tolist="${mail.to}"
@@ -48,7 +40,7 @@
             subject="${subject}"
             mailhost="${SMTP.HOST}" mailport="${SMTP.PORT}" ssl="${SMTP.SSL}"
             user="${SMTP.USER}" password="${SMTP.PSWD}"
-            files="${output.file}">
+            files="${new.file}">
             <message>${om}${EMAIL_SIGNATURE}</message>
         </mail>
     </target>
@@ -59,17 +51,11 @@
             <fileset dir="${OUTPUT.DIR}" includes="*"/>
         </delete>
 
-        <local name="new.file"/>
-        <antcallback target="ash.create-target-file" return="new.file">
-            <param name="phase" value="concat"/>
-            <param name="only.filename" value="true"/>
-        </antcallback>
-        <var name="output.file" value="${new.file}"/>
+        <var name="new.file" value="${OUTPUT.DIR}/${script}.concat.${FILE.EXT}"/>
+        <echo message="${header}" output="${new.file}"></echo>
 
-        <echo message="${header}" output="${output.file}"></echo>
-
-        <concat destfile="${output.file}" fixlastline="true" append="true"
-            encoding="${current.cp}" outputencoding="${current.cp}">
+        <concat destfile="${new.file}" fixlastline="true" append="true"
+            encoding="${INT_CP}" outputencoding="${INT_CP}">
 
             <fileset dir="javascript">
                 <filename name="definitions.js"/>
@@ -147,7 +133,7 @@
                     file="./build/tmp/lang.${LANG}.p3.txt"/>
 
                 <concat destfile="./build/tmp/lang.${LANG}.js"
-                    encoding="${current.cp}" outputencoding="${current.cp}">
+                    encoding="${EXT_CP}" outputencoding="${EXT_CP}">
                         <fileset dir="./build/tmp/">
                             <include name="lang.${LANG}.p*.txt"/>
                         </fileset>
@@ -165,17 +151,15 @@
     </target>
 
     <target name="replace">
-        <local name="new.cp"/>
-        <local name="new.file"/>
-        <antcallback target="ash.create-target-file" return="new.file, new.cp">
-            <param name="phase" value="replace"/>
-            <param name="old.cp" value="${current.cp}"/>
-            <param name="old.file" value="${output.file}"/>
-        </antcallback>
-        <var name="output.file" value="${new.file}"/>
-        <var name="current.cp" value="${new.cp}"/>
+        <var name="old.file" value="${new.file}"/>
+        <var name="new.file" value="${OUTPUT.DIR}/${script}.replace.${FILE.EXT}"/>
 
-        <replace file="${output.file}" encoding="${current.cp}"
+        <copy encoding="${INT_CP}" outputencoding="${INT_CP}"
+            file="${old.file}" tofile="${new.file}"/>
+
+        <var name="current.cp" value="${INT_CP}"/>
+
+        <replace file="${new.file}" encoding="${current.cp}"
             replacefilterfile="resources/colors.properties">
         </replace>
 
@@ -183,54 +167,47 @@
             <format property="TIMESTAMP" pattern="yyyy, M, d, H, m, s, S"/>
         </tstamp>
 
-        <replace file="${output.file}" encoding="${current.cp}"
+        <replace file="${new.file}" encoding="${current.cp}"
             token="TIMESTAMP" value="${TIMESTAMP}">
         </replace>
 
-        <replace file="${output.file}" encoding="${current.cp}"
+        <replace file="${new.file}" encoding="${current.cp}"
             token="VERSION" value="${VERSION}">
         </replace>
 
-        <replace file="${output.file}" encoding="${current.cp}"
+        <replace file="${new.file}" encoding="${current.cp}"
             token="BUILD_ID" value="${BRANCH}-${CHANGESETS}">
         </replace>
 
-        <replace file="${output.file}" encoding="${current.cp}"
+        <replace file="${new.file}" encoding="${current.cp}"
             token="GRAPHIC_TYPE" value="${DEFAULT_GRAPHIC_TYPE}">
         </replace>
     </target>
 
     <target name="encoding">
-        <local name="new.cp"/>
-        <local name="new.file"/>
-        <antcallback target="ash.create-target-file" return="new.file, new.cp">
-            <param name="phase" value="encoding"/>
-            <param name="old.cp" value="${current.cp}"/>
-            <param name="old.file" value="${output.file}"/>
-            <param name="change.cp" value="true"/>
-        </antcallback>
-        <var name="output.file" value="${new.file}"/>
-        <var name="current.cp" value="${new.cp}"/>
+        <var name="old.file" value="${new.file}"/>
+        <var name="new.file" value="${OUTPUT.DIR}/${script}.encoding.${FILE.EXT}"/>
+
+        <copy encoding="${INT_CP}" outputencoding="${EXT_CP}"
+            file="${old.file}" tofile="${new.file}"/>
+
+        <var name="current.cp" value="${EXT_CP}"/>
     </target>
 
     <target name="strip">
-        <local name="new.cp"/>
-        <local name="new.file"/>
-        <antcallback target="ash.create-target-file" return="new.file, new.cp">
-            <param name="phase" value="strip"/>
-            <param name="old.cp" value="${current.cp}"/>
-            <param name="old.file" value="${output.file}"/>
-        </antcallback>
-        <var name="output.file" value="${new.file}"/>
-        <var name="current.cp" value="${new.cp}"/>
+        <var name="old.file" value="${new.file}"/>
+        <var name="new.file" value="${OUTPUT.DIR}/${script}.strip.${FILE.EXT}"/>
 
-        <replaceregexp file="${output.file}" encoding="${current.cp}"
+        <copy encoding="${current.cp}" outputencoding="${current.cp}"
+            file="${old.file}" tofile="${new.file}"/>
+
+        <replaceregexp file="${new.file}" encoding="${current.cp}"
             flags="gs" match="\/\/DEBUG_START.*?\/\/DEBUG_STOP" replace="">
         </replaceregexp>
     </target>
 
     <target name="check-log-calls">
-        <loadfile property="LOG_CALLS" srcfile="${output.file}">
+        <loadfile property="LOG_CALLS" srcfile="${new.file}">
             <filterchain>
                 <linecontainsregexp>
                     <regexp pattern="^[^\/]*_(d|i|p|w|e|f)\("/>
@@ -238,7 +215,7 @@
             </filterchain>
         </loadfile>
 
-        <fail message="Found next log calls in ${output.file}${line.separator}${LOG_CALLS}">
+        <fail message="Found next log calls in ${new.file}${line.separator}${LOG_CALLS}">
             <condition>
                 <and>
                     <isset property="LOG_CALLS"/>
@@ -254,12 +231,11 @@
         <taskdef name="jscomp" classpath="${LIB.DIR}/compiler.jar"
             classname="com.google.javascript.jscomp.ant.CompileTask"/>
 
-        <local name="new.file"/>
-        <antcallback target="ash.create-target-file" return="new.file">
-            <param name="phase" value="compress"/>
-            <param name="only.filename" value="true"/>
-            <param name="old.file" value="${output.file}"/>
-        </antcallback>
+        <var name="old.file" value="${new.file}"/>
+        <var name="new.file" value="${OUTPUT.DIR}/${script}.strip.${FILE.EXT}"/>
+
+        <copy encoding="${current.cp}" outputencoding="${current.cp}"
+            file="${old.file}" tofile="${new.file}"/>
 
         <jscomp compilationLevel="simple" output="${new.file}"
             encoding="${current.cp}" outputencoding="${current.cp}" debug="false">
@@ -269,23 +245,17 @@
             </externs>
 
             <sources dir="./">
-                <file name="${output.file}"/>
+                <file name="${old.file}"/>
             </sources>
         </jscomp>
-
-        <var name="output.file" value="${new.file}"/>
     </target>
 
     <target name="uib" depends="vcs, dev">
-        <local name="new.cp"/>
-        <local name="new.file"/>
-        <antcallback target="ash.create-target-file" return="new.file, new.cp">
-            <param name="phase" value="dev.${BRANCH}-${CHANGESETS}"/>
-            <param name="old.cp" value="${current.cp}"/>
-            <param name="old.file" value="${output.file}"/>
-        </antcallback>
-        <var name="output.file" value="${new.file}"/>
-        <var name="current.cp" value="${new.cp}"/>
+        <var name="old.file" value="${new.file}"/>
+        <var name="new.file" value="${OUTPUT.DIR}/${script}.dev.${BRANCH}-${CHANGESETS}.${FILE.EXT}"/>
+
+        <copy encoding="${current.cp}" outputencoding="${current.cp}"
+            file="${old.file}" tofile="${new.file}"/>
     </target>
 
     <target name="vcs" depends="vars">
@@ -320,14 +290,23 @@
     </target>
 
     <target name="vars" depends="check-antcontrib, get-antcontrib">
+        <fail message="'script' variable is not set">
+            <condition>
+                <not>
+                    <isset property="script"/>
+                </not>
+            </condition>
+        </fail>
+
         <taskdef resource="net/sf/antcontrib/antlib.xml"
             classpathref="antcontrib.path"/>
 
+        <var name="new.file" value=""/>
+        <var name="old.file" value=""/>
+        <var name="current.cp" value=""/>
         <var name="MAIL.TO"  value=""/>
         <var name="MAIL.CC"  value=""/>
         <var name="MAIL.BCC" value=""/>
-        <var name="output.file" value=""/>
-        <var name="current.cp" value="${INT_CP}"/>
 
         <if>
             <contains string="${ant.project.invoked-targets}" substring="test"/>
@@ -359,47 +338,6 @@
             <else>
                 <property name="DEFAULT_GRAPHIC_TYPE" value="2"/>
             </else>
-        </if>
-    </target>
-
-    <target name="create-target-file">
-        <if>
-            <equals arg1="${change.cp}" arg2="true"/>
-            <then>
-                <property name="cp1" value="${old.cp}"/>
-                <property name="new.cp" value="${EXT_CP}"/>
-            </then>
-            <else>
-                <property name="cp1" value="${old.cp}"/>
-                <property name="new.cp" value="${old.cp}"/>
-            </else>
-        </if>
-
-        <if>
-            <and>
-                <isset property="phase"/>
-                <not>
-                    <equals arg1="${phase}" arg2=""/>
-                </not>
-            </and>
-            <then>
-                <property name="new.file"
-                    value="${OUTPUT.DIR}/${ant.project.name}.${phase}.${FILE.EXT}"/>
-            </then>
-            <else>
-                <property name="new.file"
-                    value="${OUTPUT.DIR}/${ant.project.name}.${FILE.EXT}"/>
-            </else>
-        </if>
-
-        <if>
-            <not>
-                <equals arg1="${only.filename}" arg2="true"/>
-            </not>
-            <then>
-                <copy encoding="${cp1}" outputencoding="${new.cp}"
-                    file="${old.file}" tofile="${new.file}"/>
-            </then>
         </if>
     </target>
 
