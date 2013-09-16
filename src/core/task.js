@@ -1020,8 +1020,9 @@ Task.prototype.getX = function(index, dataSetIndex) {
  *
  * @method addDataSets
  */
-Task.prototype.getX = function(index, dataSetIndex) {
+Task.prototype.getY = function(index, dataSetIndex) {
     index = Number(index);
     dataSetIndex = Number(dataSetIndex);
-    return this.graphics[dataSetIndex].dataX[index];
+    return this.graphics[dataSetIndex].dataY[index];
 };
+
