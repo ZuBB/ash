@@ -25,6 +25,7 @@ Task = function(params) {
     this.providesResource = null;
 
     this.axisName = '';
+    this.graphicName = null;
     this.graphicType = GRAPHIC_TYPE;
     this.defaultGraphicType = GRAPHIC_TYPE;
     this.drawMarkers = false;
@@ -698,7 +699,7 @@ Task.prototype.drawGraphic = function() {
         }
 
         var axisName = _t('units.' + this.axisName);
-        var graphicName = _t('specs.' + this.specName + '.name', ii + 1);
+        var graphicName = _t(this.getGraphicName(ii + 1), ii + 1);
         var graphicColor = (this.graphicColor instanceof Array) ?
             this.graphicColor[ii] : this.graphicColor;
 
@@ -735,6 +736,26 @@ Task.prototype.drawGraphic = function() {
 
     this.statusCodes.push(graphics.length > 0);
     return graphics;
+};
+
+/**
+ * function that ...
+ *
+ * @method getGraphicName
+ * @param {Object} graphicObj - value itself
+ */
+Task.prototype.getGraphicName = function(currentIndex) {
+    var result = null;
+
+    if (typeof this.graphicName === 'function') {
+        result = this.graphicName(currentIndex, this.graphics.length);
+    } else if (typeof this.graphicName === 'string') {
+        result = 'specs.' + this.graphicName + '.name';
+    } else {
+        result = 'specs.' + this.specName + '.name';
+    }
+
+    return result;
 };
 
 /**
