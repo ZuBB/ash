@@ -950,7 +950,7 @@ Task.prototype.addDataSets = function(dataSets) {
  */
 Task.prototype.getDataSet = function(index, key) {
     var start = Number(index);
-    var sliceParams = start < 0 ? [start] : [start. start + 1];
+    var sliceParams = start < 0 ? [start] : [start, start + 1];
     var dataSet = Array.prototype.slice.apply(this.graphics, sliceParams)[0];
 
     if (key) {
