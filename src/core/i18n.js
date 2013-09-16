@@ -70,7 +70,8 @@ I18n.set = function(langCode, oDict) {
 I18n.translate = function(sPhrase) {
     // Translate
     var oPhrases = I18n.phrases;
-    sPhrase = parseInt(Host.GetCurLanguage(), 10).toString() + '.' + sPhrase;
+    var langCode = parseInt(Host.GetCurLanguage(), 10).toString();
+    sPhrase = langCode + '.' + sPhrase;
 
     if (typeof oPhrases[sPhrase] === 'string') {
         sPhrase = oPhrases[sPhrase];
@@ -89,6 +90,10 @@ I18n.translate = function(sPhrase) {
 
             sPhrase = sPhrase.replace(re, '$2' + arguments[ii]);
         }
+    }
+
+    if (sPhrase.indexOf(langCode) === 0) {
+        sPhrase = sPhrase.slice(langCode.length + 1);
     }
 
     return sPhrase;
