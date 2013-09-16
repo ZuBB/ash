@@ -670,6 +670,13 @@ Task.prototype.adjustGraphicTypeValue = function() {
         return true;
     }
 
+    if (this.graphicType === 8) {
+        this.drawGraphicsAsShelf = true;
+        // thin lines with dots
+        this.graphicType = 2;
+        return true;
+    }
+
     if (this.graphicType === 9) {
         this.drawGraphicsAsShelf = true;
         this.graphicType = this.defaultGraphicType;
