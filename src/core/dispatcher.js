@@ -194,7 +194,7 @@ Dispatcher.loopThroughRegisteredSpecs = function() {
         this.confirmedViews.push(specObj.getConfirmedView());
 
         //DEBUG_START
-        this.announceSpecStatus(specObj.getSpecStatus(), ii);
+        this.announceSpecStatus(specObj.getTaskStatus(), ii);
         _d('Processing finished! Passed (ms) ' + Profiler.stop(specName));
         //DEBUG_STOP
 
@@ -491,7 +491,7 @@ Dispatcher.getTaskObject = function(name) {
 Dispatcher.getValidTaskObject = function(name) {
     var taskObj = this.getTaskObject(name);
 
-    if (taskObj && taskObj.getSpecStatus()) {
+    if (taskObj && taskObj.getTaskStatus()) {
         return taskObj;
     } else {
         return null;

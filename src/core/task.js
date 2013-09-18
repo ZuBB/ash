@@ -55,9 +55,9 @@ Task = function(params) {
 /**
  * function that ...
  *
- * @method getSpecStatus
+ * @method getTaskStatus
  */
-Task.prototype.getSpecStatus = function() {
+Task.prototype.getTaskStatus = function() {
     return this.statusCodes.slice(-1)[0];
 };
 
@@ -73,11 +73,11 @@ Task.prototype.process = function() {
     this.processCalcs();
     this.joinViewsProps();
 
-    if (this.getSpecStatus() && this.saveData4Compare) {
+    if (this.getTaskStatus() && this.saveData4Compare) {
         Dispatcher.addSpec4Saving(this.getFullName());
     }
 
-    return this.getSpecStatus();
+    return this.getTaskStatus();
 };
 
 /**
@@ -173,7 +173,7 @@ Task.prototype.checkDataSourceFile = function(rawDataSource) {
  * @method checkForbiddenChannel
  */
 Task.prototype.checkForbiddenChannel = function() {
-    if (this.getSpecStatus() === false) {
+    if (this.getTaskStatus() === false) {
         return false;
     }
 
@@ -195,7 +195,7 @@ Task.prototype.checkForbiddenChannel = function() {
  * @param {Object} graphicObj - value itself
  */
 Task.prototype.checkDependencies = function() {
-    if (this.getSpecStatus() === false) {
+    if (this.getTaskStatus() === false) {
         return false;
     }
 
@@ -316,7 +316,7 @@ Task.prototype.getActiveSoftDependency = function() {
 Task.prototype.processCalcs = function() {
     var result = false;
 
-    if (this.getSpecStatus() === false) {
+    if (this.getTaskStatus() === false) {
         return false;
     }
 
@@ -514,7 +514,7 @@ Task.prototype.joinViewsProps = function() {
     var graphics = this.drawGraphic();
     var graphicsIndexes = [];
 
-    if (this.getSpecStatus() === false || graphics.length === 0) {
+    if (this.getTaskStatus() === false || graphics.length === 0) {
         return false;
     }
 
@@ -663,7 +663,7 @@ Task.prototype.parseViewIndex = function() {
  * @method adjustGraphicTypeValue
  */
 Task.prototype.adjustGraphicTypeValue = function() {
-    if (this.getSpecStatus() === false || isNaN(this.graphicType)) {
+    if (this.getTaskStatus() === false || isNaN(this.graphicType)) {
         return false;
     }
 
@@ -701,7 +701,7 @@ Task.prototype.adjustGraphicTypeValue = function() {
  */
 Task.prototype.drawGraphic = function() {
     var graphics = [];
-    if (!this.getSpecStatus() || !this.viewIndex || !this.graphics.length) {
+    if (!this.getTaskStatus() || !this.viewIndex || !this.graphics.length) {
         return [];
     }
 
@@ -902,7 +902,7 @@ Task.prototype.getViewsProps = function() {
  * @method getConfirmedView
  */
 Task.prototype.getConfirmedView = function() {
-    if (this.providedView && this.getSpecStatus()) {
+    if (this.providedView && this.getTaskStatus()) {
         //DEBUG_START
         _d(this.providedView, 'this spec managed to provide next view');
         //DEBUG_STOP
