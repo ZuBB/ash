@@ -333,10 +333,10 @@
         <if>
             <isset property="releasing"/>
             <then>
-                <property name="DEFAULT_GRAPHIC_TYPE" value="0"/>
+                <property name="DEFAULT_GRAPHIC_TYPE" value="${DEV.GRAPHIC.TYPE}"/>
             </then>
             <else>
-                <property name="DEFAULT_GRAPHIC_TYPE" value="2"/>
+                <property name="DEFAULT_GRAPHIC_TYPE" value="${REL.GRAPHIC.TYPE}"/>
             </else>
         </if>
     </target>
