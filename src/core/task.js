@@ -728,7 +728,7 @@ Task.prototype.drawGraphic = function() {
         }
 
         if (this.setLimits) {
-            var edge_values = this.getLimitPoints();
+            var edge_values = this.getLimitPoints(specObj);
             graphic.SetLimits(edge_values[0], edge_values[1]);
         }
 
@@ -778,9 +778,9 @@ Task.prototype.getGraphicName = function(currentIndex) {
  * @method getLimitPoints
  * @param {Object} graphicObj - value itself
  */
-Task.prototype.getLimitPoints = function() {
-    var min_value = this.minLimitValue || Math.min.apply(null, this.dataY);
-    var max_value = this.maxLimitValue || Math.max.apply(null, this.dataY);
+Task.prototype.getLimitPoints = function(dataSet) {
+    var min_value = this.minLimitValue || Math.min.apply(null, dataSet.dataY);
+    var max_value = this.maxLimitValue || Math.max.apply(null, dataSet.dataY);
 
     if (this.minLimitCoeff || this.maxLimitCoeff) {
         min_value *= (this.minLimitCoeff || 1);
