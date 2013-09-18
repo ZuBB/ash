@@ -1016,6 +1016,16 @@ Task.prototype.addY = function(number, dataSetIndex) {
  *
  * @method addDataSets
  */
+Task.prototype.addXY = function(xValue, yValue, dataSetIndex) {
+    this.addX(xValue, dataSetIndex);
+    this.addY(yValue, dataSetIndex);
+};
+
+/**
+ * function that ...
+ *
+ * @method addDataSets
+ */
 Task.prototype.getX = function(index, dataSetIndex) {
     index = Number(index);
     dataSetIndex = Number(dataSetIndex);
