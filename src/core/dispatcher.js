@@ -303,7 +303,11 @@ Dispatcher.processGraphicsViewProps = function() {
                     break;
                 case 'graphic':
                     params = this.graphicsViewsProps[ii][key];
-                    this.appendGraphics2Views(ii, params);
+                    this.appendGraphic2Views(ii, params);
+                    break;
+                case 'graphicEx':
+                    params = this.graphicsViewsProps[ii][key];
+                    this.appendGraphicEx2Views(ii, params);
                     break;
                 case 'limits':
                     params = this.graphicsViewsProps[ii][key];
@@ -387,9 +391,34 @@ Dispatcher.addCommentToView = function(view_index, paramsArray) {
 /**
  * function that ...
  *
- * @method appendGraphics2Views
+ * @method appendGraphic2Views
  */
-Dispatcher.appendGraphics2Views = function(view_index, paramsArray) {
+Dispatcher.appendGraphic2Views = function(view_index, paramsArray) {
+    var graphic = null;
+    var graphicOpts = null;
+    var viewObject = this.graphicsViews[view_index];
+
+    paramsArray = paramsArray.sort(function(a, b){
+        // try to sort by view index
+        if (a[1] < b[1]) { return -1; }
+        if (a[1] > b[1]) { return 1; }
+        // if still same - sort by index in global array
+        return a[0] - b[0];
+    });
+
+    for (var ii = 0; ii < paramsArray.length; ii++) {
+        graphicOpts = paramsArray[ii];
+        graphic = this.drownGraphics[graphicOpts[0]];
+        viewObject.AddGraphic(graphic);
+    }
+};
+
+/**
+ * function that ...
+ *
+ * @method appendGraphicEx2Views
+ */
+Dispatcher.appendGraphicEx2Views = function(view_index, paramsArray) {
     var graphic = null;
     var graphicOpts = null;
     var viewObject = this.graphicsViews[view_index];

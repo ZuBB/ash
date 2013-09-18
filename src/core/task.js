@@ -34,6 +34,7 @@ Task = function(params) {
     this.hiddenGraphics = null;
     this.drawGraphicsAsShelf = false;
     this.graphicIsBackground = false;
+    this.multicolorGraphic = false;
 
     this.setLimits = false;
     this.maxLimitFunc = null;
@@ -510,7 +511,6 @@ Task.prototype.logDataStats = function() {
  */
 Task.prototype.joinViewsProps = function() {
     this.make_props();
-    this.adjustGraphicTypeValue();
     var graphics = this.drawGraphic();
     var graphicsIndexes = [];
 
@@ -548,7 +548,18 @@ Task.prototype.joinViewsProps = function() {
     // and create namespece
     for (ii = 0; ii < viewIndexes.length; ii++) {
         view = viewIndexes[ii].view;
-        prop = this.graphicIsBackground ? 'area' : 'graphic';
+
+        switch (true) {
+        case this.graphicIsBackground:
+            prop = 'area';
+            break;
+        case this.multicolorGraphic:
+            prop = 'graphic';
+            break;
+        default:
+            prop = 'graphicEx';
+        }
+
         this.address2Index[viewIndexes[ii].orig] = [];
 
         // if this we do not have props for this **view**
@@ -677,6 +688,13 @@ Task.prototype.adjustGraphicTypeValue = function() {
         return true;
     }
 
+    // multicolor graphic
+    if (this.graphicType === 4) {
+        this.multicolorGraphic = true;
+        this.graphicType = 0;
+        return true;
+    }
+
     if (this.graphicType === 8) {
         this.drawGraphicsAsShelf = true;
         // thin lines with dots
@@ -705,6 +723,9 @@ Task.prototype.drawGraphic = function() {
         return [];
     }
 
+    // do magic with graphic types
+    this.adjustGraphicTypeValue();
+
     // process every graphic
     for (var ii = 0; ii < this.graphics.length; ii++) {
         var specObj = this.graphics[ii];
@@ -712,6 +733,7 @@ Task.prototype.drawGraphic = function() {
             continue;
         }
 
+        var graphic = null;
         var axisName = _t('units.' + this.axisName);
         var graphicName = _t(this.getGraphicName(ii + 1), ii + 1);
         var graphicColor = (this.graphicColor instanceof Array) ?
@@ -720,8 +742,12 @@ Task.prototype.drawGraphic = function() {
         graphicColor = graphicColor === null ?
             Utils.createRandomColor() : graphicColor;
 
-        // color issue: no matter what color to pass here
-        var graphic = Host.CreateGraphic(graphicName, axisName, 0x000000);
+        if (this.multicolorGraphic !== true) {
+            // color issue: no matter what color to pass here
+            graphic = Host.CreateGraphic(graphicName, axisName, 0x000000);
+        } else {
+            graphic = Host.CreateColoredGraphic(graphicName, axisName, graphicColor);
+        }
 
         if (!this.setGraphicPoints(specObj, graphic)) {
             continue;
@@ -838,7 +864,16 @@ Task.prototype.setGraphicPoints = function(specObj, graphic) {
             continue;
         }
 
-        graphic.AddPoint(specObj.dataX[jj], specObj.dataY[jj]);
+        if (this.multicolorGraphic === false) {
+            graphic.AddPoint(specObj.dataX[jj], specObj.dataY[jj]);
+        } else {
+            graphic.AddColorPoint(
+                specObj.dataX[jj],
+                specObj.dataY[jj],
+                specObj.color[jj]
+            );
+        }
+
         prevYValue = specObj.dataY[jj];
 
         if (this.drawMarkers) {
