@@ -28,6 +28,15 @@ Input.getDefaultValue = function(name) {
     if ('value' in this.possible_fields[name]) {
         if (typeof this.possible_fields[name].value === 'function') {
             return this.possible_fields[name].value();
+        } else if (this.possible_fields[name].value instanceof Array) {
+            var comboItems = [];
+            var length = this.possible_fields[name].value.length;
+
+            for (var ii = 0; ii < length; ii++) {
+                comboItems.push(_t(this.possible_fields[name].value[ii]));
+            }
+
+            return comboItems.join('\n');
         } else {
             return this.possible_fields[name].value;
         }
@@ -108,8 +117,8 @@ Input.createConfiguration = function(items, possibleInputs) {
  * @method getInputI18Name
  */
 Input.getInputI18Name = function(name) {
-    var i18n_name = this.possible_fields[name].name;
-    return i18n_name ? i18n_name : name;
+    return this.possible_fields[name].hasOwnProperty('name') ?
+        this.possible_fields[name].name : _t('inputs.' + name);
 };
 
 /**
