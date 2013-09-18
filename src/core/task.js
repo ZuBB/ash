@@ -329,11 +329,18 @@ Task.prototype.processCalcs = function() {
         //DEBUG_STOP
         result = this.calc_data();
 
-        //DEBUG_START
-        if (this.graphics.length === 0 && this.dataY.length === 0) {
-            _w('this spec does not have data');
+        if (this.graphics.length > 0 || this.dataY.length > 0) {
+            if (typeof result === 'undefined') {
+                result = true;
+            }
+        } else {
+            //DEBUG_START
+            _d('this spec does not have data');
+            //DEBUG_STOP
+            if (typeof result === 'undefined') {
+                result = false;
+            }
         }
-        //DEBUG_STOP
 
         if (result && this.graphics.length === 0) {
             this.graphics.push({
