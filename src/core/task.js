@@ -979,7 +979,7 @@ Task.prototype.getDataSet = function(index, key) {
  * @method addDataSets
  */
 Task.prototype.addX = function(number, dataSetIndex) {
-    dataSetIndex = Number(dataSetIndex);
+    dataSetIndex = Math.abs(parseInt(dataSetIndex, 10)) || 0;
 
     if (typeof this.graphics[dataSetIndex] === 'undefined') {
         this.graphics[dataSetIndex] = {};
@@ -998,7 +998,7 @@ Task.prototype.addX = function(number, dataSetIndex) {
  * @method addDataSets
  */
 Task.prototype.addY = function(number, dataSetIndex) {
-    dataSetIndex = Number(dataSetIndex);
+    dataSetIndex = Math.abs(parseInt(dataSetIndex, 10)) || 0;
 
     if (typeof this.graphics[dataSetIndex] === 'undefined') {
         this.graphics[dataSetIndex] = {};
