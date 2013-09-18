@@ -61,9 +61,10 @@ Reporter._insertColorsMark = function(string, colors) {
 
     var textColor = dumbColor(colors[0] || 0x000000);
     var backColor = dumbColor(colors[1] || 0xFFFFFF);
-    var colourStr = '<ta=' + textColor + ',' + backColor + '>';
+    var colourStr = '<ta=' + textColor + ',' + backColor;
 
-    return string.replace(/^(\n)?/, '$1' + colourStr);
+    return colourStr + (/\n$/.test(string) ?
+        ('>' + string) : (' ' + string + '>'));
 };
 
 /**
