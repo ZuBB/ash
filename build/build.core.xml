@@ -89,14 +89,7 @@
     </target>
 
     <target name="i18n" depends="check-props2js, get-props2js">
-        <if>
-            <not>
-                <available file="./build/tmp/storage" type="dir"/>
-            </not>
-            <then>
-                <mkdir dir="./build/tmp/storage"/>
-            </then>
-        </if>
+        <mkdir dir="./build/tmp/storage"/>
 
         <for param="file">
             <fileset dir="resources">
