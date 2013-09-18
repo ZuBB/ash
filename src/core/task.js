@@ -22,7 +22,7 @@ Task = function(params) {
     this.viewIndex = null;
     this.viewsProps = {};
     this.address2Index = {};
-    this.providesResource = null;
+    this.providedView = null;
 
     this.axisName = '';
     this.graphicName = null;
@@ -895,11 +895,11 @@ Task.prototype.getViewsProps = function() {
  * @method getConfirmedView
  */
 Task.prototype.getConfirmedView = function() {
-    if (this.providesResource && this.getSpecStatus()) {
+    if (this.providedView && this.getSpecStatus()) {
         //DEBUG_START
-        _d(this.providesResource, 'this spec managed to provide next view');
+        _d(this.providedView, 'this spec managed to provide next view');
         //DEBUG_STOP
-        return this.providesResource;
+        return this.providedView;
     }
 
     return null;
