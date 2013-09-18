@@ -9,7 +9,7 @@
 
     <target name="dev" depends="concat, replace, encoding">
         <var name="old.file" value="${new.file}"/>
-        <var name="new.file" value="${OUTPUT.DIR}/${script}.dev.${FILE.EXT}"/>
+        <var name="new.file" value="${OUTPUT.DIR}/${FILE.NAME}.dev.${FILE.EXT}"/>
 
         <copy encoding="${current.cp}" outputencoding="${current.cp}"
             file="${old.file}" tofile="${new.file}"/>
@@ -25,7 +25,7 @@
 
     <target name="rqbuild" depends="vcs, dev, strip, check-log-calls, compress">
         <var name="old.file" value="${new.file}"/>
-        <var name="new.file" value="${OUTPUT.DIR}/${script}.release.${BRANCH}-${CHANGESETS}.${FILE.EXT}"/>
+        <var name="new.file" value="${OUTPUT.DIR}/${FILE.NAME}.release.${BRANCH}-${CHANGESETS}.${FILE.EXT}"/>
 
         <copy encoding="${current.cp}" outputencoding="${current.cp}"
             file="${old.file}" tofile="${new.file}"/>
@@ -51,7 +51,7 @@
             <fileset dir="${OUTPUT.DIR}" includes="*"/>
         </delete>
 
-        <var name="new.file" value="${OUTPUT.DIR}/${script}.concat.${FILE.EXT}"/>
+        <var name="new.file" value="${OUTPUT.DIR}/${FILE.NAME}.concat.${FILE.EXT}"/>
         <echo message="${header}" output="${new.file}"></echo>
 
         <concat destfile="${new.file}" fixlastline="true" append="true"
@@ -152,7 +152,7 @@
 
     <target name="replace">
         <var name="old.file" value="${new.file}"/>
-        <var name="new.file" value="${OUTPUT.DIR}/${script}.replace.${FILE.EXT}"/>
+        <var name="new.file" value="${OUTPUT.DIR}/${FILE.NAME}.replace.${FILE.EXT}"/>
 
         <copy encoding="${INT_CP}" outputencoding="${INT_CP}"
             file="${old.file}" tofile="${new.file}"/>
@@ -186,7 +186,7 @@
 
     <target name="encoding">
         <var name="old.file" value="${new.file}"/>
-        <var name="new.file" value="${OUTPUT.DIR}/${script}.encoding.${FILE.EXT}"/>
+        <var name="new.file" value="${OUTPUT.DIR}/${FILE.NAME}.encoding.${FILE.EXT}"/>
 
         <copy encoding="${INT_CP}" outputencoding="${EXT_CP}"
             file="${old.file}" tofile="${new.file}"/>
@@ -196,7 +196,7 @@
 
     <target name="strip">
         <var name="old.file" value="${new.file}"/>
-        <var name="new.file" value="${OUTPUT.DIR}/${script}.strip.${FILE.EXT}"/>
+        <var name="new.file" value="${OUTPUT.DIR}/${FILE.NAME}.strip.${FILE.EXT}"/>
 
         <copy encoding="${current.cp}" outputencoding="${current.cp}"
             file="${old.file}" tofile="${new.file}"/>
@@ -232,7 +232,7 @@
             classname="com.google.javascript.jscomp.ant.CompileTask"/>
 
         <var name="old.file" value="${new.file}"/>
-        <var name="new.file" value="${OUTPUT.DIR}/${script}.strip.${FILE.EXT}"/>
+        <var name="new.file" value="${OUTPUT.DIR}/${FILE.NAME}.strip.${FILE.EXT}"/>
 
         <copy encoding="${current.cp}" outputencoding="${current.cp}"
             file="${old.file}" tofile="${new.file}"/>
@@ -252,7 +252,7 @@
 
     <target name="uib" depends="vcs, dev">
         <var name="old.file" value="${new.file}"/>
-        <var name="new.file" value="${OUTPUT.DIR}/${script}.dev.${BRANCH}-${CHANGESETS}.${FILE.EXT}"/>
+        <var name="new.file" value="${OUTPUT.DIR}/${FILE.NAME}.dev.${BRANCH}-${CHANGESETS}.${FILE.EXT}"/>
 
         <copy encoding="${current.cp}" outputencoding="${current.cp}"
             file="${old.file}" tofile="${new.file}"/>
@@ -290,10 +290,10 @@
     </target>
 
     <target name="vars" depends="check-antcontrib, get-antcontrib">
-        <fail message="'script' variable is not set">
+        <fail message="'FILE.NAME' variable is not set">
             <condition>
                 <not>
-                    <isset property="script"/>
+                    <isset property="FILE.NAME"/>
                 </not>
             </condition>
         </fail>
