@@ -53,7 +53,7 @@
 
         <var name="new.file" value="${OUTPUT.DIR}/${FILE.NAME}.concat.${FILE.EXT}"/>
 
-        <concat destfile="${new.file}" fixlastline="true" append="true"
+        <concat destfile="${new.file}" fixlastline="true"
             encoding="${INT_CP}" outputencoding="${INT_CP}">
             <header>${JSHINT.HEADER}${line.separator}${line.separator}</header>
 
@@ -116,20 +116,16 @@
                     <arg value="-t"/>
                     <arg value="json"/>
                     <arg value="-o"/>
-                    <arg value="./build/tmp/lang.${LANG}.p2.txt"/>
+                    <arg value="./build/tmp/lang.${LANG}.body.txt"/>
                 </exec>
 
-                <echo message="${I18N_HEADER}${LANG_CODE},"
-                    file="./build/tmp/lang.${LANG}.p1.txt"/>
-
-                <echo message=");${line.separator}"
-                    file="./build/tmp/lang.${LANG}.p3.txt"/>
-
-                <concat destfile="./build/tmp/lang.${LANG}.js"
-                    encoding="${EXT_CP}" outputencoding="${EXT_CP}">
+                <concat destfile="./build/tmp/lang.${LANG}.js" fixlastline="true"
+                    encoding="${INT_CP}" outputencoding="${INT_CP}">
                         <fileset dir="./build/tmp/">
-                            <include name="lang.${LANG}.p*.txt"/>
+                            <include name="lang.${LANG}.body.txt"/>
                         </fileset>
+                        <header>${I18N_HEADER}${LANG_CODE},</header>
+                        <footer>);</footer>
                 </concat>
             </sequential>
         </for>
