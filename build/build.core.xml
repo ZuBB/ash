@@ -52,10 +52,10 @@
         </delete>
 
         <var name="new.file" value="${OUTPUT.DIR}/${FILE.NAME}.concat.${FILE.EXT}"/>
-        <echo message="${header}" output="${new.file}"></echo>
 
         <concat destfile="${new.file}" fixlastline="true" append="true"
             encoding="${INT_CP}" outputencoding="${INT_CP}">
+            <header>${JSHINT.HEADER}${line.separator}${line.separator}</header>
 
             <fileset dir="javascript">
                 <filename name="definitions.js"/>
@@ -300,17 +300,6 @@
         <var name="MAIL.TO"  value=""/>
         <var name="MAIL.CC"  value=""/>
         <var name="MAIL.BCC" value=""/>
-
-        <if>
-            <contains string="${ant.project.invoked-targets}" substring="test"/>
-            <then>
-                <property name="header" value="${JSHINT.HEADER}"/>
-                <property name="testing" value="true"/>
-            </then>
-            <else>
-                <property name="header" value=""/>
-            </else>
-        </if>
 
         <if>
             <or>
