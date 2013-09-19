@@ -146,15 +146,13 @@
     <target name="replace">
         <var name="old.file" value="${new.file}"/>
         <var name="new.file" value="${OUTPUT.DIR}/${FILE.NAME}.replace.${FILE.EXT}"/>
-
-        <copy encoding="${INT_CP}" outputencoding="${INT_CP}"
-            file="${old.file}" tofile="${new.file}"/>
-
         <var name="current.cp" value="${INT_CP}"/>
 
-        <replace file="${new.file}" encoding="${current.cp}"
-            replacefilterfile="resources/colors.properties">
-        </replace>
+        <copy encoding="${current.cp}" outputencoding="${current.cp}"
+            file="${old.file}" tofile="${new.file}">
+                <filterset begintoken="@" endtoken="@"
+                    filtersfile="resources/colors.properties"/>
+        </copy>
 
         <tstamp>
             <format property="TIMESTAMP" pattern="yyyy, M, d, H, m, s, S"/>
