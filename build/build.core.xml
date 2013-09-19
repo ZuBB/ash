@@ -25,7 +25,16 @@
 
     <target name="rqbuild" depends="vcs, dev, strip, check-log-calls, compress">
         <var name="old.file" value="${new.file}"/>
-        <var name="new.file" value="${OUTPUT.DIR}/${FILE.NAME}.release.${BUILD_ID}.${FILE.EXT}"/>
+
+        <if>
+            <equals arg1="git-present" arg2="true"/>
+            <then>
+                <var name="new.file" value="${OUTPUT.DIR}/${FILE.NAME}.release.${BUILD_ID}.${FILE.EXT}"/>
+            </then>
+            <else>
+                <var name="new.file" value="${OUTPUT.DIR}/${FILE.NAME}.release.${FILE.EXT}"/>
+            </else>
+        </if>
 
         <copy encoding="${current.cp}" outputencoding="${current.cp}"
             file="${old.file}" tofile="${new.file}"/>
@@ -241,7 +250,7 @@
         </jscomp>
     </target>
 
-    <target name="uib" depends="vcs, dev">
+    <target name="uib" depends="vcs, dev" if="git-present">
         <var name="old.file" value="${new.file}"/>
         <var name="new.file" value="${OUTPUT.DIR}/${FILE.NAME}.dev.${BUILD_ID}.${FILE.EXT}"/>
 
@@ -249,7 +258,7 @@
             file="${old.file}" tofile="${new.file}"/>
     </target>
 
-    <target name="vcs" depends="vars">
+    <target name="vcs" depends="vars" if="git-present">
         <exec executable="git" outputproperty="BRANCH">
             <arg value="rev-parse"/>
             <arg value="--abbrev-ref"/>
@@ -380,6 +389,19 @@
 
     <target name="check-closure-compiler">
         <available property="closure.compiler" file="${LIB.DIR}/compiler.jar"/>
+    </target>
+
+    <target name="check-git-presence">
+        <!-- http://goo.gl/4T3uHi -->
+        <property environment="env" />
+        <condition property="git-present">
+            <or>
+                <available file="git" filepath="${env.PATH}" />
+                <!-- special case for Windows, may be PATH or Path -->
+                <available file="git.exe" filepath="${env.Path}" />
+                <available file="git.exe" filepath="${env.PATH}" />
+            </or>
+        </condition>
     </target>
 
     <target name="get-mail-deps" unless="${mail.deps}">
