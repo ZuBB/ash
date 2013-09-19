@@ -156,6 +156,9 @@ Utils.createOutputStr = function(b_lf, a_lf, value, description) {
     } else if (typeof value === 'object' && !(value instanceof Array)) {
         if (typeof JSON !== 'undefined') {
             outputItems += JSON.stringify(value, null, 4);
+        } else {
+            // for some reason JSON is not supported
+            outputItems += value.toString();
         }
     } else {
         try {

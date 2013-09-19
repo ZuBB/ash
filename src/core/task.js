@@ -21,6 +21,7 @@ Task = function(params) {
 
     this.viewIndex = null;
     this.viewsProps = {};
+    // what is this?
     this.address2Index = {};
     this.providedView = null;
 
@@ -535,7 +536,12 @@ Task.prototype.joinViewsProps = function() {
     }
 
     //DEBUG_START
-    _d(JSON.stringify(viewIndexes, null, 4), 'we prepared graphics with next indexes');
+    if (typeof JSON !== 'undefined') {
+        _d(
+            JSON.stringify(viewIndexes, null, 4),
+            'we prepared graphics with next indexes'
+        );
+    }
     //DEBUG_STOP
 
     var view = null;
