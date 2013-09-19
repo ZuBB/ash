@@ -962,7 +962,10 @@ Task.prototype.addDataSet = function(dataSet) {
     // check if dataSet is hash
     if (dataSet) {
         // check if dataSet has 'dataX' and 'dataY' keys
-        if (Array.isArray(dataSet.dataX) && Array.isArray(dataSet.dataY)) {
+        var isDataXArray = dataSet.dataX instanceof Array;
+        var isDataYArray = dataSet.dataY instanceof Array;
+
+        if (isDataXArray && isDataYArray) {
             this.graphics.push(dataSet);
             return true;
         }
@@ -978,7 +981,7 @@ Task.prototype.addDataSet = function(dataSet) {
  */
 Task.prototype.addDataSets = function(dataSets) {
     // check if dataSet is array
-    if (Array.isArray(dataSets) === false) {
+    if (dataSets instanceof Array) {
         return false;
     }
 
