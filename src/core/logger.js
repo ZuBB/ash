@@ -5,7 +5,7 @@
 Logger = {
     _buffer: [],
     _buffering: true,
-    _backDirName: 'C:\\pss_logs\\',
+    _backDirName: 'C:\\SCRIPT_FILENAME_logs\\',
     _fileHandler: null,
     _filename: 'C:\\report-last.log',
     _levels: ['DEBUG', 'INFO ', 'WARN ', 'ERROR', 'FATAL'],

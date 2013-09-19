@@ -167,6 +167,10 @@
         </replace>
 
         <replace file="${new.file}" encoding="${current.cp}"
+            token="SCRIPT_FILENAME" value="${FILE.NAME}">
+        </replace>
+
+        <replace file="${new.file}" encoding="${current.cp}"
             token="GRAPHIC_TYPE" value="${DEFAULT_GRAPHIC_TYPE}">
         </replace>
     </target>
