@@ -25,7 +25,7 @@
 
     <target name="rqbuild" depends="vcs, dev, strip, check-log-calls, compress">
         <var name="old.file" value="${new.file}"/>
-        <var name="new.file" value="${OUTPUT.DIR}/${FILE.NAME}.release.${BRANCH}-${CHANGESETS}.${FILE.EXT}"/>
+        <var name="new.file" value="${OUTPUT.DIR}/${FILE.NAME}.release.${BUILD_ID}.${FILE.EXT}"/>
 
         <copy encoding="${current.cp}" outputencoding="${current.cp}"
             file="${old.file}" tofile="${new.file}"/>
@@ -163,7 +163,7 @@
         </replace>
 
         <replace file="${new.file}" encoding="${current.cp}"
-            token="BUILD_ID" value="${BRANCH}-${CHANGESETS}">
+            token="BUILD_ID" value="${BUILD_ID}">
         </replace>
 
         <replace file="${new.file}" encoding="${current.cp}"
@@ -239,7 +239,7 @@
 
     <target name="uib" depends="vcs, dev">
         <var name="old.file" value="${new.file}"/>
-        <var name="new.file" value="${OUTPUT.DIR}/${FILE.NAME}.dev.${BRANCH}-${CHANGESETS}.${FILE.EXT}"/>
+        <var name="new.file" value="${OUTPUT.DIR}/${FILE.NAME}.dev.${BUILD_ID}.${FILE.EXT}"/>
 
         <copy encoding="${current.cp}" outputencoding="${current.cp}"
             file="${old.file}" tofile="${new.file}"/>
@@ -257,6 +257,8 @@
             <arg value="--count"/>
             <arg value="HEAD"/>
         </exec>
+
+        <property name="BUILD_ID" value="${BRANCH}-${CHANGESETS}"/>
 
         <if>
             <equals arg1="${releasing}" arg2="true"/>

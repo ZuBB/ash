@@ -23,20 +23,30 @@ Dispatcher = {
  *
  * @method announce
  */
-Dispatcher.announce = function(version, buildID, buildTime) {
-    var fixedbuildTime = new Date(buildTime);
+Dispatcher.announce = function(params) {
+    if (typeof params !== 'object') {
+        //DEBUG_START
+        _d('no version data has been passed');
+        //DEBUG_STOP
+        return false;
+    }
+
+    var message = null;
+    var fixedbuildTime = new Date(params.buildTime);
     // Ant's tstamp task returns month that starts from 1
     // since JavaScript treats month as zero-based number
     // we have to 'go' one month back
-    // TODO this may work buggy with dates > 27th
-    fixedbuildTime.setMonth(buildTime.getMonth() - 1);
+    // TODO possbily this work buggy with dates > 27th
+    fixedbuildTime.setMonth(params.buildTime.getMonth() - 1);
 
-    // if Ant's variable is not defined, replace task will use
-    // raw variable's definition. this means string with version data
-    // was not available. so this is a developer version/build
-    var message = "${\x56\x45\x52\x53\x49\x4F\x4E}" === version ?
-        _t('report.version.dev', buildID, fixedbuildTime.toLocaleString()) :
-        _t('report.version.rel', version, fixedbuildTime.toLocaleString());
+    if (params.version.indexOf('\x56\x45\x52\x53\x49\x4F\x4E') < 0) {
+        message = _t('report.version.rel', params.version);
+    } else if (params.buildID.indexOf('\x42\x55\x49\x4c\x44\x5f\x49\x44') < 0) {
+        message = _t('report.version.vcs_dev', params.buildID,
+                fixedbuildTime.toLocaleString());
+    } else {
+        message = _t('report.version.dev', fixedbuildTime.toLocaleString());
+    }
 
     _rp(message);
     //DEBUG_START
