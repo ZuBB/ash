@@ -960,18 +960,23 @@ Task.prototype.getConfirmedView = function() {
  */
 Task.prototype.addDataSet = function(dataSet) {
     // check if dataSet is hash
-    if (dataSet) {
-        // check if dataSet has 'dataX' and 'dataY' keys
-        var isDataXArray = dataSet.dataX instanceof Array;
-        var isDataYArray = dataSet.dataY instanceof Array;
-
-        if (isDataXArray && isDataYArray) {
-            this.graphics.push(dataSet);
-            return true;
-        }
+    if (typeof dataSet !== 'object') {
+        return false;
     }
 
-    return false;
+    // check if dataSet has 'dataX' and 'dataY' keys
+    var isDataXArray = dataSet.dataX instanceof Array;
+    var isDataYArray = dataSet.dataY instanceof Array;
+
+    if (isDataXArray === false || isDataYArray === false) {
+        return false;
+    }
+
+    if (dataSet.dataY.length === 0) {
+        return false;
+    }
+
+    this.graphics.push(dataSet);
 };
 
 /**
@@ -981,7 +986,7 @@ Task.prototype.addDataSet = function(dataSet) {
  */
 Task.prototype.addDataSets = function(dataSets) {
     // check if dataSet is array
-    if (dataSets instanceof Array) {
+    if ((dataSets instanceof Array) === false) {
         return false;
     }
 
