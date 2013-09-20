@@ -1000,7 +1000,7 @@ Task.prototype.addDataSets = function(dataSets) {
  * @method getDataSet
  */
 Task.prototype.getDataSet = function(index, key) {
-    var start = Number(index);
+    var start = Math.abs(parseInt(index, 10)) || 0;
     var sliceParams = start < 0 ? [start] : [start, start + 1];
     var dataSet = Array.prototype.slice.apply(this.graphics, sliceParams)[0];
 
