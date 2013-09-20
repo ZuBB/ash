@@ -1,22 +1,20 @@
 // AHF is namespace for Autoscope Helper Functions
 
-AHF.aveValueAt = function(channel, samples, mergeFirst, skipTrailing) {
+AHF.aveValueAt = function(channel, samples2avg, interval) {
     // TODO restore zero point at another place
-    var result = { 'dataX': [], 'dataY': [] };
+    var result = {
+        'dataX': [1 / Host.Frequency],
+        'dataY': [Host.ValueAt(channel, 0)]
+    };
 
-    if (!mergeFirst) {
-        result.dataX.unshift(1 / Host.Frequency);
-        result.dataY.unshift(Host.ValueAt(channel, 0));
-    }
-
-    var _shift = Math.floor(samples / 2);
-    var fstVal = Number(!Boolean(mergeFirst));
+    // interval in samples
+    var interval2 = interval * Host.Frequency;
     // we need `ceil` here because `for`s condition we use strict checking
-    var length = Math.ceil((Host.NumberOfSamples - fstVal) / samples);
+    var length = Math.ceil((Host.NumberOfSamples - 1) / interval2);
 
     for (var ii = 0, aveVal, position; ii < length; ii++) {
-        position = fstVal + (samples * ii) + _shift;
-        aveVal = Host.AveValueAt(channel, position, samples);
+        position = 1 + (interval2 * ii);
+        aveVal = Host.AveValueAt(channel, position, samples2avg);
         // 2 is because this first value calculated in loop
         // will be 2nd real value in sample
         result.dataX.push((position + 2) / Host.Frequency);
@@ -30,13 +28,13 @@ AHF.aveValueAt = function(channel, samples, mergeFirst, skipTrailing) {
         }
     }
 
-    if (skipTrailing) {
-        aveVal    = (Host.NumberOfSamples - 1) % samples;
-        position  = Math.floor((Host.NumberOfSamples - 1) / samples);
-        position += Math.floor(aveVal / 2);
-        result.dataX.push(Host.NumberOfSamples / Host.Frequency);
-        result.dataY.push(Host.AveValueAt(channel, position, aveVal));
-    }
+    /*
+    aveVal    = (Host.NumberOfSamples - 1) % samples2avg;
+    position  = Math.floor((Host.NumberOfSamples - 1) / samples2avg);
+    position += Math.floor(aveVal / 2);
+    result.dataX.push(Host.NumberOfSamples / Host.Frequency);
+    result.dataY.push(Host.AveValueAt(channel, position, aveVal));
+    */
 
     return result;
 };
