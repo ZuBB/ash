@@ -1022,18 +1022,28 @@ Task.prototype.getDataSet = function(index, key) {
  *
  * @method addDataSets
  */
-Task.prototype.addX = function(number, dataSetIndex) {
+Task.prototype.addValue = function(number, key, dataSetIndex) {
     dataSetIndex = Math.abs(parseInt(dataSetIndex, 10)) || 0;
 
     if (typeof this.graphics[dataSetIndex] === 'undefined') {
         this.graphics[dataSetIndex] = {};
     }
 
-    if (typeof this.graphics[dataSetIndex].dataX === 'undefined') {
+    if (typeof this.graphics[dataSetIndex][key] === 'undefined') {
         this.graphics[dataSetIndex].dataX = [];
+        this.graphics[dataSetIndex].dataY = [];
     }
 
-    this.graphics[dataSetIndex].dataX.push(number);
+    this.graphics[dataSetIndex][key].push(number);
+};
+
+/**
+ * function that ...
+ *
+ * @method addDataSets
+ */
+Task.prototype.addX = function(number, dataSetIndex) {
+    this.addValue(number, 'dataX', dataSetIndex);
 };
 
 /**
@@ -1042,17 +1052,7 @@ Task.prototype.addX = function(number, dataSetIndex) {
  * @method addDataSets
  */
 Task.prototype.addY = function(number, dataSetIndex) {
-    dataSetIndex = Math.abs(parseInt(dataSetIndex, 10)) || 0;
-
-    if (typeof this.graphics[dataSetIndex] === 'undefined') {
-        this.graphics[dataSetIndex] = {};
-    }
-
-    if (typeof this.graphics[dataSetIndex].dataY === 'undefined') {
-        this.graphics[dataSetIndex].dataY = [];
-    }
-
-    this.graphics[dataSetIndex].dataY.push(number);
+    this.addValue(number, 'dataY', dataSetIndex);
 };
 
 /**
@@ -1071,8 +1071,9 @@ Task.prototype.addXY = function(xValue, yValue, dataSetIndex) {
  * @method addDataSets
  */
 Task.prototype.getX = function(index, dataSetIndex) {
-    index = Number(index);
-    dataSetIndex = Number(dataSetIndex);
+    index = Math.abs(parseInt(index, 10)) || 0;
+    dataSetIndex = Math.abs(parseInt(dataSetIndex, 10)) || 0;
+
     return this.graphics[dataSetIndex].dataX[index];
 };
 
@@ -1082,8 +1083,9 @@ Task.prototype.getX = function(index, dataSetIndex) {
  * @method addDataSets
  */
 Task.prototype.getY = function(index, dataSetIndex) {
-    index = Number(index);
-    dataSetIndex = Number(dataSetIndex);
+    index = Math.abs(parseInt(index, 10)) || 0;
+    dataSetIndex = Math.abs(parseInt(dataSetIndex, 10)) || 0;
+
     return this.graphics[dataSetIndex].dataY[index];
 };
 
