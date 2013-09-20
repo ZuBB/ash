@@ -21,6 +21,15 @@ if (!Array.prototype.unique) {
 
 /**
  * helper function that ...
+ */
+if (!Array.prototype.sortAsc) {
+    Array.prototype.sortAsc = function() {
+        return this.sort(function(a, b) { return a - b; });
+    };
+}
+
+/**
+ * helper function that ...
  *
  * @method getUnique
  * @param {Float} raw_value - value itself
