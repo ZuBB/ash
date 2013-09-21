@@ -232,7 +232,7 @@
             classname="com.google.javascript.jscomp.ant.CompileTask"/>
 
         <var name="old.file" value="${new.file}"/>
-        <var name="new.file" value="${OUTPUT.DIR}/${FILE.NAME}.strip.${FILE.EXT}"/>
+        <var name="new.file" value="${OUTPUT.DIR}/${FILE.NAME}.compress.${FILE.EXT}"/>
 
         <copy encoding="${current.cp}" outputencoding="${current.cp}"
             file="${old.file}" tofile="${new.file}"/>
