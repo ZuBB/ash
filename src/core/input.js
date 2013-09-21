@@ -118,7 +118,7 @@ Input.createConfiguration = function(items, possibleInputs) {
  */
 Input.getInputI18Name = function(name) {
     return this.possible_fields[name].hasOwnProperty('name') ?
-        this.possible_fields[name].name : _t('inputs.' + name);
+        this.possible_fields[name].name : _t('inputs.' + name + '.name');
 };
 
 /**
