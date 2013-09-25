@@ -324,10 +324,10 @@
         <if>
             <isset property="releasing"/>
             <then>
-                <property name="DEFAULT_GRAPHIC_TYPE" value="${DEV.GRAPHIC.TYPE}"/>
+                <property name="DEFAULT_GRAPHIC_TYPE" value="${REL.GRAPHIC.TYPE}"/>
             </then>
             <else>
-                <property name="DEFAULT_GRAPHIC_TYPE" value="${REL.GRAPHIC.TYPE}"/>
+                <property name="DEFAULT_GRAPHIC_TYPE" value="${DEV.GRAPHIC.TYPE}"/>
             </else>
         </if>
     </target>
