@@ -63,7 +63,7 @@
         <var name="new.file" value="${OUTPUT.DIR}/${FILE.NAME}.concat.${FILE.EXT}"/>
 
         <concat destfile="${new.file}" fixlastline="true"
-            encoding="${INT_CP}" outputencoding="${INT_CP}">
+            encoding="${current.cp}" outputencoding="${current.cp}">
             <header>${JSHINT.HEADER}${line.separator}${line.separator}</header>
 
             <fileset dir="javascript">
@@ -129,7 +129,7 @@
                 </exec>
 
                 <concat destfile="./build/tmp/lang.${LANG}.js" fixlastline="true"
-                    encoding="${INT_CP}" outputencoding="${INT_CP}">
+                    encoding="${current.cp}" outputencoding="${current.cp}">
                         <fileset dir="./build/tmp/">
                             <include name="lang.${LANG}.body.txt"/>
                         </fileset>
@@ -151,7 +151,6 @@
     <target name="replace">
         <var name="old.file" value="${new.file}"/>
         <var name="new.file" value="${OUTPUT.DIR}/${FILE.NAME}.replace.${FILE.EXT}"/>
-        <var name="current.cp" value="${INT_CP}"/>
 
         <copy encoding="${current.cp}" outputencoding="${current.cp}"
             file="${old.file}" tofile="${new.file}">
@@ -188,7 +187,7 @@
         <var name="old.file" value="${new.file}"/>
         <var name="new.file" value="${OUTPUT.DIR}/${FILE.NAME}.encoding.${FILE.EXT}"/>
 
-        <copy encoding="${INT_CP}" outputencoding="${EXT_CP}"
+        <copy encoding="${current.cp}" outputencoding="${EXT_CP}"
             file="${old.file}" tofile="${new.file}"/>
 
         <var name="current.cp" value="${EXT_CP}"/>
@@ -303,9 +302,9 @@
         <taskdef resource="net/sf/antcontrib/antlib.xml"
             classpathref="antcontrib.path"/>
 
+        <var name="current.cp" value="${INT_CP}"/>
         <var name="new.file" value=""/>
         <var name="old.file" value=""/>
-        <var name="current.cp" value=""/>
         <var name="MAIL.TO"  value=""/>
         <var name="MAIL.CC"  value=""/>
         <var name="MAIL.BCC" value=""/>
