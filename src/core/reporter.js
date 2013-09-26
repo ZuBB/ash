@@ -63,8 +63,19 @@ Reporter._insertColorsMark = function(string, colors) {
     var backColor = dumbColor(colors[1] || 0xFFFFFF);
     var colourStr = '<ta=' + textColor + ',' + backColor;
 
-    return colourStr + (/\n$/.test(string) ?
-        ('>' + string) : (' ' + string + '>'));
+    return (
+        // take case about '\n' at start in case of '_rp' call
+        (/^\n/.test(string) ? '\n' : '') +
+        // colour string
+        colourStr +
+        // text and end stuff
+        (
+            /\n$/.test(string) ?
+                // strip newline at stast in any way
+                ('>' + string.replace(/^\n/, '')) :
+                (' ' + string.replace(/^\n/, '') + '>')
+        )
+    );
 };
 
 /**
