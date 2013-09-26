@@ -76,7 +76,7 @@
                 </selector>
             </fileset>
             <fileset dir="core/src/third party/es5-shim">
-                <selector if="3PARTY.ES5">
+                <selector>
                     <filename name="es5-shim.js"/>
                 </selector>
             </fileset>
