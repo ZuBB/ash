@@ -257,7 +257,7 @@
             file="${old.file}" tofile="${new.file}"/>
     </target>
 
-    <target name="vcs" depends="vars" if="git-present">
+    <target name="vcs" depends="vars, check-git-presence" if="git-present">
         <exec executable="git" outputproperty="BRANCH">
             <arg value="rev-parse"/>
             <arg value="--abbrev-ref"/>
