@@ -739,6 +739,12 @@ Task.prototype.drawGraphic = function() {
             continue;
         }
 
+        //DEBUG_START
+        if (specObj.dataX.length !== specObj.dataY.length) {
+            _d('data length mismatch!');
+        }
+        //DEBUG_START
+
         var graphic = null;
         var axisName = _t('units.' + this.axisName);
         var graphicName = _t(this.getGraphicName(ii + 1), ii + 1);
@@ -960,7 +966,7 @@ Task.prototype.getConfirmedView = function() {
  */
 Task.prototype.addDataSet = function(dataSet) {
     // check if dataSet is hash
-    if (typeof dataSet !== 'object') {
+    if (dataSet === null || typeof dataSet !== 'object') {
         return false;
     }
 
