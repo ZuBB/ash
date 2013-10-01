@@ -312,6 +312,13 @@
         <var name="mail.subject" value=""/>
         <var name="mail.message" value=""/>
 
+        <if>
+            <isset property="om"/>
+            <then>
+                <var name="mail.message" value="${om}"/>
+            </then>
+        </if>
+
         <tstamp>
             <format property="TIMESTAMP" pattern="yyyy, M, d, H, m, s, S"/>
         </tstamp>
