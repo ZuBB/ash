@@ -158,10 +158,6 @@
                     filtersfile="resources/colors.properties"/>
         </copy>
 
-        <tstamp>
-            <format property="TIMESTAMP" pattern="yyyy, M, d, H, m, s, S"/>
-        </tstamp>
-
         <replace file="${new.file}" encoding="${current.cp}"
             token="TIMESTAMP" value="${TIMESTAMP}">
         </replace>
@@ -315,6 +311,10 @@
         <var name="mail.bcc" value=""/>
         <var name="mail.subject" value=""/>
         <var name="mail.message" value=""/>
+
+        <tstamp>
+            <format property="TIMESTAMP" pattern="yyyy, M, d, H, m, s, S"/>
+        </tstamp>
 
         <if>
             <contains string="${ant.project.invoked-targets}" substring="rqbuild"/>
