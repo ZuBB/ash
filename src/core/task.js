@@ -748,7 +748,7 @@ Task.prototype.drawGraphic = function() {
         var graphic = null;
         var axisName = _t('units.' + this.axisName);
         var graphicName = _t(this.getGraphicName(ii + 1), ii + 1);
-        var graphicColor = (this.graphicColor instanceof Array) ?
+        var graphicColor = Array.isArray(this.graphicColor) ?
             this.graphicColor[ii] : this.graphicColor;
 
         graphicColor = graphicColor === null ?
@@ -775,7 +775,7 @@ Task.prototype.drawGraphic = function() {
         }
 
         var visible = this.hiddenGraphics === '*' ? false : true;
-        visible = this.hiddenGraphics instanceof Array ?
+        visible = Array.isArray(this.hiddenGraphics) ?
             !Boolean(this.hiddenGraphics[ii]) : visible;
 
         graphics.push({
@@ -971,8 +971,8 @@ Task.prototype.addDataSet = function(dataSet) {
     }
 
     // check if dataSet has 'dataX' and 'dataY' keys
-    var isDataXArray = dataSet.dataX instanceof Array;
-    var isDataYArray = dataSet.dataY instanceof Array;
+    var isDataXArray = Array.isArray(dataSet.dataX);
+    var isDataYArray = Array.isArray(dataSet.dataY);
 
     if (isDataXArray === false || isDataYArray === false) {
         return false;
@@ -992,7 +992,7 @@ Task.prototype.addDataSet = function(dataSet) {
  */
 Task.prototype.addDataSets = function(dataSets) {
     // check if dataSet is array
-    if ((dataSets instanceof Array) === false) {
+    if (Array.isArray(dataSets) === false) {
         return false;
     }
 

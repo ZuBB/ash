@@ -153,7 +153,7 @@ Utils.createOutputStr = function(b_lf, a_lf, value, description) {
         outputItems += 'null';
     } else if (typeof value === 'undefined') {
         outputItems += 'undefined';
-    } else if (typeof value === 'object' && !(value instanceof Array)) {
+    } else if (typeof value === 'object' && Array.isArray(value) === false) {
         if (typeof JSON !== 'undefined') {
             outputItems += JSON.stringify(value, null, 4);
         } else {
@@ -187,7 +187,7 @@ Utils.convertReportMessage2Obj = function(message) {
         message = [message];
     }
 
-    if (message instanceof Array) {
+    if (Array.isArray(message)) {
         message = {'message': message};
     }
 

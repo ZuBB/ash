@@ -28,7 +28,7 @@ Input.getDefaultValue = function(name) {
     if ('value' in this.possible_fields[name]) {
         if (typeof this.possible_fields[name].value === 'function') {
             return this.possible_fields[name].value();
-        } else if (this.possible_fields[name].value instanceof Array) {
+        } else if (Array.isArray(this.possible_fields[name].value)) {
             var comboItems = [];
             var length = this.possible_fields[name].value.length;
 
@@ -59,7 +59,7 @@ Input.getDefaultValue = function(name) {
  * @method createConfiguration
  */
 Input.createConfiguration = function(items, possibleInputs) {
-    if (!(items instanceof Array) || items.length < 1) {
+    if (Array.isArray(items) === false || items.length < 1) {
         //DEBUG_START
         _e('Can not create configuration(s). Check options you passed');
         //DEBUG_STOP

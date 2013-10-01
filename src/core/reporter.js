@@ -55,7 +55,7 @@ Reporter._insertColorsMark = function(string, colors) {
         return ('00000' + color.toString(16)).substr(-6).toUpperCase();
     }
 
-    if (!string || !(colors && colors instanceof Array)) {
+    if (!string || !(colors && Array.isArray(colors))) {
         return string;
     }
 
@@ -87,7 +87,7 @@ Reporter._insertColorsMark = function(string, colors) {
  * @method _insertLink2Notation
  */
 Reporter._insertLink2Notation = function(string, notation) {
-    if (!string || !(notation && notation instanceof Array)) {
+    if (!string || !(notation && Array.isArray(notation))) {
         return string;
     }
 
@@ -110,7 +110,7 @@ Reporter._insertLink2Notation = function(string, notation) {
  * @method _insertLink2OSCGRM
  */
 Reporter._insertLink2OSCGRM = function(string, oscillogram) {
-    if (!string || !(oscillogram && oscillogram instanceof Array)) {
+    if (!string || !(oscillogram && Array.isArray(oscillogram))) {
         return string;
     }
 
