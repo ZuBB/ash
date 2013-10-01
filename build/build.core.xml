@@ -5,7 +5,6 @@
     </description>
 
     <property file="core/build/build.core.properties"/>
-    <property file="build/build.smtp.properties"/>
 
     <target name="dev" depends="concat, replace, encoding">
         <var name="old.file" value="${new.file}"/>
