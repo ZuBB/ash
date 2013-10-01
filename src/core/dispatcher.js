@@ -158,7 +158,7 @@ Dispatcher.announceSpecProcessing = function(specName, ii) {
         _rl('');
     }
 
-    if (ii < this.specs.length - 3) {
+    if (ii < this.specs.length - SKIP_TASKS) {
         _rh(outputStr);
     } else {
         _p(outputStr);
@@ -174,7 +174,7 @@ Dispatcher.announceSpecProcessing = function(specName, ii) {
  */
 Dispatcher.announceSpecStatus = function(_status, ii) {
     if (_status) {
-        if (ii < this.specs.length - 3) {
+        if (ii < this.specs.length - SKIP_TASKS) {
             _rl('+');
         }
     } else {

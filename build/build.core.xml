@@ -179,6 +179,10 @@
         </replace>
 
         <replace file="${new.file}" encoding="${current.cp}"
+            token="SKIP_TASKS" value="${SKIP_TASKS}">
+        </replace>
+
+        <replace file="${new.file}" encoding="${current.cp}"
             token="GRAPHIC_TYPE" value="${DEFAULT_GRAPHIC_TYPE}">
         </replace>
     </target>
