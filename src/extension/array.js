@@ -30,6 +30,16 @@ if (!Array.prototype.sortAsc) {
 
 /**
  * helper function that ...
+ * http://goo.gl/M6YTsf
+ */
+if (!Array.prototype.last) {
+    Array.prototype.last = function() {
+        return this.slice(-1)[0];
+    };
+}
+
+/**
+ * helper function that ...
  *
  * @method getUnique
  * @param {Float} raw_value - value itself
