@@ -98,13 +98,12 @@ if (!Array.prototype.min) {
  * function that finds positions of numbers that are 'neighbors'
  *  passed value
  *
- * @method getValueNeighboursPositions
+ * @method getNeigborsIndexes
  * @param {Object} graphicObj - value itself
  */
-if (!Array.prototype.getValueNeighboursPositions) {
-    Array.prototype.getValueNeighboursPositions = function(value, startPos) {
-        var length = this.length;
-        var ii     = startPos || 0;
+if (!Array.prototype.getNeigborsIndexes) {
+    Array.prototype.getNeigborsIndexes = function(value, start, direction) {
+        var ii = start || 0;
 
         // target value is less (or equal) compared to 1st item
         if (value <= this[0]) {
@@ -112,15 +111,16 @@ if (!Array.prototype.getValueNeighboursPositions) {
         }
 
         // target value is bigger (or equal) compared to last item
-        if (value >= this[length - 1]) {
-            return [length - 1];
+        if (value > this.max()) {
+            return [this.length - 1];
         }
 
-        for ( ; ii < length && CanContinue(); ii++) {
+        for ( ; ii < this.length && Host.CanContinue(); ii++) {
             if (typeof this[ii + 1] === 'undefined') {
                 return [];
             }
 
+            // NOTE: this only works if numbers in array are growing
             if (this[ii] < value && this[ii + 1] > value) {
                 return [ii, ii + 1];
             }
