@@ -102,7 +102,7 @@ if (!Array.prototype.min) {
  * @param {Object} graphicObj - value itself
  */
 if (!Array.prototype.getNeigborsIndexes) {
-    Array.prototype.getNeigborsIndexes = function(value, start, direction) {
+    Array.prototype.getNeigborsIndexes = function(value, start/*, direction*/) {
         var ii = start || 0;
 
         // target value is less (or equal) compared to 1st item
