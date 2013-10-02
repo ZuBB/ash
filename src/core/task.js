@@ -743,7 +743,7 @@ Task.prototype.drawGraphic = function() {
         if (specObj.dataX.length !== specObj.dataY.length) {
             _d('data length mismatch!');
         }
-        //DEBUG_START
+        //DEBUG_STOP
 
         var graphic = null;
         var axisName = _t('units.' + this.axisName);
