@@ -1,24 +1,56 @@
 // AHF is namespace for Autoscope Helper Functions
 
-AHF.aveValueAt = function(channel, samples2avg, interval) {
-    // TODO restore zero point at another place
-    var result = {
-        'dataX': [1 / Host.Frequency],
-        'dataY': [Host.ValueAt(channel, 0)]
-    };
+/**
+ * params
+ *  samples2Average, one of [samples2Average, interval*] should be passed
+ *  intervalTime, one of [samples2Average, interval*] should be passed
+ *  intervalSamples, one of [samples2Average, interval*] should be passed
+ *  mergeFirst, optional
+ *  skipTrailing, optional
+ */
+AHF.aveValueAt = function(channel, params) {
+    if (typeof params !== 'object') {
+        return null;
+    }
 
-    // interval in samples
-    var interval2 = interval * Host.Frequency;
-    // we need `ceil` here because `for`s condition we use strict checking
-    var length = Math.ceil((Host.NumberOfSamples - 1) / interval2);
+    var keys = ['samples2Average', 'intervalTime', 'intervalSamples'];
+    if (keys.some(function(key) { return key in params; }) === false) {
+        return null;
+    }
 
-    for (var ii = 0, aveVal, position; ii < length; ii++) {
-        position = 1 + (interval2 * ii);
-        aveVal = Host.AveValueAt(channel, position, samples2avg);
-        // 2 is because this first value calculated in loop
-        // will be 2nd real value in sample
-        result.dataX.push((position + 2) / Host.Frequency);
-        result.dataY.push(aveVal);
+    var result  = Utils.createDataSetStub();
+    var length1 = parseInt(params.samples2Average, 10) || 0;
+    var length2 = parseInt(params.intervalSamples, 10) || 0;
+    var length3 = Host.Frequency * (parseFloat(params.intervalTime) || 0);
+
+    if (length1 === 0 && length2 === 0 && length3 === 0) {
+        //DEBUG_START
+        _d('AHF.aveValueAt: all of params are invalid (casted to 0)');
+        //DEBUG_STOP
+        return result;
+    }
+
+    if (Boolean(params.mergeFirst) !== false) {
+        result.dataX.unshift(1 / Host.Frequency);
+        result.dataY.unshift(Host.ValueAt(channel, 0));
+    }
+
+    var samples  = length1 || (length2 || length3);
+    var interval = (length3 || length2) || length1;
+    var fstVal   = Number(!Boolean(params.mergeFirst));
+    var length   = Math.floor((Host.NumberOfSamples - fstVal) / interval);
+
+    for (var ii = 0, position; ii < length; ii++) {
+        // we need to add some explanation here
+        // since we need to loop length times, we start with 0
+        // but due to this 1st slice may be out of left 'border'
+        // to prevent this we need to add '1' here
+        position = fstVal + ((interval + 1) * ii);
+        // here we also need to add some notes
+        // for '1' explanation is same
+        // fstVal should talk aon itself
+        result.dataX.push((position + 1 + fstVal) / Host.Frequency);
+        result.dataY.push(Host.AveValueAt(channel, position, samples));
 
         if (!Host.CanContinue()) {
             //DEBUG_START
@@ -28,13 +60,12 @@ AHF.aveValueAt = function(channel, samples2avg, interval) {
         }
     }
 
-    /*
-    aveVal    = (Host.NumberOfSamples - 1) % samples2avg;
-    position  = Math.floor((Host.NumberOfSamples - 1) / samples2avg);
-    position += Math.floor(aveVal / 2);
-    result.dataX.push(Host.NumberOfSamples / Host.Frequency);
-    result.dataY.push(Host.AveValueAt(channel, position, aveVal));
-    */
+    if (Boolean(params.skipTrailing) !== true) {
+        position  = Math.floor((Host.NumberOfSamples - fstVal) / interval);
+        position += Math.floor(((Host.NumberOfSamples - fstVal) % interval) / 2);
+        result.dataX.push(Host.NumberOfSamples / Host.Frequency);
+        result.dataY.push(Host.AveValueAt(channel, position, samples));
+    }
 
     return result;
 };
