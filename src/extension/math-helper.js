@@ -25,7 +25,7 @@ MathHelper.get_middle_val = function(dataObj, valueX, ii) {
         result = [new_val, old_pos];
     // target value is inside data array
     } else {
-        neighbors = dataObj.dataX.getValueNeighboursPositions(valueX, ii);
+        neighbors = dataObj.dataX.getNeigborsIndexes(valueX, ii);
 
         if (neighbors.length === 1) {
             result = [dataObj.dataY[neighbors[0]], neighbors[0]];
