@@ -1,4 +1,21 @@
 /**
+ * helper function that creates data set stub
+ *
+ * @method createDataSetStub
+ */
+Utils.createDataSetStub = function(optionalKeys) {
+    var result = {'dataX': [], 'dataY': []};
+
+    if (Array.isArray(optionalKeys)) {
+        optionalKeys.forEach(function(item) {
+            result[item.toString()] = [];
+        });
+    }
+
+    return result;
+};
+
+/**
  * helper function that creates random color
  *
  * @method createRandomColor
