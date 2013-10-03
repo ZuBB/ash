@@ -35,21 +35,19 @@ AHF.aveValueAt = function(channel, params) {
         result.dataY.unshift(Host.ValueAt(channel, 0));
     }
 
-    var samples  = length1 || (length2 || length3);
     var interval = (length3 || length2) || length1;
+    var samples  = length1 || (length2 || length3);
     var fstVal   = Number(!Boolean(params.mergeFirst));
     var length   = Math.floor((Host.NumberOfSamples - fstVal) / interval);
+    var shift    = null;
+
+    shift = Math.floor(samples / 2);
+    // in case interval is bigger than samples shift should be zero
+    shift = ((interval - 1) / 2) > shift ? 0 : shift;
 
     for (var ii = 0, position; ii < length; ii++) {
-        // we need to add some explanation here
-        // since we need to loop length times, we start with 0
-        // but due to this 1st slice may be out of left 'border'
-        // to prevent this we need to add '1' here
-        position = fstVal + ((interval + 1) * ii);
-        // here we also need to add some notes
-        // for '1' explanation is same
-        // fstVal should talk aon itself
-        result.dataX.push((position + 1 + fstVal) / Host.Frequency);
+        position = fstVal + (interval * ii) + shift;
+        result.dataX.push(position / Host.Frequency);
         result.dataY.push(Host.AveValueAt(channel, position, samples));
 
         if (!Host.CanContinue()) {
