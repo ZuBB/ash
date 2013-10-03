@@ -11,6 +11,9 @@ var Utils      = {};
 var MathHelper = {};
 var AHF = {};
 
+// $ block
+var Validation = null;
+
 // i18n
 var _t = null;
 
