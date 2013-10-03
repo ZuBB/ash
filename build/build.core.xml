@@ -301,6 +301,10 @@
         <taskdef resource="net/sf/antcontrib/antlib.xml"
             classpathref="antcontrib.path"/>
 
+        <tstamp>
+            <format property="TIMESTAMP" pattern="yyyy, M, d, H, m, s, S"/>
+        </tstamp>
+
         <var name="new.file" value=""/>
         <var name="old.file" value=""/>
         <var name="current.cp" value="${INT_CP}"/>
@@ -317,10 +321,6 @@
                 <var name="mail.message" value="${om}"/>
             </then>
         </if>
-
-        <tstamp>
-            <format property="TIMESTAMP" pattern="yyyy, M, d, H, m, s, S"/>
-        </tstamp>
 
         <if>
             <contains string="${ant.project.invoked-targets}" substring="rqbuild"/>
