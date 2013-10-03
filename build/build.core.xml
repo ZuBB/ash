@@ -70,18 +70,18 @@
             </fileset>
             <fileset dir="core/src/core" includes="*.js"/>
             <fileset dir="core/src/third party/json">
-                <selector if="3PARTY.JSON">
+                <selector if="${3PARTY.JSON}">
                     <filename name="json2.js"/>
                 </selector>
             </fileset>
             <fileset dir="core/src/third party/es5-shim">
-                <selector if="3PARTY.ES5">
+                <selector if="${3PARTY.ES5}">
                     <filename name="es5-shim.js"/>
                 </selector>
             </fileset>
             <fileset dir="core/src/extension" includes="*.js"/>
             <fileset dir="svm/src">
-                <selector if="3PARTY.ASVM">
+                <selector if="${3PARTY.ASVM}">
                     <filename name="*.js"/>
                 </selector>
             </fileset>
