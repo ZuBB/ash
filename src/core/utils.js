@@ -17,6 +17,19 @@ Utils.createDataSetStub = function(optionalKeys) {
 
 /**
  * helper function that creates random color
+ * http://devcheater.com/
+ *
+ * @method sleep
+ */
+Utils.sleep = function(milliSeconds) {
+    // get the current time
+    var startTime = new Date().getTime();
+    // hog cpu
+    while (new Date().getTime() < startTime + milliSeconds);
+};
+
+/**
+ * helper function that creates random color
  *
  * @method createRandomColor
  */
