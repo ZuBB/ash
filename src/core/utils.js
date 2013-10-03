@@ -25,7 +25,7 @@ Utils.sleep = function(milliSeconds) {
     // get the current time
     var startTime = new Date().getTime();
     // hog cpu
-    while (new Date().getTime() < startTime + milliSeconds);
+    while (new Date().getTime() < startTime + milliSeconds) {}
 };
 
 /**
