@@ -54,28 +54,6 @@ Dispatcher.announce = function(params) {
     //DEBUG_STOP
 };
 
-//DEBUG_START
-/**
- * function that ...
- *
- * @method announce
- */
-Dispatcher.logIncomingParams = function() {
-    _d('');
-    _d(Host.CurFileName, 'current file');
-    _d(Host.Frequency, 'frequency');
-    _d(Host.NumberOfSamples, 'samples');
-    _d(Host.NumberOfSamples / Host.Frequency, 'duration');
-
-    for (var ii = 0, input; ii < Input.createdInputs.length; ii++) {
-        input = Input.createdInputs[ii];
-        _d(Input.getValue(input), input);
-    }
-
-    _d('');
-};
-//DEBUG_STOP
-
 /**
  * function that ...
  *
@@ -129,6 +107,10 @@ Dispatcher.registerNewTask = function(taskDefObj) {
  * @method process
  */
 Dispatcher.process = function() {
+    //DEBUG_START
+    Dispatcher.logIncomingParams();
+    //DEBUG_STOP
+
     Host.ShowProgress(_t('core.status.start'), this.specs.length);
 
     this.loopThroughRegisteredSpecs();
@@ -142,9 +124,29 @@ Dispatcher.process = function() {
 /**
  * function that ...
  *
- * @method announceSpecProcessing
+ * log processed and optionally loaded files, entered data
  */
 //DEBUG_START
+Dispatcher.logIncomingParams = function() {
+    _d('');
+    _d(Host.CurFileName, 'current file');
+    _d(Host.Frequency, 'frequency');
+    _d(Host.NumberOfSamples, 'samples');
+    _d(Host.NumberOfSamples / Host.Frequency, 'duration');
+
+    for (var ii = 0, input; ii < Input.createdInputs.length; ii++) {
+        input = Input.createdInputs[ii];
+        _d(Input.getValue(input), input);
+    }
+
+    _d('');
+};
+
+/**
+ * function that ...
+ *
+ * @method announceSpecProcessing
+ */
 Dispatcher.announceSpecProcessing = function(specName, ii) {
     var outputStr = null;
     var pad_len   = Math.ceil(this.maxSpecNameLength * 1.4);
