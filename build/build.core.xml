@@ -80,9 +80,9 @@
                 </selector>
             </fileset>
             <fileset dir="core/src/extension" includes="*.js"/>
-            <fileset dir="svm/src">
+            <fileset dir="./">
                 <selector if="${3PARTY.ASVM}">
-                    <filename name="*.js"/>
+                    <filename name="svm/src/*.js"/>
                 </selector>
             </fileset>
             <fileset dir="build/tmp" includes="lang*.js"/>
