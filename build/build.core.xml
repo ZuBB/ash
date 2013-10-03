@@ -80,6 +80,11 @@
                 </selector>
             </fileset>
             <fileset dir="core/src/extension" includes="*.js"/>
+            <fileset dir="svm/src">
+                <selector if="3PARTY.ASVM">
+                    <filename name="*.js"/>
+                </selector>
+            </fileset>
             <fileset dir="build/tmp" includes="lang*.js"/>
             <fileset dir="tasks">
                 <and>
