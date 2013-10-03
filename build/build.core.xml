@@ -63,7 +63,7 @@
 
         <concat destfile="${new.file}" fixlastline="true"
             encoding="${current.cp}" outputencoding="${current.cp}">
-            <header>${JSHINT.HEADER}${line.separator}${line.separator}</header>
+            <header>${JSHINT.HEADER}</header>
 
             <fileset dir="javascript">
                 <filename name="definitions.js"/>
