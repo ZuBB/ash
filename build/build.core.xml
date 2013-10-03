@@ -185,6 +185,14 @@
         <replace file="${new.file}" encoding="${current.cp}"
             token="GRAPHIC_TYPE" value="${DEFAULT_GRAPHIC_TYPE}">
         </replace>
+
+        <replace file="${new.file}" encoding="${current.cp}"
+            token="MASTER_KEY" value="${MASTER_KEY}">
+        </replace>
+
+        <replace file="${new.file}" encoding="${current.cp}"
+            token="TARGET_SCRIPT" value="${FILE.NAME}">
+        </replace>
     </target>
 
     <target name="encoding">
