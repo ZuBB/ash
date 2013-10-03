@@ -107,12 +107,7 @@ Dispatcher.registerNewTask = function(taskDefObj) {
  * @method process
  */
 Dispatcher.process = function() {
-    if (typeof Validation === 'object' && Validation.checkActivationKey()) {
-        // activation key confirmed. all is OK
-        //DEBUG_START
-        _rl('Licence has been successfully verified');
-        //DEBUG_STOP
-    } else {
+    if (Validation !== null && Validation.checkActivationKey() === false) {
         _rp(_t('core.error1'));
         return;
     }
