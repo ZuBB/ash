@@ -14,7 +14,7 @@
             file="${old.file}" tofile="${new.file}"/>
     </target>
 
-    <target name="test-sources" depends="concat, replace, strip">
+    <target name="test-sources" depends="test-sources-vars, concat, replace, strip">
         <exec executable="jshint">
             <arg value="--config"/>
             <arg value="${JSHINTRF.FILE}"/>
@@ -328,6 +328,9 @@
         <var name="mail.subject" value=""/>
         <var name="mail.message" value=""/>
 
+        <property name="3PARTY.JSON" value="${3PARTY.JSON.dev}"/>
+        <property name="3PARTY.ES5" value="true"/>
+
         <if>
             <isset property="om"/>
             <then>
@@ -351,6 +354,11 @@
                 <property name="DEFAULT_GRAPHIC_TYPE" value="${DEV.GRAPHIC.TYPE}"/>
             </else>
         </if>
+    </target>
+
+    <target name="test-sources-vars">
+        <property name="3PARTY.JSON" value="false"/>
+        <property name="3PARTY.ES5" value="false"/>
     </target>
 
     <selector id="excludes.list">
