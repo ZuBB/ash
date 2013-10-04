@@ -66,7 +66,7 @@ Input.createConfiguration = function(items, possibleInputs) {
         return;
     }
 
-    var currentDialog = CreateConfigure('Dialog' + this.dialogIndex);
+    var currentDialog = Host.CreateConfigure('Dialog' + this.dialogIndex);
     this.possible_fields = possibleInputs;
     var internal_name = null;
     var dialogItems = 0;
@@ -99,7 +99,7 @@ Input.createConfiguration = function(items, possibleInputs) {
             this.dialogIndex++;
             currentDialog.Configure();
             this.dialogs.push(currentDialog);
-            currentDialog = CreateConfigure('Dialog' + this.dialogIndex);
+            currentDialog = Host.CreateConfigure('Dialog' + this.dialogIndex);
         }
     }
 

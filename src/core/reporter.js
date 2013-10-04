@@ -33,7 +33,7 @@ Reporter.report = function(b_lf, a_lf, value, description, controlChars) {
     string = this._insertLink2OSCGRM(string, controlChars.oscillogram);
 
     if (rawString) {
-        ReportOut(string);
+        Host.ReportOut(string);
 //DEBUG_START
         if (Logger._buffering) {
             _i(rawString);

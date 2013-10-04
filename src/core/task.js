@@ -843,7 +843,7 @@ Task.prototype.getLimitPoints = function(dataSet) {
 Task.prototype.setGraphicPoints = function(specObj, graphic) {
     var prevYValue = null;
 
-    for (var jj = 0; jj < specObj.dataY.length && CanContinue(); jj++) {
+    for (var jj = 0; jj < specObj.dataY.length && Host.CanContinue(); jj++) {
         if (this.drawGraphicsAsShelf && prevYValue !== null) {
             graphic.AddPoint(specObj.dataX[jj], prevYValue);
         }
@@ -904,11 +904,11 @@ Task.prototype.setGraphicPoints = function(specObj, graphic) {
  */
 Task.prototype.drawMarker = function(position, markerName) {
     if (this.customMarkers.length === 0) {
-        SetMarker(position, markerName || '');
+        Host.SetMarker(position, markerName || '');
     } else {
         for (var ii = 0; ii < this.customMarkers.length; ii++) {
             if (markerName.indexOf(this.customMarkers[ii]) > -1) {
-                SetMarker(position, markerName);
+                Host.SetMarker(position, markerName);
             }
         }
     }

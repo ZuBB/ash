@@ -194,8 +194,8 @@ Utils.createOutputStr = function(b_lf, a_lf, value, description) {
         try {
             outputItems += value.toString();
         } catch (e) {
-            ReportOut('==== <<<<<<<< EXCEPTION >>>>>>>> ====\n');
-            ReportOut(e.message + '\n');
+            Host.ReportOut('==== <<<<<<<< EXCEPTION >>>>>>>> ====\n');
+            Host.ReportOut(e.message + '\n');
             return null;
         }
     }
