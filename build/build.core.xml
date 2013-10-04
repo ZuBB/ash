@@ -160,13 +160,13 @@
             encoding="${current.cp}" outputencoding="${current.cp}">
                 <filterset filtersfile="resources/colors.properties">
                     <filter token="TIMESTAMP" value="${TIMESTAMP}"/>
-                    <filter token="VERSION" value="${VERSION}">
-                    <filter token="BUILD_ID" value="${BUILD_ID}">
-                    <filter token="SCRIPT_FILENAME" value="${FILE.NAME}">
-                    <filter token="SKIP_TASKS" value="${SKIP_TASKS}">
-                    <filter token="GRAPHIC_TYPE" value="${DEFAULT_GRAPHIC_TYPE}">
-                    <filter token="MASTER_KEY" value="${MASTER_KEY}">
-                    <filter token="TARGET_SCRIPT" value="${FILE.NAME}">
+                    <filter token="VERSION" value="${VERSION}"/>
+                    <filter token="BUILD_ID" value="${BUILD_ID}"/>
+                    <filter token="SCRIPT_FILENAME" value="${FILE.NAME}"/>
+                    <filter token="SKIP_TASKS" value="${SKIP_TASKS}"/>
+                    <filter token="GRAPHIC_TYPE" value="${DEFAULT_GRAPHIC_TYPE}"/>
+                    <filter token="MASTER_KEY" value="${MASTER_KEY}"/>
+                    <filter token="TARGET_SCRIPT" value="${FILE.NAME}"/>
                 </filterset>
         </copy>
     </target>
