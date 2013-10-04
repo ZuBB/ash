@@ -156,43 +156,19 @@
         <var name="old.file" value="${new.file}"/>
         <var name="new.file" value="${OUTPUT.DIR}/${FILE.NAME}.replace.${FILE.EXT}"/>
 
-        <copy encoding="${current.cp}" outputencoding="${current.cp}"
-            file="${old.file}" tofile="${new.file}">
-                <filterset begintoken="@" endtoken="@"
-                    filtersfile="resources/colors.properties"/>
+        <copy file="${old.file}" tofile="${new.file}"
+            encoding="${current.cp}" outputencoding="${current.cp}">
+                <filterset filtersfile="resources/colors.properties">
+                    <filter token="TIMESTAMP" value="${TIMESTAMP}"/>
+                    <filter token="VERSION" value="${VERSION}">
+                    <filter token="BUILD_ID" value="${BUILD_ID}">
+                    <filter token="SCRIPT_FILENAME" value="${FILE.NAME}">
+                    <filter token="SKIP_TASKS" value="${SKIP_TASKS}">
+                    <filter token="GRAPHIC_TYPE" value="${DEFAULT_GRAPHIC_TYPE}">
+                    <filter token="MASTER_KEY" value="${MASTER_KEY}">
+                    <filter token="TARGET_SCRIPT" value="${FILE.NAME}">
+                </filterset>
         </copy>
-
-        <replace file="${new.file}" encoding="${current.cp}"
-            token="TIMESTAMP" value="${TIMESTAMP}">
-        </replace>
-
-        <replace file="${new.file}" encoding="${current.cp}"
-            token="VERSION" value="${VERSION}">
-        </replace>
-
-        <replace file="${new.file}" encoding="${current.cp}"
-            token="BUILD_ID" value="${BUILD_ID}">
-        </replace>
-
-        <replace file="${new.file}" encoding="${current.cp}"
-            token="SCRIPT_FILENAME" value="${FILE.NAME}">
-        </replace>
-
-        <replace file="${new.file}" encoding="${current.cp}"
-            token="SKIP_TASKS" value="${SKIP_TASKS}">
-        </replace>
-
-        <replace file="${new.file}" encoding="${current.cp}"
-            token="GRAPHIC_TYPE" value="${DEFAULT_GRAPHIC_TYPE}">
-        </replace>
-
-        <replace file="${new.file}" encoding="${current.cp}"
-            token="MASTER_KEY" value="${MASTER_KEY}">
-        </replace>
-
-        <replace file="${new.file}" encoding="${current.cp}"
-            token="TARGET_SCRIPT" value="${FILE.NAME}">
-        </replace>
     </target>
 
     <target name="encoding">

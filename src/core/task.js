@@ -27,8 +27,8 @@ Task = function(params) {
 
     this.axisName = '';
     this.graphicName = null;
-    this.graphicType = GRAPHIC_TYPE;
-    this.defaultGraphicType = GRAPHIC_TYPE;
+    this.graphicType = @GRAPHIC_TYPE@;
+    this.defaultGraphicType = @GRAPHIC_TYPE@;
     this.drawMarkers = false;
     this.graphicColor = null;
     this.customMarkers = [];
