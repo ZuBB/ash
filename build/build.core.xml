@@ -26,7 +26,7 @@
         <var name="old.file" value="${new.file}"/>
 
         <if>
-            <equals arg1="git-present" arg2="true"/>
+            <equals arg1="${git-present}" arg2="true"/>
             <then>
                 <var name="new.file" value="${OUTPUT.DIR}/${FILE.NAME}.release.${BUILD_ID}.${FILE.EXT}"/>
             </then>
@@ -367,7 +367,7 @@
 
     <selector id="excludes.list">
         <not>
-            <selector if="releasing"></selector>
+            <selector if="${releasing}"></selector>
         </not>
     </selector>
 
