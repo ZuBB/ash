@@ -1,7 +1,7 @@
 /**
- * function that ...
+ * @constructor
  *
- * @method init
+ * function that ...
  */
 Task = function(params) {
     this.specName = null;
