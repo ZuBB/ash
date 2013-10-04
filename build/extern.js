@@ -1,17 +1,19 @@
-function ReportOut(a) {}
-function SetMarker(a, b) {}
-function CanContinue() {}
-function CreateGraphic(a, b, c) {}
-function ValueAt(a, c) {}
-function SynchByEx(a, b, c, d, e, f, g) {}
-function CreateGraphicView(a) {}
-function CreateConfigure(a) {}
-function GetCurLanguage() {}
-function Enumerator() {}
+function Host() {}
 
-var Frequency = null;
-var DataType = null;
-var Host = null;
+Host.CanContinue = function() {}
+Host.CreateConfigure = function() {}
+Host.CreateGraphic = function() {}
+Host.CreateGraphicView = function() {}
+Host.GetCurLanguage = function() {}
+Host.ReportOut = function() {}
+Host.SetMarker = function() {}
+Host.SynchByEx = function() {}
+Host.ValueAt = function() {}
+
+Host.DataType = null;
+Host.Frequency = null;
+
+function Enumerator() {}
 
 var stubObj = null;
 stubObj.AddItem = function(a) {};
