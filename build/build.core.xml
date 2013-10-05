@@ -65,9 +65,6 @@
             encoding="${current.cp}" outputencoding="${current.cp}">
             <header>${JSHINT.HEADER}</header>
 
-            <fileset dir="javascript">
-                <filename name="definitions.js"/>
-            </fileset>
             <fileset dir="core/src/core" includes="*.js"/>
             <fileset dir="core/src/third party/json">
                 <selector if="${3PARTY.JSON}">
@@ -94,10 +91,7 @@
                     <selector refid="excludes.list" />
                 </and>
             </fileset>
-            <fileset dir="javascript">
-                <include name="*.js"/>
-                <exclude name="definitions.js"/>
-            </fileset>
+            <fileset dir="javascript" includes="*.js"/>
         </concat>
     </target>
 
