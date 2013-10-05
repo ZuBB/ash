@@ -21,42 +21,6 @@ Dispatcher = {
 /**
  * function that ...
  *
- * @method announce
- */
-Dispatcher.announce = function(params) {
-    if (typeof params !== 'object') {
-        //DEBUG_START
-        _d('no version data has been passed');
-        //DEBUG_STOP
-        return false;
-    }
-
-    var message = null;
-    var fixedbuildTime = new Date(params.buildTime);
-    // Ant's tstamp task returns month that starts from 1
-    // since JavaScript treats month as zero-based number
-    // we have to 'go' one month back
-    // TODO possbily this work buggy with dates > 27th
-    fixedbuildTime.setMonth(params.buildTime.getMonth() - 1);
-
-    if (params.version.indexOf('\x56\x45\x52\x53\x49\x4F\x4E') < 0) {
-        message = _t('report.version.rel', params.version);
-    } else if (params.buildID.indexOf('\x42\x55\x49\x4c\x44\x5f\x49\x44') < 0) {
-        message = _t('report.version.vcs_dev', params.buildID,
-                fixedbuildTime.toLocaleString());
-    } else {
-        message = _t('report.version.dev', fixedbuildTime.toLocaleString());
-    }
-
-    _rp(message);
-    //DEBUG_START
-    _rp(_t('report.date', this.runTimestamp.toLocaleString()));
-    //DEBUG_STOP
-};
-
-/**
- * function that ...
- *
  * @method process
  */
 Dispatcher.registerNewTask = function(taskDefObj) {
@@ -104,17 +68,47 @@ Dispatcher.registerNewTask = function(taskDefObj) {
 /**
  * function that ...
  *
+ * @method init
+ */
+Dispatcher.init = function(params) {
+    if (typeof params !== 'object') {
+        return false;
+    }
+};
+
+/**
+ * function that ...
+ *
  * @method process
  */
 Dispatcher.process = function() {
+    //DEBUG_START
+    Logger.init();
+    //DEBUG_STOP
+
+    // announce version, build time, run time
+    this.announce({
+        version:    Script.version,
+        buildID:    Script.buildID,
+        buildTime:  Script.buildTimestamp
+        //scriptName: Script.name
+    });
+
     if (Validation !== null && Validation.checkActivationKey() === false) {
         _rp(_t('core.error1'));
         return;
     }
 
+    // deal with all configuration stuff
+    Input.createConfiguration(Script.inputs, Script.inputFields);
+
     //DEBUG_START
-    Dispatcher.logIncomingParams();
+    // log processed and optionally loaded files, entered data
+    this.logIncomingParams();
     //DEBUG_STOP
+
+    // lets start counting execution time
+    Profiler.start('main');
 
     Host.ShowProgress(_t('core.status.start'), this.specs.length);
 
@@ -124,6 +118,49 @@ Dispatcher.process = function() {
 
     Host.ShowReport();
     Host.HideProgress();
+
+    Profiler.stop('main');
+    _rp(_t('report.done', Profiler.get_HRF_time('main')));
+
+    //DEBUG_START
+    Logger.close();
+    //DEBUG_STOP
+};
+
+/**
+ * function that ...
+ *
+ * @method announce
+ */
+Dispatcher.announce = function(params) {
+    if (typeof params !== 'object') {
+        //DEBUG_START
+        _d('no version data has been passed');
+        //DEBUG_STOP
+        return false;
+    }
+
+    var message = null;
+    var fixedbuildTime = new Date(params.buildTime);
+    // Ant's tstamp task returns month that starts from 1
+    // since JavaScript treats month as zero-based number
+    // we have to 'go' one month back
+    // TODO possbily this work buggy with dates > 27th
+    fixedbuildTime.setMonth(params.buildTime.getMonth() - 1);
+
+    if (params.version.indexOf('\x56\x45\x52\x53\x49\x4F\x4E') < 0) {
+        message = _t('report.version.rel', params.version);
+    } else if (params.buildID.indexOf('\x42\x55\x49\x4c\x44\x5f\x49\x44') < 0) {
+        message = _t('report.version.vcs_dev', params.buildID,
+                fixedbuildTime.toLocaleString());
+    } else {
+        message = _t('report.version.dev', fixedbuildTime.toLocaleString());
+    }
+
+    _rp(message);
+    //DEBUG_START
+    _rp(_t('report.date', this.runTimestamp.toLocaleString()));
+    //DEBUG_STOP
 };
 
 /**
