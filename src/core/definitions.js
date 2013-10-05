@@ -32,3 +32,17 @@ var _rh = null;
 var _rl = null;
 var _rp = null;
 
+/**
+ * Namespace for constants.
+ * Contains constants that are specific for current script
+ *
+ * @const
+ */
+var CONSTS = {};
+
+// script namespace
+var Script = {
+    buildTimestamp: new Date(@TIMESTAMP@),
+    buildID:        '@BUILD_ID@'
+};
+
