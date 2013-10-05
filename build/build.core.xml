@@ -220,7 +220,8 @@
             file="${old.file}" tofile="${new.file}"/>
 
         <jscomp compilationLevel="simple" output="${new.file}"
-            encoding="${current.cp}" outputencoding="${current.cp}" debug="false">
+            forceRecompile="true" debug="false"
+            encoding="${current.cp}" outputencoding="${current.cp}">
 
             <externs dir="./">
                 <file name="${CCEXTERN.FILE}"/>
