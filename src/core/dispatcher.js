@@ -94,16 +94,22 @@ Dispatcher.process = function() {
         //scriptName: Script.name
     });
 
-    if (Validation !== null && Validation.checkActivationKey() === false) {
-        _rp(_t('core.error1'));
-        return;
+    if (Validation !== null) {
+        if (Validation.isMasterKeyPresent()) {
+            if (Validation.checkActivationKey() === false) {
+                _rp(_t('core.error1'));
+                return;
+            }
+        } else {
+            Validation.sendSubKeys();
+            return;
+        }
     }
 
     // deal with all configuration stuff
     Input.createConfiguration(Script.inputs, Script.inputFields);
 
     //DEBUG_START
-    // log processed and optionally loaded files, entered data
     this.logIncomingParams();
     //DEBUG_STOP
 
