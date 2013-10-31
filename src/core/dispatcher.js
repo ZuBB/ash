@@ -97,11 +97,12 @@ Dispatcher.process = function() {
     if (Validation !== null) {
         if (Validation.isMasterKeyPresent()) {
             if (Validation.checkActivationKey() === false) {
-                _rp(_t('core.error1'));
+                _rp(_t('core.validation.error1'));
                 return;
             }
         } else {
             Validation.buildKeyFile();
+            _rp(_t('core.validation.keys_created'));
             return;
         }
     } else if (Script.demoMode) {
