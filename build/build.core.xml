@@ -79,7 +79,10 @@
             <fileset dir="core/src/extension" includes="*.js"/>
             <fileset dir=".">
                 <selector if="${3PARTY.ASVM}">
-                    <filename name="svm/src/*.js"/>
+                    <or>
+                        <filename name="svm/src/*.js"/>
+                        <filename name="svm/third party/cryptojs/tags/3.1.2/build/rollups/aes.js"/>
+                    </or>
                 </selector>
             </fileset>
             <fileset dir="build/tmp" includes="lang*.js"/>
@@ -162,6 +165,7 @@
                     <filter token="MASTER_KEY" value="${MASTER_KEY}"/>
                     <filter token="TARGET_SCRIPT" value="${FILE.NAME}"/>
                     <filter token="DATATYPE" value="${DATATYPE}"/>
+                    <filter token="DEMO_MODE" value="${DEMO_MODE}"/>
                 </filterset>
         </copy>
     </target>
