@@ -94,24 +94,22 @@ Dispatcher.process = function() {
         //scriptName: Script.name
     });
 
-    if (Validation !== null && Validation.isMasterKeyPresent()) {
-        if (Validation.checkActivationKey() === false) {
-            _rp(_t('core.error1'));
+    if (Validation !== null) {
+        if (Validation.isMasterKeyPresent()) {
+            if (Validation.checkActivationKey() === false) {
+                _rp(_t('core.error1'));
+                return;
+            }
+        } else {
+            Validation.buildKeyFile();
             return;
         }
+    } else if (Script.demoMode) {
+        _rp(_t('core.demo_mode'));
     }
 
     // deal with all configuration stuff
     Input.createConfiguration(Script.inputs, Script.inputFields);
-
-    if (Validation !== null) {
-        if (
-                Validation.isMasterKeyPresent() === false &&
-                Script.demoMode && Input.getValue('build_key_file')
-           ) {
-               Validation.buildKeyFile();
-           }
-    }
 
     //DEBUG_START
     this.logIncomingParams();
