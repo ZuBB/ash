@@ -44,6 +44,8 @@ var CONSTS = {};
 var Script = {
     buildTimestamp: new Date(@TIMESTAMP@),
     demoMode:       @DEMO_MODE@,
-    buildID:        '@BUILD_ID@'
+    buildID:        '@BUILD_ID@',
+    version:        '@VERSION@',
+    name:           ('@SCRIPT_FILENAME@').toUpperCase()
 };
 

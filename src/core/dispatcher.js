@@ -90,8 +90,8 @@ Dispatcher.process = function() {
     this.announce({
         version:    Script.version,
         buildID:    Script.buildID,
-        buildTime:  Script.buildTimestamp
-        //scriptName: Script.name
+        buildTime:  Script.buildTimestamp,
+        scriptName: Script.name
     });
 
     if (Validation !== null) {
@@ -158,12 +158,13 @@ Dispatcher.announce = function(params) {
     fixedbuildTime.setMonth(params.buildTime.getMonth() - 1);
 
     if (params.version.indexOf('\x56\x45\x52\x53\x49\x4F\x4E') < 0) {
-        message = _t('report.version.rel', params.version);
+        message = _t('report.version.rel', params.scriptName, params.version);
     } else if (params.buildID.indexOf('\x42\x55\x49\x4c\x44\x5f\x49\x44') < 0) {
-        message = _t('report.version.vcs_dev', params.buildID,
-                fixedbuildTime.toLocaleString());
+        message = _t('report.version.vcs_dev', params.scriptName,
+                params.buildID, fixedbuildTime.toLocaleString());
     } else {
-        message = _t('report.version.dev', fixedbuildTime.toLocaleString());
+        message = _t('report.version.dev', params.scriptName,
+                fixedbuildTime.toLocaleString());
     }
 
     _rp(message);
