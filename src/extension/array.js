@@ -139,7 +139,7 @@ if (!Array.prototype.getNeigborsIndexes) {
 }
 
 /**
- * helper function that ...
+ * helper function that finds value in set that is most spread in it
  * http://goo.gl/TA8i8T
  *
  * @method getUnique
