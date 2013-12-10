@@ -279,6 +279,18 @@
     </target>
 
     <target name="vars" depends="check-antcontrib, get-antcontrib">
+        <taskdef resource="net/sf/antcontrib/antlib.xml"
+            classpathref="antcontrib.path"/>
+
+        <if>
+            <not>
+                <isset property="FILE.NAME"/>
+            </not>
+            <then>
+                <property name="FILE.NAME" value="${ant.project.name}"/>
+            </then>
+        </if>
+
         <fail message="'FILE.NAME' variable is not set">
             <condition>
                 <not>
@@ -286,9 +298,6 @@
                 </not>
             </condition>
         </fail>
-
-        <taskdef resource="net/sf/antcontrib/antlib.xml"
-            classpathref="antcontrib.path"/>
 
         <tstamp>
             <format property="TIMESTAMP" pattern="yyyy, M, d, H, m, s, S"/>
