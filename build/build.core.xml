@@ -99,13 +99,11 @@
     </target>
 
     <target name="i18n" depends="check-props2js, get-props2js">
-        <mkdir dir="./build/tmp/storage"/>
+        <mkdir dir="./build/tmp/i18n-reference"/>
+        <mkdir dir="./build/tmp/i18n-storage"/>
 
-        <for param="file">
-            <fileset dir="resources">
-                <include name="lang-*.properties"/>
-                <different targetdir='./build/tmp/storage' />
-            </fileset>
+        <for param="file" keepgoing="true">
+            <fileset dir="resources" includes="lang-*.properties"/>
             <sequential>
                 <propertyregex override="yes" input="@{file}"
                     regexp="-([a-z]{2})." property="LANG" select="\1"/>
@@ -113,40 +111,54 @@
                 <propertyregex override="yes" input="@{file}"
                     regexp="\.(\d+)\." property="LANG_CODE" select="\1"/>
 
-                <!--
-                    here we converting localization file that is in
-                    java properties file into json
-                    all trick is done by this lib
-                    https://github.com/nzakas/props2js
-                -->
-                <exec executable="java">
-                    <arg value="-jar"/>
-                    <arg value="${LIB.DIR}/props2js-0.1.0.jar"/>
-                    <arg value="@{file}"/>
-                    <arg value="-t"/>
-                    <arg value="json"/>
-                    <arg value="-o"/>
-                    <arg value="./build/tmp/lang.${LANG}.body.txt"/>
-                </exec>
-
-                <concat destfile="./build/tmp/lang.${LANG}.js" fixlastline="true"
-                    encoding="${current.cp}" outputencoding="${current.cp}">
-                        <fileset dir="./build/tmp/">
-                            <include name="lang.${LANG}.body.txt"/>
-                        </fileset>
-                        <header>${I18N_HEADER}${LANG_CODE},</header>
-                        <footer>);</footer>
+                <var name="curr.file" value="lang-${LANG}.${LANG_CODE}.properties"/>
+                <concat encoding="${current.cp}" outputencoding="${current.cp}"
+                    destfile="./build/tmp/i18n-storage/${curr.file}">
+                    <filelist>
+                        <file name="./core/resources/${curr.file}"/>
+                        <file name="./resources/${curr.file}"/>
+                    </filelist>
                 </concat>
+
+                <if>
+                    <not>
+                        <filesmatch
+                            file1="./build/tmp/i18n-storage/${curr.file}"
+                            file2="./build/tmp/i18n-reference/${curr.file}"/>
+                        </not>
+                    <then>
+                        <!--
+                            here we converting localization file that is in
+                            java properties file into json
+                            all trick is done by this lib
+                            https://github.com/nzakas/props2js
+                        -->
+                        <exec executable="java">
+                            <arg value="-jar"/>
+                            <arg value="${LIB.DIR}/props2js-0.1.0.jar"/>
+                            <arg value="./build/tmp/i18n-storage/${curr.file}"/>
+                            <arg value="-t"/>
+                            <arg value="json"/>
+                            <arg value="-o"/>
+                            <arg value="./build/tmp/lang.${LANG}.body.txt"/>
+                        </exec>
+
+                        <concat destfile="./build/tmp/lang.${LANG}.js" fixlastline="true"
+                            encoding="${current.cp}" outputencoding="${current.cp}">
+                                <fileset dir="./build/tmp/">
+                                    <include name="lang.${LANG}.body.txt"/>
+                                </fileset>
+                                <header>${I18N_HEADER}${LANG_CODE},</header>
+                                <footer>);</footer>
+                        </concat>
+
+                        <copy file="./build/tmp/i18n-storage/${curr.file}"
+                            tofile="./build/tmp/i18n-reference/${curr.file}">
+                        </copy>
+                    </then>
+                </if>
             </sequential>
         </for>
-
-        <copy todir='./build/tmp/storage'>
-            <fileset dir="resources">
-                <include name="lang-*.properties"/>
-                <different targetdir='./build/tmp/storage'
-                    ignoreFileTimes='true' ignoreContents='false'/>
-            </fileset>
-        </copy>
     </target>
 
     <target name="replace">
