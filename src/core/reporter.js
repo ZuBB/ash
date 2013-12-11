@@ -32,7 +32,7 @@ Reporter.report = function(b_lf, a_lf, value, description, controlChars) {
     string = this._insertLink2Notation(string, controlChars.notation);
     string = this._insertLink2OSCGRM(string, controlChars.oscillogram);
 
-    if (rawString) {
+    if (typeof rawString === 'string') {
         Host.ReportOut(string);
 //DEBUG_START
         if (Logger._buffering) {

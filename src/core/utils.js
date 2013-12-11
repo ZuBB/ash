@@ -213,7 +213,7 @@ Utils.createOutputStr = function(b_lf, a_lf, value, description) {
  * @method convertReportMessage2Obj
  */
 Utils.convertReportMessage2Obj = function(message) {
-    if (typeof message === 'string' && message.length > 0 ) {
+    if (typeof message === 'string') {
         message = [message];
     }
 
