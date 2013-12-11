@@ -234,7 +234,7 @@ Utils.convertReportMessage2Obj = function(message) {
 /**
  * function that ...
  *
- * @method convertReportMessage2Obj
+ * @method getColorForPercentage
  *         // http://bit.ly/17CTRQX
  */
 Utils.getColorForPercentage = function(percentColors, pct) {
@@ -273,7 +273,7 @@ Utils.getColorForPercentage = function(percentColors, pct) {
 /**
  * function that ...
  *
- * @method convertReportMessage2Obj
+ * @method range
  * https://github.com/jashkenas/underscore/blob/master/underscore.js#L570
  */
 Utils.range = function(start, stop, step) {
