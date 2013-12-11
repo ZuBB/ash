@@ -5,15 +5,19 @@
  */
 Dispatcher = {
     runTimestamp: new Date(),
-    isErrorOccured: false,
-    graphicsViewsProps: {},
     //DEBUG_START
     maxSpecNameLength: 0,
     //DEBUG_STOP
+
     revokedGraphics: [],
-    confirmedViews: [],
     drownGraphics: [],
+
+    graphicsViewsProps: {},
+    confirmedViews: [],
     graphicsViews: {},
+
+    messageTypes: [],
+
     tasksHash: {},
     specs: []
 };
@@ -74,6 +78,9 @@ Dispatcher.init = function(params) {
     if (typeof params !== 'object') {
         return false;
     }
+
+    this.createMessageInfractructure(params.messageTypes);
+
 };
 
 /**
@@ -124,6 +131,7 @@ Dispatcher.process = function() {
     this.loopThroughRegisteredSpecs();
     this.createGraphicViews();
     this.processGraphicsViewProps();
+    this.printMessages();
 
     Host.ShowReport();
     Host.HideProgress();
@@ -193,48 +201,6 @@ Dispatcher.logIncomingParams = function() {
 
     _d('');
 };
-
-/**
- * function that ...
- *
- * @method announceSpecProcessing
- */
-Dispatcher.announceSpecProcessing = function(specName, ii) {
-    var outputStr = null;
-    var pad_len   = Math.ceil(this.maxSpecNameLength * 1.4);
-    var len       = this.specs.length.toString();
-
-    outputStr  = (ii + 1).toString().lpad(' ', len.length);
-    outputStr  = '>>>>>>>>>>>>>>> Processing next (' + outputStr + '/' + len;
-    outputStr += ') spec: ' + specName.rpad(' ', pad_len);
-
-    if (ii === 0) {
-        _rl('');
-    }
-
-    if (ii < this.specs.length - @SKIP_TASKS@) {
-        _rh(outputStr);
-    } else {
-        _p(outputStr);
-    }
-
-    return true;
-};
-
-/**
- * function that ...
- *
- * @method announceSpecStatus
- */
-Dispatcher.announceSpecStatus = function(_status, ii) {
-    if (_status) {
-        if (ii < this.specs.length - @SKIP_TASKS@) {
-            _rl('+');
-        }
-    } else {
-        _rl('-');
-    }
-};
 //DEBUG_STOP
 
 /**
@@ -243,6 +209,12 @@ Dispatcher.announceSpecStatus = function(_status, ii) {
  * @method loop
  */
 Dispatcher.loopThroughRegisteredSpecs = function() {
+    //DEBUG_START
+    _rl('');
+    //DEBUG_STOP
+    var pad_len = Math.ceil(this.maxSpecNameLength * 1.4);
+    var len     = this.specs.length.toString();
+
     for (var ii = 0; ii < this.specs.length; ii++) {
         Host.SetStatusText(_t('core.status.message', ii));
 
@@ -250,7 +222,10 @@ Dispatcher.loopThroughRegisteredSpecs = function() {
         //DEBUG_START
         var specName = specObj.getFullName();
         Profiler.start(specName);
-        this.announceSpecProcessing(specName, ii);
+        var outputStr = ['>'.repeat(15), ' Processing next '];
+        outputStr.push('(', (ii + 1).toString().lpad(' ', len.length), '/');
+        outputStr.push(len, ') spec: ', specName.rpad(' ', pad_len));
+        _rh(outputStr.join(''));
         //DEBUG_STOP
 
         specObj.process();
@@ -258,11 +233,84 @@ Dispatcher.loopThroughRegisteredSpecs = function() {
         this.confirmedViews.push(specObj.getConfirmedView());
 
         //DEBUG_START
-        this.announceSpecStatus(specObj.getTaskStatus(), ii);
+        _rl(specObj.getTaskStatus() ? '+' : '-');
         _d('Processing finished! Passed (ms) ' + Profiler.stop(specName));
         //DEBUG_STOP
 
         Host.SetProgress(ii);
+    }
+};
+
+/**
+ * function that ...
+ *
+ * @method init
+ */
+Dispatcher.createMessageInfractructure = function(messages) {
+    this.messageTypes = messages && messages.constructor === Object ?
+        messages : {
+            'bug': {
+                'headerControlChars': {
+                    'colors': [0xFFFFFF, 0xFF0000]
+                }
+            },
+            'error': {
+                'headerControlChars': {
+                    'colors': [@PRINT_MISTAKES@]
+                }
+            },
+            'hint': {
+                'headerControlChars': {
+                    'colors': [0x0F8052]
+                }
+            },
+            'message': {
+                'skipHeader': true
+            }
+        };
+
+    var addMessageFunc = function(item, self) {
+        return function(message) {
+            var msgObj = Utils.convertReportMessage2Obj(message);
+            if (msgObj) {
+                self.messageTypes[item].messages.push(msgObj);
+            }
+        };
+    };
+
+    for (var item in this.messageTypes) {
+        if (this.messageTypes.hasOwnProperty(item)) {
+            this.messageTypes[item].messages = [];
+            var addMethodName = 'add' + item.capitalize();
+            this[addMethodName] = addMessageFunc(item, this);
+        }
+    }
+};
+
+/**
+ * function that ...
+ *
+ * @method printMessages
+ */
+Dispatcher.printMessages = function() {
+    var printMessageFunc = function(item) {
+        _rl(_t.apply(null, item.message), item.controlChars);
+    };
+
+    for (var type in this.messageTypes) {
+        if (this.messageTypes.hasOwnProperty(type)) {
+            if (this.messageTypes[type].messages.length === 0) {
+                continue;
+            }
+
+            if (!(this.messageTypes[type].skipHeader === true)) {
+                _rp(_t('report.messages.' + type),
+                        this.messageTypes[type].headerControlChars);
+            }
+
+            this.messageTypes[type].messages.forEach(printMessageFunc);
+            _rl('');
+        }
     }
 };
 
@@ -276,41 +324,23 @@ Dispatcher.createGraphicViews = function() {
     _p('in `createGraphicViews`');
     //DEBUG_STOP
 
-    for (var ii = this.confirmedViews.length - 1; ii >= 0; ii--) {
-        if (!this.confirmedViews[ii]) {
-            this.confirmedViews.splice(ii, 1);
-        } else {
-            // TODO enhance this code
-            this.confirmedViews[ii] = this.confirmedViews[ii].split(':');
-        }
-    }
-
-    this.confirmedViews = this.confirmedViews.sort(
-        function(a, b) {
-            return a[1] - b[1];
-        }
-    );
-
-    //DEBUG_START
-    _d(this.confirmedViews);
-    //DEBUG_STOP
-
-    for (ii = 0; ii < this.confirmedViews.length; ii++) {
-        var view = this.confirmedViews[ii][0];
-        if (typeof this.graphicsViews[view] !== 'undefined') {
+    this.confirmedViews
+        .filter(function(view) { return view; })
+        .map(function(view) { return view.split(':'); })
+        .sort(function(a, b) { return a[1] - b[1]; })
+        .forEach(function(view) {
+            if (typeof this.graphicsViews[view[0]] === 'undefined') {
+                //DEBUG_START
+                _d(view[0], 'Creating next view');
+                //DEBUG_STOP
+                this.graphicsViews[view[0]] =
+                    Host.CreateGraphicView(_t('views.' + view[0] + '.name'));
             //DEBUG_START
-            _e(view, 'Next view has been already created');
+            } else {
+                _e(view[0], 'Next view has been already created');
             //DEBUG_STOP
-            continue;
-        }
-
-        //DEBUG_START
-        _d(view, 'Creating next view');
-        //DEBUG_STOP
-
-        this.graphicsViews[view] =
-            Host.CreateGraphicView(_t('views.' + view + '.name'));
-    }
+            }
+        }, this);
 
     return true;
 };
@@ -599,40 +629,6 @@ Dispatcher.getValidTaskObject = function(name) {
 Dispatcher.storeViewsProps = function(viewsProps) {
     this.graphicsViewsProps =
         Utils.mergeRecursive(this.graphicsViewsProps, viewsProps);
-};
-
-/**
- * function that ...
- *
- * @method addHint
- */
-Dispatcher.addHint = function(message) {
-    if (!message) {
-        return false;
-    }
-
-    var specName = 'hints';
-    var msgObj = Utils.convertReportMessage2Obj(message);
-    if (msgObj) {
-        this.getTaskObject(specName).dataY.push(msgObj);
-    }
-};
-
-/**
- * function that ...
- *
- * @method addError
- */
-Dispatcher.addError = function(message) {
-    if (!message) {
-        return false;
-    }
-
-    var specName = 'mistakes';
-    var msgObj = Utils.convertReportMessage2Obj(message);
-    if (msgObj) {
-        this.getTaskObject(specName).dataY.push(msgObj);
-    }
 };
 
 /**
