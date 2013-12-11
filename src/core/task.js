@@ -842,37 +842,25 @@ Task.prototype.getLimitPoints = function(dataSet) {
  */
 Task.prototype.setGraphicPoints = function(specObj, graphic) {
     var prevYValue = null;
+    var checkFunc = function(suffix) {
+        return Utils.isNumberInvalid(specObj['data' + suffix][jj]);
+    };
 
     for (var jj = 0; jj < specObj.dataY.length && Host.CanContinue(); jj++) {
         if (this.drawGraphicsAsShelf && prevYValue !== null) {
             graphic.AddPoint(specObj.dataX[jj], prevYValue);
         }
 
-        if (Utils.isNumberInvalid(specObj.dataX[jj])) {
+        if (['X', 'Y'].some(checkFunc)) {
             //DEBUG_START
-            _e(jj, 'got a NaN insead of X at');
+            _e(jj, 'got a NaN insead of number at');
+            _i(specObj.dataX[jj], 'X equals to');
+            _i(specObj.dataY[jj], 'Y equals to');
             this.statusCodes.push(false);
             return false;
             //DEBUG_STOP
-            if (Dispatcher.isErrorOccured === false) {
-                _rl(_t('core.graphic.error1'), {colors: [0xFFFFFF, 0xFF0000]});
-                Dispatcher.isErrorOccured = true;
-            }
 
-            continue;
-        }
-
-        if (Utils.isNumberInvalid(specObj.dataY[jj])) {
-            //DEBUG_START
-            _e(jj, 'got a NaN insead of Y at');
-            this.statusCodes.push(false);
-            return false;
-            //DEBUG_STOP
-            if (Dispatcher.isErrorOccured === false) {
-                _rl(_t('core.graphic.error1'), {colors: [0xFFFFFF, 0xFF0000]});
-                Dispatcher.isErrorOccured = true;
-            }
-
+            Dispatcher.addBug('core.error1');
             continue;
         }
 
