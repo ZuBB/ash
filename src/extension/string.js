@@ -48,3 +48,14 @@ if (!String.prototype.repeat) {
     };
 }
 
+/**
+ * helper function that ...
+ *
+ * http://goo.gl/e5KUpq
+ */
+if (!String.prototype.capitalize) {
+    String.prototype.capitalize = function() {
+        return this.charAt(0).toUpperCase() + this.slice(1);
+    };
+}
+
