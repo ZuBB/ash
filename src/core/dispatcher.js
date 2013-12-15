@@ -211,9 +211,9 @@ Dispatcher.logIncomingParams = function() {
 Dispatcher.loopThroughRegisteredSpecs = function() {
     //DEBUG_START
     _rl('');
-    //DEBUG_STOP
     var pad_len = Math.ceil(this.maxSpecNameLength * 1.4);
     var len     = this.specs.length.toString();
+    //DEBUG_STOP
 
     for (var ii = 0; ii < this.specs.length; ii++) {
         Host.SetStatusText(_t('core.status.message', ii));
@@ -303,7 +303,7 @@ Dispatcher.printMessages = function() {
                 continue;
             }
 
-            if (!(this.messageTypes[type].skipHeader === true)) {
+            if ((this.messageTypes[type].skipHeader === true) === false) {
                 _rp(_t('report.messages.' + type),
                         this.messageTypes[type].headerControlChars);
             }
