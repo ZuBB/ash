@@ -741,7 +741,7 @@ Task.prototype.drawGraphic = function() {
 
         //DEBUG_START
         if (specObj.dataX.length !== specObj.dataY.length) {
-            _d('data length mismatch!');
+            _e('data length mismatch!');
         }
         //DEBUG_STOP
 
