@@ -256,7 +256,7 @@ Dispatcher.createMessageInfractructure = function(messages) {
             },
             'error': {
                 'headerControlChars': {
-                    'colors': [@PRINT_MISTAKES@]
+                    'colors': [0xF05025]
                 }
             },
             'hint': {
