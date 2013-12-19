@@ -14,14 +14,6 @@
             file="${old.file}" tofile="${new.file}"/>
     </target>
 
-    <target name="test-sources" depends="test-sources-vars, concat, replace, strip">
-        <exec executable="jshint">
-            <arg value="--config"/>
-            <arg value="${JSHINTRF.FILE}"/>
-            <arg value="${new.file}"/>
-        </exec>
-    </target>
-
     <target name="rqbuild" depends="rqbuild-vars, vcs, dev, strip, check-log-calls, compress">
         <var name="old.file" value="${new.file}"/>
 
@@ -37,20 +29,6 @@
 
         <copy encoding="${current.cp}" outputencoding="${current.cp}"
             file="${old.file}" tofile="${new.file}"/>
-    </target>
-
-    <target name="send" depends="check-mail-deps, get-mail-deps" unless="${new.file}">
-        <mail
-            from="${MAIL.FROM}"
-            tolist="${mail.to}"
-            cclist="${mail.cc}"
-            bcclist="${mail.bcc}"
-            subject="${mail.subject}"
-            mailhost="${SMTP.HOST}" mailport="${SMTP.PORT}" ssl="${SMTP.SSL}"
-            user="${SMTP.USER}" password="${SMTP.PSWD}"
-            files="${new.file}">
-            <message>${mail.message}${EMAIL_SIGNATURE}</message>
-        </mail>
     </target>
 
     <target name="concat" depends="vars, i18n">
@@ -342,11 +320,6 @@
         <property name="DEFAULT_GRAPHIC_TYPE" value="${LINE.TYPE.REL}"/>
     </target>
 
-    <target name="test-sources-vars">
-        <property name="3PARTY.JSON" value="false"/>
-        <property name="3PARTY.ES5" value="false"/>
-    </target>
-
     <selector id="excludes.list">
         <not>
             <selector if="${releasing}"></selector>
@@ -416,26 +389,6 @@
                 <available file="git.exe" filepath="${env.Path}" />
                 <available file="git.exe" filepath="${env.PATH}" />
             </or>
-        </condition>
-    </target>
-
-    <target name="get-mail-deps" unless="${mail.deps}">
-        <mkdir dir="${LIB.DIR}"/>
-
-        <mkdir dir="${user.home}/.ant/lib/"/>
-        <get verbose="false" dest="${user.home}/.ant/lib/"
-            src="http://download.java.net/maven/1/javax.activation/jars/activation-1.1.1.jar"/>
-
-        <get verbose="false" dest="${user.home}/.ant/lib/"
-            src="https://maven.java.net/content/repositories/releases/com/sun/mail/javax.mail/1.5.0/javax.mail-1.5.0.jar"/>
-    </target>
-
-    <target name="check-mail-deps">
-        <condition property="mail.deps">
-            <and>
-                <available file="${user.home}/.ant/lib/activation-1.1.1.jar"/>
-                <available file="${user.home}/.ant/lib/javax.mail-1.5.0.jar"/>
-            </and>
         </condition>
     </target>
 </project>
