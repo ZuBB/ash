@@ -38,14 +38,10 @@ Task = function(params) {
     this.multicolorGraphic = false;
 
     this.setLimits = false;
-    this.maxLimitFunc = null;
-    this.minLimitFunc = null;
-    this.maxLimitCoeff = Number.NaN;
-    this.minLimitCoeff = Number.NaN;
-    this.minLimitValue = Number.NaN;
-    this.maxLimitValue = Number.NaN;
-    this.minLimitIcrmt = Number.NaN;
-    this.maxLimitIcrmt = Number.NaN;
+    this.maxLimitFunc = function() { return null };
+    this.minLimitFunc = function() { return null };
+    this.minLimitValue = null;
+    this.maxLimitValue = null;
 
     this.setScale = false;
     this.scaleValue = null;
@@ -817,21 +813,13 @@ Task.prototype.getGraphicName = function(currentIndex) {
  * @param {Object} graphicObj - value itself
  */
 Task.prototype.getLimitPoints = function(dataSet) {
-    var min_value = this.minLimitValue || Math.min.apply(null, dataSet.dataY);
-    var max_value = this.maxLimitValue || Math.max.apply(null, dataSet.dataY);
+    var minVal = dataSet.dataY.min();
+    var maxVal = dataSet.dataY.max();
+    var filterFunc = function(n) { return n !== null };
+    var minValues = [this.minLimitFunc(minVal), this.minLimitValue, minVal];
+    var maxValues = [this.maxLimitFunc(maxVal), this.maxLimitValue, maxVal];
 
-    if (this.minLimitCoeff || this.maxLimitCoeff) {
-        min_value *= (this.minLimitCoeff || 1);
-        max_value *= (this.maxLimitCoeff || 1);
-    } else if (this.minLimitIcrmt || this.maxLimitIcrmt) {
-        min_value += (this.minLimitIcrmt || +1);
-        max_value += (this.maxLimitIcrmt || -1);
-    } else if (this.minLimitFunc && this.maxLimitFunc) {
-        min_value = this.minLimitFunc(min_value);
-        max_value = this.maxLimitFunc(max_value);
-    }
-
-    return [min_value, max_value];
+    return [minValues.filter(filterFunc)[0] maxValues.filter(filterFunc)[0]];
 };
 
 /**
