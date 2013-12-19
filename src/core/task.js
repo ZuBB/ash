@@ -38,8 +38,8 @@ Task = function(params) {
     this.multicolorGraphic = false;
 
     this.setLimits = false;
-    this.maxLimitFunc = function() { return null };
-    this.minLimitFunc = function() { return null };
+    this.maxLimitFunc = function() { return null; };
+    this.minLimitFunc = function() { return null; };
     this.minLimitValue = null;
     this.maxLimitValue = null;
 
@@ -815,11 +815,11 @@ Task.prototype.getGraphicName = function(currentIndex) {
 Task.prototype.getLimitPoints = function(dataSet) {
     var minVal = dataSet.dataY.min();
     var maxVal = dataSet.dataY.max();
-    var filterFunc = function(n) { return n !== null };
+    var filterFunc = function(n) { return n !== null; };
     var minValues = [this.minLimitFunc(minVal), this.minLimitValue, minVal];
     var maxValues = [this.maxLimitFunc(maxVal), this.maxLimitValue, maxVal];
 
-    return [minValues.filter(filterFunc)[0] maxValues.filter(filterFunc)[0]];
+    return [minValues.filter(filterFunc)[0], maxValues.filter(filterFunc)[0]];
 };
 
 /**
