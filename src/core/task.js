@@ -56,7 +56,18 @@ Task = function(params) {
  * @method getTaskStatus
  */
 Task.prototype.getTaskStatus = function() {
-    return this.statusCodes.slice(-1)[0];
+    return this.statusCodes.last();
+};
+
+/**
+ * function that ...
+ *
+ * @method updateStatus
+ */
+Task.prototype.updateStatus = function(taskStatus) {
+    taskStatus = Boolean(taskStatus);
+    this.statusCodes.push(taskStatus);
+    return taskStatus;
 };
 
 /**
@@ -108,9 +119,7 @@ Task.prototype.checkDataSource = function() {
         }
     }
 
-    result = Boolean(result);
-    this.statusCodes.push(result);
-    return result;
+    return this.updateStatus(result);
 };
 
 /**
@@ -207,8 +216,7 @@ Task.prototype.checkDependencies = function() {
     result &= this.isForbiddenDependenciesResolved();
     result  = Boolean(result);
 
-    this.statusCodes.push(result);
-    return result;
+    return this.updateStatus(result);
 };
 
 /**
@@ -351,11 +359,10 @@ Task.prototype.processCalcs = function() {
         //DEBUG_STOP
     }
 
-    this.statusCodes.push(result);
     //DEBUG_START
     this.logDataStats();
     //DEBUG_STOP
-    return result;
+    return this.updateStatus(result);
 };
 
 /**
@@ -478,8 +485,7 @@ Task.prototype.logDataStats = function() {
 
             if (typeof specObj.dataY[0] === 'number' && Utils.isNumberInvalid(tmp)) {
                 _e(tmp, 'dataY contains invalid item');
-                this.statusCodes.push(false);
-                return false;
+                return this.updateStatus(false);
             }
 
             if (specObj.dataX.length === 0) {
@@ -493,8 +499,7 @@ Task.prototype.logDataStats = function() {
 
             if (Utils.isNumberInvalid(tmp)) {
                 _e(tmp, 'dataY contains invalid item');
-                this.statusCodes.push(false);
-                return false;
+                return this.updateStatus(false);
             }
         }
     }
@@ -616,8 +621,7 @@ Task.prototype.joinViewsProps = function() {
         }
     }
 
-    this.statusCodes.push(true);
-    return true;
+    return this.updateStatus(result);
 };
 
 /**
@@ -782,7 +786,7 @@ Task.prototype.drawGraphic = function() {
         });
     }
 
-    this.statusCodes.push(graphics.length > 0);
+    this.updateStatus(graphics.length > 0);
     return graphics;
 };
 
@@ -844,8 +848,7 @@ Task.prototype.setGraphicPoints = function(specObj, graphic) {
             _e(jj, 'got a NaN insead of number at');
             _i(specObj.dataX[jj], 'X equals to');
             _i(specObj.dataY[jj], 'Y equals to');
-            this.statusCodes.push(false);
-            return false;
+            return this.updateStatus(false);
             //DEBUG_STOP
 
             Dispatcher.addBug('core.error1');
