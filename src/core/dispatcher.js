@@ -631,6 +631,15 @@ Dispatcher.storeViewsProps = function(viewsProps) {
         Utils.mergeRecursive(this.graphicsViewsProps, viewsProps);
 };
 
+Dispatcher.storeGraphicObject = function(graphicObj) {
+    if (graphicObj) {
+        return this.drownGraphics.push(graphicObj);
+    } else {
+        // TODO what is best value here?
+        return null;
+    }
+};
+
 /**
  * function that ...
  *
