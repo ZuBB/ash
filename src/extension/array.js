@@ -22,6 +22,15 @@ if (!Array.prototype.unique) {
 /**
  * helper function that ...
  */
+if (!Array.prototype.empty) {
+    Array.prototype.empty = function() {
+        return this.length === 0;
+    };
+}
+
+/**
+ * helper function that ...
+ */
 if (!Array.prototype.sortAsc) {
     Array.prototype.sortAsc = function() {
         return this.sort(function(a, b) { return a - b; });
