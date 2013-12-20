@@ -12,9 +12,10 @@ Dispatcher = {
     revokedGraphics: [],
     drownGraphics: [],
 
-    graphicsViewsProps: {},
     confirmedViews: [],
     graphicsViews: {},
+    // hash that holds all properties and theirs values for all views
+    viewsProps: {},
 
     messageTypes: [],
 
@@ -114,7 +115,8 @@ Dispatcher.process = function() {
     this.startProgressBar();
     this.loopThroughRegisteredSpecs();
     this.createGraphicViews();
-    this.processGraphicsViewProps();
+    this.sortGraphicsByIndexes();
+    this.applyPropsToGraphicViews();
     this.printMessages();
     this.stopProgressBar();
 
@@ -332,19 +334,49 @@ Dispatcher.createGraphicViews = function() {
 /**
  * function that ...
  *
- * @method processGraphicsViewProps
+ * @method sortGraphicsByIndexes
  */
-Dispatcher.processGraphicsViewProps = function() {
+Dispatcher.sortGraphicsByIndexes = function() {
+    var methods  = ['AddArea', 'AddGraphic', 'AddGraphicEx'];
+    var mapFunc  = function(item) { return item.slice(1); };
+    var sortFunc = function(a, b) {
+        // try to sort by view index
+        if (a[0] < b[0]) { return -1; }
+        if (a[0] > b[0]) { return  1; }
+        // if still same - sort by index in global array
+        return a[1] - b[1];
+    };
+
+    Object.keys(this.viewsProps).forEach(function(ii) {
+        methods.forEach(function(key) {
+            if (typeof this.viewsProps[ii][key] === 'undefined') {
+                return;
+            }
+
+            this.viewsProps[ii][key] =
+                this.viewsProps[ii][key].sort(sortFunc).map(mapFunc);
+        }, this);
+    }, this);
+
+    return true;
+};
+
+/**
+ * function that ...
+ *
+ * @method applyPropsToGraphicViews
+ */
+Dispatcher.applyPropsToGraphicViews = function() {
     //DEBUG_START
-    _p('in `processGraphicsViewProps`');
+    _p('in `applyPropsToGraphicViews`');
     _d('');
-    _d(this.graphicsViewsProps, 'all props');
+    _d(this.viewsProps, 'all props');
     _d('');
     //DEBUG_STOP
 
     var params = null;
-    for (var ii in this.graphicsViewsProps) {
-        if (!this.graphicsViewsProps.hasOwnProperty(ii)) {
+    for (var ii in this.viewsProps) {
+        if (!this.viewsProps.hasOwnProperty(ii)) {
             continue;
         }
 
@@ -355,69 +387,10 @@ Dispatcher.processGraphicsViewProps = function() {
             continue;
         }
 
-        //DEBUG_START
-        _d(ii, 'setting props for next view');
-        //DEBUG_STOP
-
-        for (var key in this.graphicsViewsProps[ii]) {
-            if (!this.graphicsViewsProps[ii].hasOwnProperty(key)) {
-                continue;
-            }
-
-            try {
-                // would be nice to use apply here but seems its not possible
-                switch (key) {
-                case 'area':
-                    params = this.graphicsViewsProps[ii][key];
-                    this.addAreasToView(ii, params);
-                    break;
-                case 'description':
-                    params = this.graphicsViewsProps[ii][key];
-                    this.addDescriptionToView(ii, params);
-                    break;
-                case 'comment':
-                    params = this.graphicsViewsProps[ii][key];
-                    this.addCommentToView(ii, params);
-                    break;
-                case 'graphic':
-                    params = this.graphicsViewsProps[ii][key];
-                    this.appendGraphic2Views(ii, params);
-                    break;
-                case 'graphicEx':
-                    params = this.graphicsViewsProps[ii][key];
-                    this.appendGraphicEx2Views(ii, params);
-                    break;
-                case 'limits':
-                    params = this.graphicsViewsProps[ii][key];
-                    this.addLimitsToView(ii, params);
-                    break;
-                case 'notation':
-                    params = this.graphicsViewsProps[ii][key];
-                    this.addNotationToView(ii, params);
-                    break;
-                case 'scale':
-                    params = this.graphicsViewsProps[ii][key];
-                    this.addScaleToView(ii, params);
-                    break;
-                case 'set':
-                    params = this.graphicsViewsProps[ii][key];
-                    this.setGraphicOptions(ii, params);
-                    break;
-                case 'zoom':
-                    params = this.graphicsViewsProps[ii][key];
-                    this.zoomGraphicInView(ii, params);
-                    break;
-                default:
-                    //DEBUG_START
-                    _e(key, 'Handler for next view method is not implemented');
-                    //DEBUG_STOP
-                    continue;
-                }
-            } catch (e) {
-                //DEBUG_START
-                _e(key, 'Next error occured on processing this key');
-                _d(e.message);
-                //DEBUG_STOP
+        for (var key in this.viewsProps[ii]) {
+            if (this.viewsProps[ii].hasOwnProperty(key)) {
+                params = this.viewsProps[ii][key];
+                this.applyMethodToView(ii, key, params);
             }
         }
 
@@ -425,153 +398,55 @@ Dispatcher.processGraphicsViewProps = function() {
     }
 };
 
-/**
- * function that ...
- *
- * @method addAreasToView
- */
-Dispatcher.addAreasToView = function(view_index, paramsArray) {
-    for (var ii = 0, area; ii < paramsArray.length; ii++) {
-        area = this.drownGraphics[paramsArray[ii][0]];
-        this.graphicsViews[view_index].AddArea(area, paramsArray[ii][1]);
-    }
-};
+Dispatcher.applyMethodToView = function(viewIndex, methodName, instancesParams) {
+    var methods     = ['AddArea', 'AddGraphic', 'AddGraphicEx'];
+    var viewObject  = this.graphicsViews[viewIndex];
+    var fix1stParam = function(arg1, methodName, self) {
+        return methods.indexOf(methodName) > -1 ?
+            self.drownGraphics[arg1] : arg1;
+    };
 
-/**
- * function that ...
- *
- * @method addDescriptionToView
- */
-Dispatcher.addDescriptionToView = function(view_index, params) {
-    // TODO
-    this.graphicsViews[view_index].SetDescription(params.join('. '));
-};
+    instancesParams.forEach(function(params) {
+        var arg1 = fix1stParam(params[0], methodName, this);
 
-/**
- * function that ...
- *
- * @method addCommentToView
- */
-Dispatcher.addCommentToView = function(view_index, paramsArray) {
-    for (var ii = 0; ii < paramsArray.length; ii++) {
-        var params = paramsArray[ii];
-        this.graphicsViews[view_index].AddComment(
-            params.text,
-            params.type,
-            params.graphicName,
-            params.x,
-            params.y,
-            params.command
-        );
-    }
-};
-
-/**
- * function that ...
- *
- * @method appendGraphic2Views
- */
-Dispatcher.appendGraphic2Views = function(view_index, paramsArray) {
-    var graphic = null;
-    var graphicOpts = null;
-    var viewObject = this.graphicsViews[view_index];
-
-    paramsArray = paramsArray.sort(function(a, b){
-        // try to sort by view index
-        if (a[1] < b[1]) { return -1; }
-        if (a[1] > b[1]) { return 1; }
-        // if still same - sort by index in global array
-        return a[0] - b[0];
-    });
-
-    for (var ii = 0; ii < paramsArray.length; ii++) {
-        graphicOpts = paramsArray[ii];
-        graphic = this.drownGraphics[graphicOpts[0]];
-        viewObject.AddGraphic(graphic);
-    }
-};
-
-/**
- * function that ...
- *
- * @method appendGraphicEx2Views
- */
-Dispatcher.appendGraphicEx2Views = function(view_index, paramsArray) {
-    var graphic = null;
-    var graphicOpts = null;
-    var viewObject = this.graphicsViews[view_index];
-
-    paramsArray = paramsArray.sort(function(a, b){
-        // try to sort by view index
-        if (a[1] < b[1]) { return -1; }
-        if (a[1] > b[1]) { return 1; }
-        // if still same - sort by index in global array
-        return a[0] - b[0];
-    });
-
-    for (var ii = 0; ii < paramsArray.length; ii++) {
-        graphicOpts = paramsArray[ii];
-        graphic = this.drownGraphics[graphicOpts[0]];
-        viewObject.AddGraphicEx(graphic, graphicOpts[2], graphicOpts[3]);
-    }
-};
-
-/**
- * function that ...
- *
- * @method addLimitsToView
- */
-Dispatcher.addLimitsToView = function(view_index, params) {
-    this.graphicsViews[view_index].SetLimits(params[0], params[1]);
-};
-
-/**
- * function that ...
- *
- * @method addNotationToView
- */
-Dispatcher.addNotationToView = function(view_index, params) {
-    // TODO
-    this.graphicsViews[view_index].AddNotation(params[0], params[1]);
-};
-
-/**
- * function that ...
- *
- * @method addScaleToView
- */
-Dispatcher.addScaleToView = function(view_index, params) {
-    this.graphicsViews[view_index].SetScale(params[0], params[1]);
-};
-
-/**
- * function that ...
- *
- * @method setGraphicOptions
- */
-Dispatcher.setGraphicOptions = function(view_index, paramsArray) {
-    var viewObject = this.graphicsViews[view_index];
-
-    for (var ii = 0; ii < paramsArray.length; ii++) {
-        var opts = paramsArray[ii];
-        // setting next opts: name,    type,    color,   visibility
-        viewObject.SetGraphic(opts[0], opts[1], opts[2], opts[3]);
-    }
-};
-
-/**
- * function that ...
- *
- * @method zoomGraphicInView
- */
-Dispatcher.zoomGraphicInView = function(view_index, params) {
-    var vMinX = params[0];
-    var vMaxX = params[1];
-    var vMinY = params[2];
-    var vMaxY = params[3];
-    var vGraphic = params[4];
-    this.graphicsViews[view_index].ZoomToValues(
-            vMinX, vMaxX, vMinY, vMaxY, vGraphic);
+        try {
+            switch (params.length) {
+            case 1:
+                viewObject[methodName](arg1);
+                break;
+            case 2:
+                viewObject[methodName](arg1, params[1]);
+                break;
+            case 3:
+                viewObject[methodName](arg1, params[1], params[2]);
+                break;
+            case 4:
+                viewObject[methodName](arg1, params[1], params[2], params[3]);
+                break;
+            case 5:
+                viewObject[methodName](arg1, params[1], params[2], params[3], params[4]);
+                break;
+            default:
+                //DEBUG_START
+                _i('%'.repeat(40));
+                _e(params.length, 'Next amount of params is not handled yet');
+                _d(params, 'params');
+                _d(viewIndex, 'view');
+                _d(methodName, 'method');
+                //DEBUG_STOP
+            }
+        } catch (e) {
+            //DEBUG_START
+            _i('%'.repeat(40));
+            _e('Next error occured on processing this item');
+            _d(e.message);
+            _d(params.length, 'amount of params');
+            _d(params, 'params');
+            _d(viewIndex, 'view');
+            _d(methodName, 'method');
+            //DEBUG_STOP
+        }
+    }, this);
 };
 
 Dispatcher.isScriptAllowedToRun = function() {
@@ -638,8 +513,7 @@ Dispatcher.getValidTaskObject = function(name) {
  * @method storeViewsProps
  */
 Dispatcher.storeViewsProps = function(viewsProps) {
-    this.graphicsViewsProps =
-        Utils.mergeRecursive(this.graphicsViewsProps, viewsProps);
+    this.viewsProps = Utils.mergeRecursive(this.viewsProps, viewsProps);
 };
 
 Dispatcher.storeGraphicObject = function(graphicObj) {
