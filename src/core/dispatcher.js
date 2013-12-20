@@ -80,7 +80,6 @@ Dispatcher.init = function(params) {
     }
 
     this.createMessageInfractructure(params.messageTypes);
-
 };
 
 /**
@@ -101,20 +100,7 @@ Dispatcher.process = function() {
         scriptName: Script.name
     });
 
-    if (Validation !== null) {
-        if (Validation.isMasterKeyPresent()) {
-            if (Validation.checkActivationKey() === false) {
-                _rp(_t('core.validation.error1'));
-                return;
-            }
-        } else {
-            Validation.buildKeyFile();
-            _rp(_t('core.validation.keys_created'));
-            return;
-        }
-    } else if (Script.demoMode) {
-        _rp(_t('core.demo_mode'));
-    }
+    if (this.isScriptAllowedToRun() === false) { return false; }
 
     // deal with all configuration stuff
     Input.createConfiguration(Script.inputs, Script.inputFields);
@@ -123,18 +109,14 @@ Dispatcher.process = function() {
     this.logIncomingParams();
     //DEBUG_STOP
 
-    // lets start counting execution time
     Profiler.start('main');
 
-    Host.ShowProgress(_t('core.status.start'), this.specs.length);
-
+    this.startProgressBar();
     this.loopThroughRegisteredSpecs();
     this.createGraphicViews();
     this.processGraphicsViewProps();
     this.printMessages();
-
-    Host.ShowReport();
-    Host.HideProgress();
+    this.stopProgressBar();
 
     Profiler.stop('main');
     _rp(_t('report.done', Profiler.get_HRF_time('main')));
@@ -312,6 +294,8 @@ Dispatcher.printMessages = function() {
             _rl('');
         }
     }
+
+    Host.ShowReport();
 };
 
 /**
@@ -588,6 +572,33 @@ Dispatcher.zoomGraphicInView = function(view_index, params) {
     var vGraphic = params[4];
     this.graphicsViews[view_index].ZoomToValues(
             vMinX, vMaxX, vMinY, vMaxY, vGraphic);
+};
+
+Dispatcher.isScriptAllowedToRun = function() {
+    if (Validation !== null) {
+        if (Validation.isMasterKeyPresent()) {
+            if (Validation.checkActivationKey() === false) {
+                _rp(_t('core.validation.error1'));
+                return false;
+            }
+        } else {
+            Validation.buildKeyFile();
+            _rp(_t('core.validation.keys_created'));
+            return false;
+        }
+    } else if (Script.demoMode) {
+        _rp(_t('core.demo_mode'));
+    }
+
+    return true;
+};
+
+Dispatcher.startProgressBar = function() {
+    Host.ShowProgress(_t('core.status.start'), this.specs.length + 1);
+};
+
+Dispatcher.stopProgressBar = function() {
+    Host.HideProgress();
 };
 
 /**
