@@ -374,28 +374,13 @@ Dispatcher.applyPropsToGraphicViews = function() {
     _d('');
     //DEBUG_STOP
 
-    var params = null;
-    for (var ii in this.viewsProps) {
-        if (!this.viewsProps.hasOwnProperty(ii)) {
-            continue;
-        }
+    Object.keys(this.viewsProps).forEach(function(view) {
+        Object.keys(this.viewsProps[view]).forEach(function(key) {
+            this.applyMethodToView(view, key, this.viewsProps[view][key]);
+        }, this);
 
-        if (typeof this.graphicsViews[ii] === 'undefined') {
-            //DEBUG_START
-            _e(ii, 'missing view');
-            //DEBUG_STOP
-            continue;
-        }
-
-        for (var key in this.viewsProps[ii]) {
-            if (this.viewsProps[ii].hasOwnProperty(key)) {
-                params = this.viewsProps[ii][key];
-                this.applyMethodToView(ii, key, params);
-            }
-        }
-
-        this.graphicsViews[ii].Update();
-    }
+        this.graphicsViews[view].Update();
+    }, this);
 };
 
 Dispatcher.applyMethodToView = function(viewIndex, methodName, instancesParams) {
