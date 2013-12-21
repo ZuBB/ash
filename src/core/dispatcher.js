@@ -103,7 +103,7 @@ Dispatcher.process = function() {
         scriptName: Script.name
     });
 
-    if (this.isScriptAllowedToRun() === false) { return false; }
+    if (isScriptAllowedToRun() === false) { return false; }
 
     // deal with all configuration stuff
     Input.createConfiguration(Script.inputs, Script.inputFields);
@@ -443,23 +443,6 @@ Dispatcher.applyMethodToView = function(view, key, instancesParams) {
             //DEBUG_STOP
         }
     }, this);
-};
-
-Dispatcher.isScriptAllowedToRun = function() {
-    if (Validation !== null) {
-        if (Validation.isMasterKeyPresent()) {
-            if (Validation.checkActivationKey() === false) {
-                _rp(_t('core.validation.error1'));
-                return false;
-            }
-        } else {
-            Validation.buildKeyFile();
-            _rp(_t('core.validation.keys_created'));
-            return false;
-        }
-    }
-
-    return true;
 };
 
 Dispatcher.startProgressBar = function() {
