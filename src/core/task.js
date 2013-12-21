@@ -556,13 +556,13 @@ Task.prototype.joinViewsProps = function() {
 
         switch (true) {
         case this.graphicIsBackground:
-            prop = 'AddArea';
+            prop = 'area';
             break;
         case this.multicolorGraphic:
-            prop = 'AddGraphic';
+            prop = 'graphic';
             break;
         default:
-            prop = 'AddGraphicEx';
+            prop = 'graphicex';
         }
 
         // if we do not have props for this **view**
@@ -595,7 +595,7 @@ Task.prototype.joinViewsProps = function() {
             this.viewsProps[view][prop].push(params);
 
             // if this is an area or visible graphic -- skip all that is below
-            if (prop === 'AddArea' || graphics[jj].visible) {
+            if (prop === 'area' || graphics[jj].visible) {
                 continue;
             }
 
