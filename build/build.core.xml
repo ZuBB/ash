@@ -55,14 +55,9 @@
                 </selector>
             </fileset>
             <fileset dir="core/src/extension" includes="*.js"/>
-            <fileset dir=".">
-                <selector if="${3PARTY.ASVM}">
-                    <or>
-                        <filename name="svm/src/*.js"/>
-                        <filename name="svm/third party/cryptojs/tags/3.1.2/build/rollups/aes.js"/>
-                    </or>
-                </selector>
-            </fileset>
+
+            <filelist dir="modules" files="${modules.files}"/>
+
             <fileset dir="build/tmp" includes="lang*.js"/>
             <fileset dir="tasks">
                 <and>
@@ -267,10 +262,58 @@
         </if>
     </target>
 
-    <target name="vars" depends="check-antcontrib, get-antcontrib">
+    <target name="antcontrib" depends="check-antcontrib, get-antcontrib">
         <taskdef resource="net/sf/antcontrib/antlib.xml"
             classpathref="antcontrib.path"/>
+    </target>
 
+    <target name="modules-dir">
+        <condition property="modules.dir.exists">
+            <available file="modules" type="dir"/>
+        </condition>
+    </target>
+
+    <target name="modules-no" unless="${modules.dir.exists}">
+        <var name="modules.files" value="" />
+    </target>
+
+    <target name="modules-yes" if="${modules.dir.exists}">
+        <var name="modules.files" value="" />
+
+        <for param="moduleDir">
+            <path>
+                <dirset dir="modules">
+                    <include name="*"/>
+                </dirset>
+            </path>
+            <sequential>
+                <propertyregex override="yes" input="@{moduleDir}" select="\1"
+                    regexp="\${file.separator}([^\${file.separator}]+)$"
+                    property="module" />
+
+                <property file="@{moduleDir}/build.properties"/>
+
+                <if>
+                    <not>
+                        <isset property="${module}.include"/>
+                    </not>
+                    <then>
+                        <for list="${module}.list" delimiter=" " param = "sf">
+                            <sequential>
+                                <var name="modules.files"
+                                    value="${modules.files} ${module}${file.separator}${sf}" />
+                            </sequential>
+                        </for>
+                    </then>
+                </if>
+            </sequential>
+        </for>
+    </target>
+
+    <target name="get-modules-files-list" depends="modules-dir, modules-no, modules-yes">
+    </target>
+
+    <target name="vars" depends="antcontrib, get-modules-files-list">
         <if>
             <not>
                 <isset property="FILE.NAME"/>
