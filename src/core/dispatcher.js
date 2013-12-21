@@ -4,6 +4,8 @@
  * @method init
  */
 Dispatcher = {
+    sortableProps: ['area', 'graphic', 'graphicex'],
+
     runTimestamp: new Date(),
     //DEBUG_START
     maxSpecNameLength: 0,
@@ -337,7 +339,6 @@ Dispatcher.createGraphicViews = function() {
  * @method sortGraphicsByIndexes
  */
 Dispatcher.sortGraphicsByIndexes = function() {
-    var methods  = ['AddArea', 'AddGraphic', 'AddGraphicEx'];
     var mapFunc  = function(item) { return item.slice(1); };
     var sortFunc = function(a, b) {
         // try to sort by view index
@@ -348,7 +349,7 @@ Dispatcher.sortGraphicsByIndexes = function() {
     };
 
     Object.keys(this.viewsProps).forEach(function(ii) {
-        methods.forEach(function(key) {
+        this.sortableProps.forEach(function(key) {
             if (typeof this.viewsProps[ii][key] === 'undefined') {
                 return;
             }
@@ -383,52 +384,62 @@ Dispatcher.applyPropsToGraphicViews = function() {
     }, this);
 };
 
-Dispatcher.applyMethodToView = function(viewIndex, methodName, instancesParams) {
-    var methods     = ['AddArea', 'AddGraphic', 'AddGraphicEx'];
-    var viewObject  = this.graphicsViews[viewIndex];
-    var fix1stParam = function(arg1, methodName, self) {
-        return methods.indexOf(methodName) > -1 ?
+Dispatcher.applyMethodToView = function(view, key, instancesParams) {
+    var propsHash = {
+        'area':        'AddArea',
+        'comment':     'AddComment',
+        'description': 'SetDescription',
+        'graphic':     'AddGraphic',
+        'graphicex':   'AddGraphicEx',
+        'limits':      'SetLimits',
+        'notation':    'AddNotation',
+        'scale':       'SetScale',
+        'set':         'SetGraphic',
+        'zoom':        'ZoomToValues'
+    };
+
+    var method      = propsHash[key] || key;
+    var viewObject  = this.graphicsViews[view];
+    var fix1stParam = function(arg1, key, self) {
+        return self.sortableProps.indexOf(key) > -1 ?
             self.drownGraphics[arg1] : arg1;
     };
 
-    instancesParams.forEach(function(params) {
-        var arg1 = fix1stParam(params[0], methodName, this);
+    //DEBUG_START
+    var dumpInfoFunc = function(errorMessage, args) {
+        _i('%'.repeat(40));
+        _e(errorMessage);
+        _d(view, 'view');
+        _d(method, 'method');
+        _d(args.length, 'amount of params');
+        _d(args, 'params');
+    }
+    //DEBUG_STOP
+
+    instancesParams.forEach(function(args) {
+        var arg1 = fix1stParam(args[0], key, this);
+        var len  = args.length;
 
         try {
-            switch (params.length) {
-            case 1:
-                viewObject[methodName](arg1);
-                break;
-            case 2:
-                viewObject[methodName](arg1, params[1]);
-                break;
-            case 3:
-                viewObject[methodName](arg1, params[1], params[2]);
-                break;
-            case 4:
-                viewObject[methodName](arg1, params[1], params[2], params[3]);
-                break;
-            case 5:
-                viewObject[methodName](arg1, params[1], params[2], params[3], params[4]);
-                break;
-            default:
+            if (len === 1) {
+                viewObject[method](arg1);
+            } else if (len === 2) {
+                viewObject[method](arg1, args[1]);
+            } else if (len === 3) {
+                viewObject[method](arg1, args[1], args[2]);
+            } else if (len === 4) {
+                viewObject[method](arg1, args[1], args[2], args[3]);
+            } else if (len === 5) {
+                viewObject[method](arg1, args[1], args[2], args[3], args[4]);
+            } else {
                 //DEBUG_START
-                _i('%'.repeat(40));
-                _e(params.length, 'Next amount of params is not handled yet');
-                _d(params, 'params');
-                _d(viewIndex, 'view');
-                _d(methodName, 'method');
+                dumpInfoFunc('This amount of params is not handled yet', args);
                 //DEBUG_STOP
             }
         } catch (e) {
             //DEBUG_START
-            _i('%'.repeat(40));
-            _e('Next error occured on processing this item');
-            _d(e.message);
-            _d(params.length, 'amount of params');
-            _d(params, 'params');
-            _d(viewIndex, 'view');
-            _d(methodName, 'method');
+            dumpInfoFunc('Next error occured on processing this item: ' +
+                e.message, args);
             //DEBUG_STOP
         }
     }, this);
