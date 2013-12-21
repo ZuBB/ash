@@ -461,8 +461,6 @@ Dispatcher.isScriptAllowedToRun = function() {
             _rp(_t('core.validation.keys_created'));
             return false;
         }
-    } else if (Script.demoMode) {
-        _rp(_t('core.demo_mode'));
     }
 
     return true;
