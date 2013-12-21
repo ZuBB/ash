@@ -10,6 +10,7 @@ var Profiler   = null;
 var Utils      = {};
 var MathHelper = {};
 var AHF = {};
+var isScriptAllowedToRun = function() { return true; };
 
 // $ block
 var Validation = null;
