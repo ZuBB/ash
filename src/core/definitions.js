@@ -12,9 +12,6 @@ var MathHelper = {};
 var AHF = {};
 var isScriptAllowedToRun = function() { return true; };
 
-// $ block
-var Validation = null;
-
 // i18n
 var _t = null;
 
