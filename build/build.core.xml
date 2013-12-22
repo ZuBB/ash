@@ -4,7 +4,7 @@
         Autoscope Script Helper is a...
     </description>
 
-    <property file="core/build/build.core.properties"/>
+    <property file="src/core/build/build.core.properties"/>
 
     <target name="dev" depends="concat, replace, encoding">
         <var name="old.file" value="${new.file}"/>
@@ -43,23 +43,23 @@
             encoding="${current.cp}" outputencoding="${current.cp}">
             <header>${JSHINT.HEADER}</header>
 
-            <fileset dir="core/src/core" includes="*.js"/>
-            <fileset dir="core/src/vendor/json">
+            <fileset dir="src/core/src/core" includes="*.js"/>
+            <fileset dir="src/core/src/vendor/json">
                 <selector if="${3PARTY.JSON}">
                     <filename name="json2.js"/>
                 </selector>
             </fileset>
-            <fileset dir="core/src/vendor/es5-shim">
+            <fileset dir="src/core/src/vendor/es5-shim">
                 <selector if="${3PARTY.ES5}">
                     <filename name="es5-shim.js"/>
                 </selector>
             </fileset>
-            <fileset dir="core/src/extension" includes="*.js"/>
+            <fileset dir="src/core/src/extension" includes="*.js"/>
 
             <filelist dir="modules" files="${modules.files}"/>
 
             <fileset dir="build/tmp" includes="lang*.js"/>
-            <fileset dir="tasks">
+            <fileset dir="src/tasks">
                 <and>
                     <selector>
                         <filename name="*.js"/>
@@ -67,7 +67,7 @@
                     <selector refid="excludes.list" />
                 </and>
             </fileset>
-            <fileset dir="javascript" includes="*.js"/>
+            <fileset dir="src/app" includes="*.js"/>
         </concat>
     </target>
 
@@ -76,7 +76,7 @@
         <mkdir dir="./build/tmp/i18n-storage"/>
 
         <for param="file" keepgoing="true">
-            <fileset dir="resources" includes="lang-*.properties"/>
+            <fileset dir="src/resources" includes="lang-*.properties"/>
             <sequential>
                 <propertyregex override="yes" input="@{file}"
                     regexp="-([a-z]{2})." property="LANG" select="\1"/>
@@ -88,8 +88,8 @@
                 <concat encoding="${current.cp}" outputencoding="${current.cp}"
                     destfile="./build/tmp/i18n-storage/${curr.file}">
                     <filelist>
-                        <file name="./core/src/resources/${curr.file}"/>
-                        <file name="./resources/${curr.file}"/>
+                        <file name="./src/core/src/resources/${curr.file}"/>
+                        <file name="./src/resources/${curr.file}"/>
                     </filelist>
                 </concat>
 
@@ -140,7 +140,7 @@
 
         <copy file="${old.file}" tofile="${new.file}"
             encoding="${current.cp}" outputencoding="${current.cp}">
-                <filterset filtersfile="resources/colors.properties">
+                <filterset filtersfile="src/resources/colors.properties">
                     <filter token="TIMESTAMP" value="${TIMESTAMP}"/>
                     <filter token="VERSION" value="${VERSION}"/>
                     <filter token="BUILD_ID" value="${BUILD_ID}"/>
@@ -281,7 +281,7 @@
 
         <for param="moduleDir">
             <path>
-                <dirset dir="modules">
+                <dirset dir="src/modules">
                     <include name="*"/>
                 </dirset>
             </path>
