@@ -88,7 +88,7 @@
                 <concat encoding="${current.cp}" outputencoding="${current.cp}"
                     destfile="./build/tmp/i18n-storage/${curr.file}">
                     <filelist>
-                        <file name="./core/resources/${curr.file}"/>
+                        <file name="./core/src/resources/${curr.file}"/>
                         <file name="./resources/${curr.file}"/>
                     </filelist>
                 </concat>
