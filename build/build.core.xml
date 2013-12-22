@@ -44,12 +44,12 @@
             <header>${JSHINT.HEADER}</header>
 
             <fileset dir="core/src/core" includes="*.js"/>
-            <fileset dir="core/src/third party/json">
+            <fileset dir="core/src/vendor/json">
                 <selector if="${3PARTY.JSON}">
                     <filename name="json2.js"/>
                 </selector>
             </fileset>
-            <fileset dir="core/src/third party/es5-shim">
+            <fileset dir="core/src/vendor/es5-shim">
                 <selector if="${3PARTY.ES5}">
                     <filename name="es5-shim.js"/>
                 </selector>
