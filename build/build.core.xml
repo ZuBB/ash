@@ -277,6 +277,7 @@
 
     <target name="modules-yes" if="${modules.dir.exists}">
         <var name="modules.files" value="" />
+        <var name="temp.var" value="" />
 
         <for param="moduleDir">
             <path>
@@ -285,21 +286,26 @@
                 </dirset>
             </path>
             <sequential>
+                <property file="@{moduleDir}/build.properties"/>
+
                 <propertyregex override="yes" input="@{moduleDir}" select="\1"
                     regexp="\${file.separator}([^\${file.separator}]+)$"
                     property="module" />
 
-                <property file="@{moduleDir}/build.properties"/>
+                <propertycopy override="true"
+                    name="module.include" from="${module}.include" />
 
                 <if>
-                    <not>
-                        <isset property="${module}.include"/>
-                    </not>
+                    <equals arg1="${module.include}" arg2="true"/>
                     <then>
-                        <for list="${module}.list" delimiter=" " param = "sf">
+                        <propertycopy override="true"
+                            name="module.list" from="${module}.list" />
+
+                        <for list="${module.list}" delimiter=" " param = "sf">
                             <sequential>
-                                <var name="modules.files"
-                                    value="${modules.files} ${module}${file.separator}${sf}" />
+                                <var name="temp.var"
+                                    value="${temp.var} ${module}${file.separator}@{sf}" />
+                                <var name="modules.files" value="${temp.var}" />
                             </sequential>
                         </for>
                     </then>
