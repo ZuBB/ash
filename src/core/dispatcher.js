@@ -375,7 +375,7 @@ Dispatcher.applyPropsToGraphicViews = function() {
     _d('');
     //DEBUG_STOP
 
-    Object.keys(this.viewsProps).forEach(function(view) {
+    Object.keys(this.graphicsViews).forEach(function(view) {
         Object.keys(this.viewsProps[view]).forEach(function(key) {
             this.applyMethodToView(view, key, this.viewsProps[view][key]);
         }, this);
