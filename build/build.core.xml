@@ -56,7 +56,7 @@
             </fileset>
             <fileset dir="src/core/src/extension" includes="*.js"/>
 
-            <filelist dir="modules" files="${modules.files}"/>
+            <filelist dir="src/modules" files="${modules.files}"/>
 
             <fileset dir="build/tmp" includes="lang*.js"/>
             <fileset dir="src/tasks">
@@ -267,7 +267,7 @@
 
     <target name="modules-dir">
         <condition property="modules.dir.exists">
-            <available file="modules" type="dir"/>
+            <available file="src/modules" type="dir"/>
         </condition>
     </target>
 
