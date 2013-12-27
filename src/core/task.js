@@ -995,7 +995,9 @@ Task.prototype.getDataSet = function(index, key) {
     var sliceParams = start < 0 ? [start] : [start, start + 1];
     var dataSet = Array.prototype.slice.apply(this.graphics, sliceParams)[0];
 
-    if (key) {
+    // TODO: find best way how to handle attempts of access
+    // to nonexistent datasets
+    if (key && dataSet) {
         if (['dataX', 'datax', 'X', 'x'].indexOf(key) > -1) {
             return dataSet.dataX;
         }
@@ -1005,7 +1007,8 @@ Task.prototype.getDataSet = function(index, key) {
         }
     }
 
-    return dataSet;
+    // TODO: this is 2ns part of issue that is above
+    return dataSet || [];
 };
 
 /**
