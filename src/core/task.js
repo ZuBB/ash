@@ -954,7 +954,8 @@ Task.prototype.addDataSet = function(dataSet) {
         return false;
     }
 
-    if (dataSet.dataY.length === 0) {
+    // TODO: what to do with empty dataSets?
+    if (dataSet.dataY.length === 0 && false) {
         return false;
     }
 
