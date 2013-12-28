@@ -144,8 +144,11 @@ Logger._createOutputStr = function(b_lf, level, value, desc) {
             return '';
         }
 
-        value = value.replace(/^\n/, '');
-        value = value.replace(/\n$/, '');
+        // TODO this 'if' is a hack :(
+        if (typeof value === 'string') {
+            value = value.replace(/^\n/, '');
+            value = value.replace(/\n$/, '');
+        }
         b_lf = false;
     }
 
