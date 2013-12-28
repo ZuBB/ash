@@ -543,7 +543,8 @@ Task.prototype.joinViewsProps = function() {
 
     //DEBUG_START
     if (typeof JSON !== 'undefined') {
-        _d(viewIndexes, 'we prepared graphics with next indexes');
+        var msg = 'we prepared graphics with next indexes';
+        _d(JSON.stringify(viewIndexes, null, 4), msg);
     }
     //DEBUG_STOP
 
