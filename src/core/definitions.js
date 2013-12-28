@@ -26,7 +26,7 @@ var _f = null;
 //DEBUG_STOP
 
 // reporter stuff
-var _rh = null;
+var _rw = null;
 var _rl = null;
 var _rp = null;
 

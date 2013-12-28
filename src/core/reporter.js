@@ -126,7 +126,7 @@ Reporter._insertLink2OSCGRM = function(string, oscillogram) {
 
 // ==========================================
 
-_rh = function() {
+_rw = function() {
     Reporter.report.apply(Reporter,
         Utils.prepareParams(arguments, false, false));
 };
