@@ -36,10 +36,8 @@ Task = function(params) {
     this.multicolorGraphic = false;
 
     this.setLimits = false;
-    this.maxLimitFunc = function() { return null; };
-    this.minLimitFunc = function() { return null; };
-    this.minLimitValue = null;
-    this.maxLimitValue = null;
+    this.minLimit  = null;
+    this.maxLimit  = null;
 
     this.setScale = false;
     this.scaleValue = null;
@@ -816,9 +814,11 @@ Task.prototype.getGraphicName = function(currentIndex) {
 Task.prototype.getLimitPoints = function(dataSet) {
     var minVal = dataSet.dataY.min();
     var maxVal = dataSet.dataY.max();
+    var minFunc = typeof this.minLimit === 'function';
+    var maxFunc = typeof this.maxLimit === 'function';
     var filterFunc = function(n) { return n !== null; };
-    var minValues = [this.minLimitFunc(minVal), this.minLimitValue, minVal];
-    var maxValues = [this.maxLimitFunc(maxVal), this.maxLimitValue, maxVal];
+    var minValues = [minFunc ? this.minLimit(minVal) : this.minLimit, minVal];
+    var maxValues = [maxFunc ? this.maxLimit(maxVal) : this.maxLimit, maxVal];
 
     return [minValues.filter(filterFunc)[0], maxValues.filter(filterFunc)[0]];
 };
