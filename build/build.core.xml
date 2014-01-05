@@ -87,7 +87,7 @@
                 <var name="curr.file" value="lang-${LANG}.${LANG_CODE}.properties"/>
                 <concat encoding="${current.cp}" outputencoding="${current.cp}"
                     destfile="./build/tmp/i18n-storage/${curr.file}">
-                    <filelist>
+                    <filelist dir='./'>
                         <file name="./src/core/src/resources/${curr.file}"/>
                         <file name="./src/resources/${curr.file}"/>
                     </filelist>
