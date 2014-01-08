@@ -6,7 +6,15 @@
 
     <property file="src/core/build/build.core.properties"/>
 
-    <target name="dev" depends="concat, replace, encoding">
+    <target name="base" depends="concat, replace, encoding">
+        <var name="old.file" value="${new.file}"/>
+        <var name="new.file" value="${OUTPUT.DIR}/${FILE.NAME}.base.${FILE.EXT}"/>
+
+        <copy encoding="${current.cp}" outputencoding="${current.cp}"
+            file="${old.file}" tofile="${new.file}"/>
+    </target>
+
+    <target name="dev" depends="base, tstamp">
         <var name="old.file" value="${new.file}"/>
         <var name="new.file" value="${OUTPUT.DIR}/${FILE.NAME}.dev.${FILE.EXT}"/>
 
@@ -14,7 +22,7 @@
             file="${old.file}" tofile="${new.file}"/>
     </target>
 
-    <target name="rqbuild" depends="rqbuild-vars, vcs, dev, strip, check-log-calls, compress">
+    <target name="release" depends="rqbuild-vars, vcs, base, strip, check-log-calls, compress">
         <var name="old.file" value="${new.file}"/>
 
         <if>
@@ -30,6 +38,8 @@
         <copy encoding="${current.cp}" outputencoding="${current.cp}"
             file="${old.file}" tofile="${new.file}"/>
     </target>
+
+    <target name="rqbuild" depends="release, tstamp" />
 
     <target name="concat" depends="vars, i18n">
         <mkdir dir="${OUTPUT.DIR}"/>
@@ -141,7 +151,6 @@
         <copy file="${old.file}" tofile="${new.file}"
             encoding="${current.cp}" outputencoding="${current.cp}">
                 <filterset filtersfile="src/resources/colors.properties">
-                    <filter token="TIMESTAMP" value="${TIMESTAMP}"/>
                     <filter token="VERSION" value="${VERSION}"/>
                     <filter token="BUILD_ID" value="${BUILD_ID}"/>
                     <filter token="SCRIPT_FILENAME" value="${FILE.NAME}"/>
@@ -160,6 +169,25 @@
             file="${old.file}" tofile="${new.file}"/>
 
         <var name="current.cp" value="${EXT_CP}"/>
+    </target>
+
+    <target name="tstamp">
+        <var name="old.file" value="${new.file}"/>
+        <var name="new.file" value="${OUTPUT.DIR}/${FILE.NAME}.tstamp.${FILE.EXT}"/>
+
+        <move file="${old.file}" tofile="${new.file}"
+            encoding="${current.cp}" outputencoding="${current.cp}">
+            <filterchain>
+                <replacetokens begintoken='"' endtoken='"'>
+                    <token key="TIMESTAMP" value="${TIMESTAMP}"/>
+                </replacetokens>
+            </filterchain>
+        </move>
+
+        <move file="${new.file}" tofile="${old.file}"
+            encoding="${current.cp}" outputencoding="${current.cp}"/>
+
+        <var name="new.file" value="${old.file}"/>
     </target>
 
     <target name="strip">
