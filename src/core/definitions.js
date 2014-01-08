@@ -40,7 +40,7 @@ var CONSTS = {};
 
 // script namespace
 var Script = {
-    buildTimestamp: new Date(@TIMESTAMP@),
+    buildTimestamp: new Date("TIMESTAMP"),
     demoMode:       @DEMO_MODE@,
     buildID:        '@BUILD_ID@',
     version:        '@VERSION@',
