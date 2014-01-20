@@ -175,6 +175,10 @@
         <var name="old.file" value="${new.file}"/>
         <var name="new.file" value="${OUTPUT.DIR}/${FILE.NAME}.tstamp.${FILE.EXT}"/>
 
+        <tstamp>
+            <format property="TIMESTAMP" pattern="yyyy, M, d, H, m, s, S"/>
+        </tstamp>
+
         <move file="${old.file}" tofile="${new.file}"
             encoding="${current.cp}" outputencoding="${current.cp}">
             <filterchain>
@@ -362,10 +366,6 @@
                 </not>
             </condition>
         </fail>
-
-        <tstamp>
-            <format property="TIMESTAMP" pattern="yyyy, M, d, H, m, s, S"/>
-        </tstamp>
 
         <var name="new.file" value=""/>
         <var name="old.file" value=""/>
