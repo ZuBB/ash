@@ -51,7 +51,7 @@
 
         <concat destfile="${new.file}" fixlastline="true"
             encoding="${current.cp}" outputencoding="${current.cp}">
-            <header>${JSHINT.HEADER}</header>
+            <header>${JSHINT.HEADER}${line.separator}${line.separator}</header>
 
             <fileset dir="src/core/src/core" includes="*.js"/>
             <fileset dir="src/core/src/vendor/json">
