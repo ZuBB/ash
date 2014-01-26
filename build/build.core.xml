@@ -101,6 +101,11 @@
                         <file name="./src/core/src/resources/${curr.file}"/>
                         <file name="./src/resources/${curr.file}"/>
                     </filelist>
+                    <fileset dir="./src/modules/">
+                        <patternset>
+                            <include name="**/${curr.file}"/>
+                        </patternset>
+                    </fileset>
                 </concat>
 
                 <if>
@@ -108,7 +113,7 @@
                         <filesmatch
                             file1="./build/tmp/i18n-storage/${curr.file}"
                             file2="./build/tmp/i18n-reference/${curr.file}"/>
-                        </not>
+                    </not>
                     <then>
                         <!--
                             here we converting localization file that is in
