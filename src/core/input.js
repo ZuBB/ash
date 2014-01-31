@@ -61,7 +61,7 @@ Input.getDefaultValue = function(name) {
 Input.createConfiguration = function(items, possibleInputs) {
     if (Array.isArray(items) === false || items.length < 1) {
         //DEBUG_START
-        _e('Can not create configuration(s). Check options you passed');
+        _w("Can't create configuration. Options is not an array or is empty");
         //DEBUG_STOP
         return;
     }
