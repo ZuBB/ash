@@ -103,25 +103,22 @@ Dispatcher.process = function() {
         scriptName: Script.name
     });
 
-    if (isScriptAllowedToRun() === false) { return false; }
-
-    // deal with all configuration stuff
+    Profiler.start('main');
     Input.createConfiguration(Script.inputs, Script.inputFields);
-
     //DEBUG_START
     this.logIncomingParams();
     //DEBUG_STOP
-
-    Profiler.start('main');
-
     this.startProgressBar();
-    this.loopThroughRegisteredSpecs();
-    this.createGraphicViews();
-    this.sortGraphicsByIndexes();
-    this.applyPropsToGraphicViews();
+
+    if (isScriptAllowedToRun()) {
+        this.loopThroughRegisteredSpecs();
+        this.createGraphicViews();
+        this.sortGraphicsByIndexes();
+        this.applyPropsToGraphicViews();
+    }
+
     this.printMessages();
     this.stopProgressBar();
-
     Profiler.stop('main');
     _rp(_t('report.done', Profiler.get_HRF_time('main')));
 
