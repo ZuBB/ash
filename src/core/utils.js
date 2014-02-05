@@ -210,30 +210,6 @@ Utils.createOutputStr = function(b_lf, a_lf, value, description) {
 /**
  * function that ...
  *
- * @method convertReportMessage2Obj
- */
-Utils.convertReportMessage2Obj = function(message) {
-    if (typeof message === 'string') {
-        message = [message];
-    }
-
-    if (Array.isArray(message)) {
-        message = {'message': message};
-    }
-
-    if (!message || message.constructor !== Object) {
-        //DEBUG_START
-        _e(message, 'convertReportMessage2Obj got invalid value');
-        //DEBUG_STOP
-        return null;
-    }
-
-    return message;
-};
-
-/**
- * function that ...
- *
  * @method getColorForPercentage
  *         // http://bit.ly/17CTRQX
  */

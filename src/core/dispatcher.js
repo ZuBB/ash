@@ -20,6 +20,26 @@ Dispatcher = {
     viewsProps: {},
 
     messageTypes: [],
+    messagePrintProps: {
+        'bug': {
+            'headerControlChars': {
+                'colors': [0xFFFFFF, 0xFF0000]
+            }
+        },
+        'error': {
+            'headerControlChars': {
+                'colors': [0xF05025]
+            }
+        },
+        'hint': {
+            'headerControlChars': {
+                'colors': [0x0F8052]
+            }
+        },
+        'message': {
+            'skipHeader': true
+        }
+    },
 
     tasksHash: {},
     specs: []
@@ -231,32 +251,25 @@ Dispatcher.loopThroughRegisteredSpecs = function() {
  */
 Dispatcher.createMessageInfractructure = function(messages) {
     this.messageTypes = messages && messages.constructor === Object ?
-        messages : {
-            'bug': {
-                'headerControlChars': {
-                    'colors': [0xFFFFFF, 0xFF0000]
-                }
-            },
-            'error': {
-                'headerControlChars': {
-                    'colors': [0xF05025]
-                }
-            },
-            'hint': {
-                'headerControlChars': {
-                    'colors': [0x0F8052]
-                }
-            },
-            'message': {
-                'skipHeader': true
-            }
-        };
+        messages : this.messagePrintProps;
 
     var addMessageFunc = function(item, self) {
         return function(message) {
-            var msgObj = Utils.convertReportMessage2Obj(message);
-            if (msgObj) {
-                self.messageTypes[item].messages.push(msgObj);
+            if (typeof message === 'string') {
+                message = [message];
+            }
+
+            if (Array.isArray(message)) {
+                message = {'message': message};
+            }
+
+            if (!message || message.constructor !== Object) {
+                //DEBUG_START
+                _e(message, 'addMessageFunc got invalid value');
+                //DEBUG_STOP
+                return null;
+            } else {
+                self.messageTypes[item].messages.push(message);
             }
         };
     };
