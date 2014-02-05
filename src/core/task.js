@@ -660,9 +660,11 @@ Task.prototype.parseViewIndex = function() {
         }
 
         result.push({
+            //DEBUG_START
+            'orig': viewIndexes[ii],
+            //DEBUG_STOP
             'view': view,
-            'index': --position,
-            'orig': viewIndexes[ii]
+            'index': position - 1
         });
     }
 
