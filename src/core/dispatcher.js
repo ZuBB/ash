@@ -100,7 +100,7 @@ Dispatcher.process = function() {
         version:    Script.version,
         buildID:    Script.buildID,
         buildTime:  Script.buildTimestamp,
-        scriptName: Script.name
+        scriptName: Script.name.toUpperCase()
     });
 
     Profiler.start('main');

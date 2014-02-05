@@ -44,6 +44,6 @@ var Script = {
     demoMode:       @DEMO_MODE@,
     buildID:        '@BUILD_ID@',
     version:        '@VERSION@',
-    name:           ('@SCRIPT_FILENAME@').toUpperCase()
+    name:           '@SCRIPT@'
 };
 

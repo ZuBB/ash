@@ -158,7 +158,7 @@
                 <filterset filtersfile="src/resources/colors.properties">
                     <filter token="VERSION" value="${VERSION}"/>
                     <filter token="BUILD_ID" value="${BUILD_ID}"/>
-                    <filter token="SCRIPT_FILENAME" value="${FILE.NAME}"/>
+                    <filter token="SCRIPT" value="${FILE.NAME}"/>
                     <filter token="GRAPHIC_TYPE" value="${DEFAULT_GRAPHIC_TYPE}"/>
                     <filter token="DATATYPE" value="${DATATYPE}"/>
                     <filter token="DEMO_MODE" value="${DEMO_MODE}"/>
