@@ -1012,7 +1012,7 @@ Task.prototype.getDataSet = function(index, key) {
  *
  * @method addDataSets
  */
-Task.prototype.addValue = function(number, key, dataSetIndex) {
+Task.prototype.addValue = function(key, number, dataSetIndex) {
     dataSetIndex = Math.abs(parseInt(dataSetIndex, 10)) || 0;
 
     if (typeof this.graphics[dataSetIndex] === 'undefined') {
@@ -1032,8 +1032,8 @@ Task.prototype.addValue = function(number, key, dataSetIndex) {
  *
  * @method addDataSets
  */
-Task.prototype.addX = function(number, dataSetIndex) {
-    this.addValue(number, 'dataX', dataSetIndex);
+Task.prototype.addX = function(item, dataSetIndex) {
+    this.addValue('dataX', item, dataSetIndex);
 };
 
 /**
@@ -1041,8 +1041,8 @@ Task.prototype.addX = function(number, dataSetIndex) {
  *
  * @method addDataSets
  */
-Task.prototype.addY = function(number, dataSetIndex) {
-    this.addValue(number, 'dataY', dataSetIndex);
+Task.prototype.addY = function(item, dataSetIndex) {
+    this.addValue('dataY', item, dataSetIndex);
 };
 
 /**
