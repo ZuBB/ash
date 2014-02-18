@@ -944,24 +944,15 @@ Task.prototype.getConfirmedView = function() {
  */
 Task.prototype.addDataSet = function(dataSet) {
     // check if dataSet is hash
-    if (dataSet === null || typeof dataSet !== 'object') {
-        return false;
+    if (dataSet.constructor == Object) {
+        // check if dataSet is not empty (has at least 1 key)
+        if (Object.keys(dataSet).empty() === false) {
+            this.graphics.push(dataSet);
+            return true;
+        }
     }
 
-    // check if dataSet has 'dataX' and 'dataY' keys
-    var isDataXArray = Array.isArray(dataSet.dataX);
-    var isDataYArray = Array.isArray(dataSet.dataY);
-
-    if (isDataXArray === false || isDataYArray === false) {
-        return false;
-    }
-
-    // TODO: what to do with empty dataSets?
-    if (dataSet.dataY.length === 0 && false) {
-        return false;
-    }
-
-    this.graphics.push(dataSet);
+    return false;
 };
 
 /**
@@ -995,24 +986,25 @@ Task.prototype.getDataSet = function(index, key) {
         index = 0;
     }
 
-    var start = Math.abs(parseInt(index, 10)) || 0;
+    var start = parseInt(index, 10) || 0;
     var sliceParams = start < 0 ? [start] : [start, start + 1];
     var dataSet = Array.prototype.slice.apply(this.graphics, sliceParams)[0];
 
-    // TODO: find best way how to handle attempts of access
-    // to nonexistent datasets
     if (key && dataSet) {
         if (['dataX', 'datax', 'X', 'x'].indexOf(key) > -1) {
-            return dataSet.dataX;
+            key = 'dataX';
         }
 
         if (['dataY', 'datay', 'Y', 'y'].indexOf(key) > -1) {
-            return dataSet.dataY;
+            key = 'dataY';
+        }
+
+        if (dataSet.hasOwnProperty(key)) {
+            return dataSet[key];
         }
     }
 
-    // TODO: this is 2ns part of issue that is above
-    return dataSet || [];
+    return dataSet || null;
 };
 
 /**
