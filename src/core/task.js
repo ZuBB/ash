@@ -1060,11 +1060,15 @@ Task.prototype.addXY = function(xValue, yValue, dataSetIndex) {
  *
  * @method addDataSets
  */
-Task.prototype.getX = function(index, dataSetIndex) {
+Task.prototype.getItem = function(key, index, dataSetIndex) {
     index = Math.abs(parseInt(index, 10)) || 0;
     dataSetIndex = Math.abs(parseInt(dataSetIndex, 10)) || 0;
 
-    return this.graphics[dataSetIndex].dataX[index];
+    if (dataSetIndex < this.graphics.length) {
+        return this.graphics[dataSetIndex][key][index];
+    }
+
+    return []._undefined;
 };
 
 /**
@@ -1072,10 +1076,11 @@ Task.prototype.getX = function(index, dataSetIndex) {
  *
  * @method addDataSets
  */
-Task.prototype.getY = function(index, dataSetIndex) {
-    index = Math.abs(parseInt(index, 10)) || 0;
-    dataSetIndex = Math.abs(parseInt(dataSetIndex, 10)) || 0;
+Task.prototype.getX = function(index, dataSetIndex) {
+    return this.getItem('dataX', index, dataSetIndex);
+};
 
-    return this.graphics[dataSetIndex].dataY[index];
+Task.prototype.getY = function(index, dataSetIndex) {
+    return this.getItem('dataY', index, dataSetIndex);
 };
 
