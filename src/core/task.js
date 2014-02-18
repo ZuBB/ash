@@ -49,6 +49,24 @@ Task = function(params) {
 /**
  * function that ...
  *
+ * @method getFullName
+ */
+Task.prototype.getFullName = function() {
+    return this.getTaskName();
+};
+
+/**
+ * function that ...
+ *
+ * @method getFullName
+ */
+Task.prototype.getTaskName = function() {
+    return this.specName;
+};
+
+/**
+ * function that ...
+ *
  * @method getTaskStatus
  */
 Task.prototype.getTaskStatus = function() {
@@ -289,6 +307,21 @@ Task.prototype.isSoftDependenciesResolved = function() {
     _w('None soft dependency was resolved');
     //DEBUG_STOP
     return false;
+};
+
+/**
+ * function that checks if dependencies of the graphic is satisfied
+ *
+ * @method getDependencyObject
+ * @param {Integer} index - zero based index of the dependency
+ *      in 'dependencies' prop
+ */
+Task.prototype.getDependencyObject = function(index) {
+    if (index < this.dependencies.length) {
+        return Dispatcher.getTaskObject(this.dependencies[index]);
+    }
+
+    return null;
 };
 
 /**
@@ -890,26 +923,6 @@ Task.prototype.drawMarker = function(position, markerName) {
             }
         }
     }
-};
-
-/**
- * function that ...
- *
- * @method getFullName
- */
-Task.prototype.getFullName = function() {
-    return this.specName;
-};
-
-/**
- * function that checks if dependencies of the graphic is satisfied
- *
- * @method getDependencyObject
- * @param {Integer} index - zero based index of the dependency
- *      in 'dependencies' prop
- */
-Task.prototype.getDependencyObject = function(index) {
-    return Dispatcher.getTaskObject(this.dependencies[index]);
 };
 
 /**
