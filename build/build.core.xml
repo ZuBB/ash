@@ -74,7 +74,11 @@
                     <selector>
                         <filename name="*.js"/>
                     </selector>
-                    <selector refid="excludes.list" />
+                    <selector>
+                        <not>
+                            <selector if="${releasing}" refid="excludes.list" />
+                        </not>
+                    </selector>
                 </and>
             </fileset>
             <fileset dir="src/app" includes="*.js"/>
@@ -400,11 +404,7 @@
         <property name="DEFAULT_GRAPHIC_TYPE" value="${LINE.TYPE.REL}"/>
     </target>
 
-    <selector id="excludes.list">
-        <not>
-            <selector if="${releasing}"></selector>
-        </not>
-    </selector>
+    <selector id="excludes.list"></selector>
 
     <path id="antcontrib.path">
         <fileset dir="${user.home}/.ant/lib/">
