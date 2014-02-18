@@ -47,36 +47,40 @@ Task = function(params) {
 };
 
 /**
- * function that ...
+ * Returns name of the task
  *
- * @method getFullName
+ * @private
+ * @deprecated
  */
 Task.prototype.getFullName = function() {
     return this.getTaskName();
 };
 
 /**
- * function that ...
+ * Returns name of the task
  *
- * @method getFullName
+ * @return {String} name of the task
  */
 Task.prototype.getTaskName = function() {
     return this.specName;
 };
 
 /**
- * function that ...
+ * Returns status of the last processed action for current task
  *
- * @method getTaskStatus
+ * @method
+ * @return {Boolean} status
  */
 Task.prototype.getTaskStatus = function() {
     return this.statusCodes.last();
 };
 
 /**
- * function that ...
+ * Stores status of newly completed action. Also returns it
  *
- * @method updateStatus
+ * @param  {Boolean} value of the status that is going to be set
+ * @return {Boolean} status that has been set
+ * @private
  */
 Task.prototype.updateStatus = function(taskStatus) {
     taskStatus = Boolean(taskStatus);
@@ -85,9 +89,10 @@ Task.prototype.updateStatus = function(taskStatus) {
 };
 
 /**
- * function that ...
+ * Runs all lowlevel task methods
  *
- * @method process
+ * @return {Boolean} final status of the task
+ * @private
  */
 Task.prototype.process = function() {
     this.checkDataSource();
@@ -104,9 +109,10 @@ Task.prototype.process = function() {
 };
 
 /**
- * function that ...
+ * Checks user's input for dataSource option for this task
  *
- * @method checkDataSource
+ * @return {Boolean} final status of the task
+ * @private
  */
 Task.prototype.checkDataSource = function() {
     var result = true;
@@ -137,9 +143,10 @@ Task.prototype.checkDataSource = function() {
 };
 
 /**
- * function that ...
+ * Checks if user's input is a valid single channel number
  *
- * @method checkSingleChannel
+ * @return {Boolean} result of the check
+ * @private
  */
 Task.prototype.checkSingleChannel = function(dataSource) {
     var result = Utils.checkChannel(dataSource);
@@ -148,9 +155,10 @@ Task.prototype.checkSingleChannel = function(dataSource) {
 };
 
 /**
- * function that ...
+ * Checks if user's input is a list of valid channel numbers
  *
- * @method checkChannelsList
+ * @return {Boolean} result of the check
+ * @private
  */
 Task.prototype.checkChannelsList = function( dataSource) {
     var result = Utils.checkChannelsList(dataSource);
@@ -159,9 +167,10 @@ Task.prototype.checkChannelsList = function( dataSource) {
 };
 
 /**
- * function that ...
+ * Checks if user's input is a valid filename that exists
  *
- * @method checkDataSourceFile
+ * @return {Boolean} result of the check
+ * @private
  */
 Task.prototype.checkDataSourceFile = function(rawDataSource) {
     var result = null;
@@ -191,7 +200,8 @@ Task.prototype.checkDataSourceFile = function(rawDataSource) {
 /**
  * function that ...
  *
- * @method checkForbiddenChannel
+ * @return {Boolean} result of the check
+ * @private
  */
 Task.prototype.checkForbiddenChannel = function() {
     if (this.getTaskStatus() === false) {
@@ -210,10 +220,10 @@ Task.prototype.checkForbiddenChannel = function() {
 };
 
 /**
- * wrapper function that checks all kind of dependencies for this spec
+ * Wrapper function that checks all kind of dependencies for this task
  *
- * @method checkDependencies
- * @param {Object} graphicObj - value itself
+ * @return {Boolean} result of the check
+ * @private
  */
 Task.prototype.checkDependencies = function() {
     if (this.getTaskStatus() === false) {
@@ -234,10 +244,10 @@ Task.prototype.checkDependencies = function() {
 };
 
 /**
- * function that checks if dependencies of the graphic is resolved
+ * checks if direct dependencies of the task is resolved
  *
- * @method isDependenciesResolved
- * @param {Object} graphicObj - value itself
+ * @return {Boolean} result of the check
+ * @private
  */
 Task.prototype.isDependenciesResolved = function() {
     var depName = null;
@@ -260,10 +270,10 @@ Task.prototype.isDependenciesResolved = function() {
 };
 
 /**
- * function that checks if dependencies of the graphic is resolved
+ * checks if specified dependencies of the task is unresolved
  *
- * @method isForbiddenDependenciesResolved
- * @param {Object} graphicObj - value itself
+ * @return {Boolean} result of the check
+ * @private
  */
 Task.prototype.isForbiddenDependenciesResolved = function() {
     var depName = null;
@@ -287,10 +297,10 @@ Task.prototype.isForbiddenDependenciesResolved = function() {
 };
 
 /**
- * function that checks if dependencies of the graphic is resolved
+ * checks if any soft dependency of the task is resolved
  *
- * @method isSoftDependenciesResolved
- * @param {Object} graphicObj - value itself
+ * @return {Boolean} result of the check
+ * @private
  */
 Task.prototype.isSoftDependenciesResolved = function() {
     if (this.softDependencies.length === 0) {
@@ -310,11 +320,12 @@ Task.prototype.isSoftDependenciesResolved = function() {
 };
 
 /**
- * function that checks if dependencies of the graphic is satisfied
+ * Returns a dependency task by its index in 'dependencies' array
  *
- * @method getDependencyObject
- * @param {Integer} index - zero based index of the dependency
- *      in 'dependencies' prop
+ * @method
+ * @param {Number} index zero based index of the dependency
+ *  in 'dependencies' prop
+ * @return {Task} task object
  */
 Task.prototype.getDependencyObject = function(index) {
     if (index < this.dependencies.length) {
@@ -325,10 +336,9 @@ Task.prototype.getDependencyObject = function(index) {
 };
 
 /**
- * function that checks if dependencies of the graphic is satisfied
+ * Returns first active soft dependency
  *
- * @method getActiveSoftDependency
- * @param {Object} graphicObj - value itself
+ * @return {Task} satisfied task
  */
 Task.prototype.getActiveSoftDependency = function() {
     var depName = null;
@@ -346,7 +356,8 @@ Task.prototype.getActiveSoftDependency = function() {
 /**
  * function that ...
  *
- * @method processCalcs
+ * @return {Boolean} status/result of the action
+ * @private
  */
 Task.prototype.processCalcs = function() {
     var result = false;
@@ -397,7 +408,8 @@ Task.prototype.processCalcs = function() {
 /**
  * function that ...
  *
- * @method loadGraphicsData
+ * @return {Boolean} status/result of the action
+ * @private
  */
 Task.prototype.loadGraphicsData = function() {
     //DEBUG_START
@@ -436,7 +448,8 @@ Task.prototype.loadGraphicsData = function() {
 /**
  * function that ...
  *
- * @method loadGraphicsData
+ * @return {Boolean} status/result of the action
+ * @private
  */
 Task.prototype.readGraphicsData = function(filename) {
     var FSObject = new ActiveXObject('Scripting.FileSystemObject');
@@ -484,9 +497,14 @@ Task.prototype.readGraphicsData = function(filename) {
 };
 
 /**
- * function that ...
+ * Function that should perform a calculation of data.
+ * You **should not** call it directly (this is being done automatically).
+ * Define a 'calc_data' prop in hash that is passed to
+ * `Dispatcher#registerNewTask` method.
+ * Code you see below is a stub
  *
- * @method calc_data
+ * @method
+ * @return {Boolean} fake status/result of the action
  */
 Task.prototype.calc_data = function() {
     //DEBUG_START
@@ -496,9 +514,9 @@ Task.prototype.calc_data = function() {
 };
 
 /**
- * function that ...
+ * Logs short stats for task's data
  *
- * @method logDataStats
+ * @private
  */
 //DEBUG_START
 Task.prototype.logDataStats = function() {
@@ -539,6 +557,7 @@ Task.prototype.logDataStats = function() {
  * function that ...
  *
  * @method joinViewsProps
+ * @private
  */
 Task.prototype.joinViewsProps = function() {
     this.make_props();
@@ -652,9 +671,14 @@ Task.prototype.joinViewsProps = function() {
 };
 
 /**
- * function that ...
+ * Function that should perform a creation of properties for view(s).
+ * You **should not** call it directly (this is being done automatically).
+ * Define a 'make_props' prop in hash that is passed to
+ * `Dispatcher#registerNewTask` method.
+ * Code you see below is a stub
  *
- * @method make_props
+ * @method
+ * @return {Boolean} fake status/result of the action
  */
 Task.prototype.make_props = function() {
     //DEBUG_START
@@ -667,6 +691,7 @@ Task.prototype.make_props = function() {
  * function that ...
  *
  * @method parseViewIndex
+ * @private
  */
 Task.prototype.parseViewIndex = function() {
     var result = [];
@@ -708,6 +733,7 @@ Task.prototype.parseViewIndex = function() {
  * function that ...
  *
  * @method adjustGraphicTypeValue
+ * @private
  */
 Task.prototype.adjustGraphicTypeValue = function() {
     if (this.getTaskStatus() === false || isNaN(this.graphicType)) {
@@ -752,6 +778,7 @@ Task.prototype.adjustGraphicTypeValue = function() {
  *
  * @method drawGraphic
  * @param {Object} graphicObj - value itself
+ * @private
  */
 Task.prototype.drawGraphic = function() {
     var graphics = [];
@@ -825,6 +852,7 @@ Task.prototype.drawGraphic = function() {
  *
  * @method getGraphicName
  * @param {Object} graphicObj - value itself
+ * @private
  */
 Task.prototype.getGraphicName = function(currentIndex) {
     var result = null;
@@ -845,6 +873,7 @@ Task.prototype.getGraphicName = function(currentIndex) {
  *
  * @method getLimitPoints
  * @param {Object} graphicObj - value itself
+ * @private
  */
 Task.prototype.getLimitPoints = function(dataSet) {
     var minVal = dataSet.dataY.min();
@@ -863,6 +892,7 @@ Task.prototype.getLimitPoints = function(dataSet) {
  *
  * @method setGraphicPoints
  * @param {Object} setGraphicPoints - value itself
+ * @private
  */
 Task.prototype.setGraphicPoints = function(specObj, graphic) {
     var prevYValue = null;
@@ -912,6 +942,7 @@ Task.prototype.setGraphicPoints = function(specObj, graphic) {
  *
  * @method drawMarker
  * @param {Object} graphicObj - value itself
+ * @private
  */
 Task.prototype.drawMarker = function(position, markerName) {
     if (this.customMarkers.length === 0) {
@@ -929,6 +960,7 @@ Task.prototype.drawMarker = function(position, markerName) {
  * function that ...
  *
  * @method getViewsProps
+ * @private
  */
 Task.prototype.getViewsProps = function() {
     return this.viewsProps;
@@ -938,6 +970,7 @@ Task.prototype.getViewsProps = function() {
  * function that ...
  *
  * @method getConfirmedView
+ * @private
  */
 Task.prototype.getConfirmedView = function() {
     if (this.providedView && this.getTaskStatus()) {
@@ -951,9 +984,12 @@ Task.prototype.getConfirmedView = function() {
 };
 
 /**
- * function that ...
+ * Stores data that has been calculated for this task (or particular graphic)
  *
- * @method addDataSet
+ * @param {Hash} dataSet set of props in hash/dict that represent data
+ *      for this task (or particular graphic)
+ *
+ * @return {Boolean} result of the action execution
  */
 Task.prototype.addDataSet = function(dataSet) {
     // check if dataSet is hash
@@ -969,9 +1005,11 @@ Task.prototype.addDataSet = function(dataSet) {
 };
 
 /**
- * function that ...
+ * Stores array of datas that has been calculated for this task
  *
- * @method addDataSets
+ * @param {Array} dataSets array of dataSets
+ *
+ * @return {Boolean} result of the action execution
  */
 Task.prototype.addDataSets = function(dataSets) {
     // check if dataSet is array
@@ -989,9 +1027,13 @@ Task.prototype.addDataSets = function(dataSets) {
 };
 
 /**
- * function that ...
+ * Returns requested dataSet or one of its values by optionally specified key
  *
- * @method getDataSet
+ * @param {Number} index zero-based index of the set that should be returned.
+ *      Negative index is also accepted
+ * @param {String} key name of key that should be retrieved. Optional
+ *
+ * @return {Object} result of the action execution
  */
 Task.prototype.getDataSet = function(index, key) {
     if (typeof index === 'string') {
@@ -1024,6 +1066,7 @@ Task.prototype.getDataSet = function(index, key) {
  * function that ...
  *
  * @method addDataSets
+ * @private
  */
 Task.prototype.addValue = function(key, number, dataSetIndex) {
     dataSetIndex = Math.abs(parseInt(dataSetIndex, 10)) || 0;
@@ -1041,27 +1084,31 @@ Task.prototype.addValue = function(key, number, dataSetIndex) {
 };
 
 /**
- * function that ...
+ * Adds new item to 'dataX' prop/array
  *
- * @method addDataSets
+ * @param {Object} item item that is going to be added
+ * @param {Number} dataSetIndex zero-based index of destination dataSet. Optional
  */
 Task.prototype.addX = function(item, dataSetIndex) {
     this.addValue('dataX', item, dataSetIndex);
 };
 
 /**
- * function that ...
+ * Adds new item to 'dataY' prop/array
  *
- * @method addDataSets
+ * @param {Object} item item that is going to be added
+ * @param {Number} dataSetIndex zero-based index of destination dataSet. Optional
  */
 Task.prototype.addY = function(item, dataSetIndex) {
     this.addValue('dataY', item, dataSetIndex);
 };
 
 /**
- * function that ...
+ * Adds new items to 'dataY' and 'dataY' props/arrays
  *
- * @method addDataSets
+ * @param {Object} xValue item that is going to be added to 'dataX' prop
+ * @param {Object} yValue item that is going to be added to 'dataY' prop
+ * @param {Number} dataSetIndex zero-based index of destination dataSet. Optional
  */
 Task.prototype.addXY = function(xValue, yValue, dataSetIndex) {
     this.addX(xValue, dataSetIndex);
@@ -1069,9 +1116,14 @@ Task.prototype.addXY = function(xValue, yValue, dataSetIndex) {
 };
 
 /**
- * function that ...
+ * Returns requested value/item from specified prop/array
  *
- * @method addDataSets
+ * @param {String} key name of key that should be retrieved
+ * @param {Number} index zero-based index of the item that should be returned.
+ * @param {Number} dataSetIndex index of the dataSet that should be used to look in
+ *
+ * @return {Object} result of the action execution
+ * @private
  */
 Task.prototype.getItem = function(key, index, dataSetIndex) {
     index = Math.abs(parseInt(index, 10)) || 0;
@@ -1085,14 +1137,25 @@ Task.prototype.getItem = function(key, index, dataSetIndex) {
 };
 
 /**
- * function that ...
+ * Returns requested value/item from 'dataX' prop/array
  *
- * @method addDataSets
+ * @param {Number} index zero-based index of the item that should be returned. Optional
+ * @param {Number} dataSetIndex index of the dataSet that should be used to look in. Optional
+ *
+ * @return {Object} result of the action execution
  */
 Task.prototype.getX = function(index, dataSetIndex) {
     return this.getItem('dataX', index, dataSetIndex);
 };
 
+/**
+ * Returns requested value/item from 'dataY' prop/array
+ *
+ * @param {Number} index zero-based index of the item that should be returned. Optional
+ * @param {Number} dataSetIndex index of the dataSet that should be used to look in. Optional
+ *
+ * @return {Object} result of the action execution
+ */
 Task.prototype.getY = function(index, dataSetIndex) {
     return this.getItem('dataY', index, dataSetIndex);
 };
