@@ -30,15 +30,10 @@ var _rw = null;
 var _rl = null;
 var _rp = null;
 
-/**
- * Namespace for constants.
- * Contains constants that are specific for current script
- *
- * @const
- */
+// Namespace for constants.
 var CONSTS = {};
 
-// script namespace
+// Namespace for props of script
 var Script = {
     buildTimestamp: new Date("TIMESTAMP"),
     demoMode:       @DEMO_MODE@,
