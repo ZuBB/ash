@@ -115,13 +115,7 @@ Dispatcher.process = function() {
     Logger.init();
     //DEBUG_STOP
 
-    // announce version, build time, run time
-    this.announce({
-        version:    Script.version,
-        buildID:    Script.buildID,
-        buildTime:  Script.buildTimestamp,
-        scriptName: Script.name.toUpperCase()
-    });
+    this.announce();
 
     Profiler.start('main');
     Input.createConfiguration(Script.inputs, Script.inputFields);
@@ -148,33 +142,27 @@ Dispatcher.process = function() {
 };
 
 /**
- * function that ...
+ * function that announces version, build time, run time
  *
  * @method announce
  */
-Dispatcher.announce = function(params) {
-    if (typeof params !== 'object') {
-        //DEBUG_START
-        _d('no version data has been passed');
-        //DEBUG_STOP
-        return false;
-    }
-
+Dispatcher.announce = function() {
     var message = null;
-    var fixedbuildTime = new Date(params.buildTime);
+    var scriptName =  Script.name.toUpperCase();
+    var fixedbuildTime = new Date(Script.buildTimestamp);
     // Ant's tstamp task returns month that starts from 1
     // since JavaScript treats month as zero-based number
     // we have to 'go' one month back
     // TODO possbily this work buggy with dates > 27th
-    fixedbuildTime.setMonth(params.buildTime.getMonth() - 1);
+    fixedbuildTime.setMonth(Script.buildTimestamp.getMonth() - 1);
 
-    if (params.version.indexOf('\x56\x45\x52\x53\x49\x4F\x4E') < 0) {
-        message = _t('report.version.rel', params.scriptName, params.version);
-    } else if (params.buildID.indexOf('\x42\x55\x49\x4c\x44\x5f\x49\x44') < 0) {
-        message = _t('report.version.vcs_dev', params.scriptName,
-                params.buildID, fixedbuildTime.toLocaleString());
+    if (Script.version.indexOf('VERSION') < 0) {
+        message = _t('report.version.rel', scriptName, Script.version);
+    } else if (Script.buildID.indexOf('BUILD_ID') < 0) {
+        message = _t('report.version.vcs_dev', scriptName,
+                Script.buildID, fixedbuildTime.toLocaleString());
     } else {
-        message = _t('report.version.dev', params.scriptName,
+        message = _t('report.version.dev', scriptName,
                 fixedbuildTime.toLocaleString());
     }
 
