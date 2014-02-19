@@ -7,9 +7,6 @@ Dispatcher = {
     sortableProps: ['area', 'graphic', 'graphicex'],
 
     runTimestamp: new Date(),
-    //DEBUG_START
-    maxSpecNameLength: 0,
-    //DEBUG_STOP
 
     revokedGraphics: [],
     drownGraphics: [],
@@ -41,8 +38,7 @@ Dispatcher = {
         }
     },
 
-    tasksHash: {},
-    specs: []
+    tasksHash: {}
 };
 
 /**
@@ -75,13 +71,6 @@ Dispatcher.registerNewTask = function(taskDefObj) {
         return;
     }
 
-    //DEBUG_START
-    if (this.maxSpecNameLength < graphicFullName.length) {
-        this.maxSpecNameLength = graphicFullName.length;
-    }
-    //DEBUG_STOP
-
-    this.specs.push(taskObj);
     this.tasksHash[graphicFullName] = taskObj;
 
     taskDefObj = null;
@@ -201,21 +190,22 @@ Dispatcher.logIncomingParams = function() {
  */
 Dispatcher.loopThroughRegisteredSpecs = function() {
     //DEBUG_START
+    var specs  = Object.keys(this.tasksHash);
+    var sortFn = function(a, b) { return a.length - b.length; };
+    var padLen = Math.ceil(specs.sort(sortFn).last().length * 1.4);
+    var len    = specs.length.toString();
     _rl('');
-    var pad_len = Math.ceil(this.maxSpecNameLength * 1.4);
-    var len     = this.specs.length.toString();
     //DEBUG_STOP
 
-    for (var ii = 0; ii < this.specs.length; ii++) {
+    Object.keys(this.tasksHash).forEach(function(specName, ii) {
         Host.SetStatusText(_t('core.status.message', ii));
 
-        var specObj = this.specs[ii];
+        var specObj = this.tasksHash[specName];
         //DEBUG_START
-        var specName = specObj.getFullName();
         Profiler.start(specName);
         var outputStr = ['>'.repeat(15), ' Processing next '];
         outputStr.push('(', (ii + 1).toString().lpad(' ', len.length), '/');
-        outputStr.push(len, ') spec: ', specName.rpad(' ', pad_len));
+        outputStr.push(len, ') spec: ', specName.rpad(' ', padLen));
         _rw(outputStr.join(''));
         //DEBUG_STOP
 
@@ -229,7 +219,7 @@ Dispatcher.loopThroughRegisteredSpecs = function() {
         //DEBUG_STOP
 
         Host.SetProgress(ii);
-    }
+    }, this);
 };
 
 /**
@@ -444,7 +434,8 @@ Dispatcher.applyMethodToView = function(view, key, instancesParams) {
 };
 
 Dispatcher.startProgressBar = function() {
-    Host.ShowProgress(_t('core.status.start'), this.specs.length + 1);
+    var taskTotal = Object.keys(this.tasksHash).length + 1;
+    Host.ShowProgress(_t('core.status.start'), taskTotal);
 };
 
 Dispatcher.stopProgressBar = function() {
