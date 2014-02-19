@@ -35,10 +35,11 @@ var CONSTS = {};
 
 // Namespace for props of script
 var Script = {
+    dispatcherOpts: {},
     buildTimestamp: new Date("TIMESTAMP"),
-    demoMode:       @DEMO_MODE@,
-    buildID:        '@BUILD_ID@',
-    version:        '@VERSION@',
-    name:           '@SCRIPT@'
+    demoMode:       $DEMO_MODE$,
+    buildID:        '$BUILD_ID$',
+    version:        '$VERSION$',
+    name:           '$SCRIPT$'
 };
 
