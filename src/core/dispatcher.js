@@ -298,6 +298,7 @@ Dispatcher.printMessages = function() {
 Dispatcher.createGraphicViews = function() {
     //DEBUG_START
     _p('in `createGraphicViews`');
+    var viewIndexes = [];
     //DEBUG_STOP
 
     this.confirmedViews
@@ -305,17 +306,22 @@ Dispatcher.createGraphicViews = function() {
         .map(function(view) { return view.split(':'); })
         .sort(function(a, b) { return a[1] - b[1]; })
         .forEach(function(view) {
-            if (typeof this.graphicsViews[view[0]] === 'undefined') {
-                //DEBUG_START
-                _d(view[0], 'Creating next view');
-                //DEBUG_STOP
-                this.graphicsViews[view[0]] =
-                    Host.CreateGraphicView(_t('views.' + view[0] + '.name'));
             //DEBUG_START
-            } else {
-                _e(view[0], 'Next view has been already created');
-            //DEBUG_STOP
+            _d(view, 'Processing next view');
+            if (viewIndexes.indexOf(view[1]) > -1) {
+                _e('Duplication of index');
+                return;
             }
+
+            if (this.graphicsViews.hasOwnProperty([view[0]])) {
+                _e('Next view has been already created');
+                return;
+            }
+            //DEBUG_STOP
+
+            viewIndexes.push(view[1]);
+            var title = _t('views.' + view[0] + '.name');
+            this.graphicsViews[view[0]] = Host.CreateGraphicView(title);
         }, this);
 
     return true;
