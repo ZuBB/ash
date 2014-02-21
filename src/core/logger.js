@@ -9,6 +9,7 @@ Logger = {
     _fileHandler: null,
     _filename: 'C:\\report-last.log',
     _levels: ['DEBUG', 'INFO ', 'WARN ', 'ERROR', 'FATAL'],
+    _stats: {'WARN ': 0, 'ERROR': 0, 'FATAL': 0},
     dump2FS: true,
     level: 0
 };
@@ -78,6 +79,11 @@ Logger.close = function() {
         } catch(e) {
             _rl('Failed to save logger file due to next error');
             _rp(e.message);
+        } finally {
+            _rl('');
+            _rl(this._stats[this._levels[2]], 'WARN ');
+            _rl(this._stats[this._levels[3]], 'ERROR');
+            _rl(this._stats[this._levels[4]], 'FATAL');
         }
     }
 };
@@ -155,6 +161,9 @@ Logger._createOutputStr = function(b_lf, level, value, desc) {
     if (level < this.level) {
         return;
     }
+
+    // increase number of logged messages of current log level
+    this._stats[this._levels[level]]++;
 
     return Utils.createOutputStr(b_lf, true, value, desc)
         .replace(/^(\n)?/, '$1' + this._levels[level] + ' ')
