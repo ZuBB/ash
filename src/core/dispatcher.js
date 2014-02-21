@@ -394,10 +394,6 @@ Dispatcher.applyMethodToView = function(view, key, instancesParams) {
 
     var method      = propsHash[key] || key;
     var viewObject  = this.graphicsViews[view];
-    var fix1stParam = function(arg1, key, self) {
-        return self.sortableProps.indexOf(key) > -1 ?
-            self.drownGraphics[arg1] : arg1;
-    };
 
     //DEBUG_START
     var dumpInfoFunc = function(errorMessage, args) {
@@ -411,8 +407,9 @@ Dispatcher.applyMethodToView = function(view, key, instancesParams) {
     //DEBUG_STOP
 
     instancesParams.forEach(function(args) {
-        var arg1 = fix1stParam(args[0], key, this);
         var len  = args.length;
+        var arg1 = this.sortableProps.indexOf(key) > -1 ?
+            this.drownGraphics[args[0]] : args[0];
 
         try {
             if (len === 1) {
