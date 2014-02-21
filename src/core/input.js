@@ -164,7 +164,7 @@ Input.getRawValue = function(name) {
         }
 
         //DEBUG_START
-        _w(name, 'attempt to get a value that is not inited yet');
+        _i(name, 'attempt to get a value that is not inited yet');
         //DEBUG_STOP
         return null;
     }
