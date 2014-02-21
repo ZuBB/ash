@@ -37,6 +37,7 @@ var CONSTS = {};
 var Script = {
     dispatcherOpts: {},
     buildTimestamp: new Date("TIMESTAMP"),
+    defaultKeys:    ['x', 'y'],
     demoMode:       $DEMO_MODE$,
     buildID:        '$BUILD_ID$',
     version:        '$VERSION$',
