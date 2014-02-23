@@ -105,8 +105,6 @@ Dispatcher.process = function() {
     //DEBUG_STOP
 
     this.announce();
-
-    Profiler.start('main');
     Input.createConfiguration(Script.inputs, Script.inputFields);
     //DEBUG_START
     this.logIncomingParams();
@@ -114,6 +112,7 @@ Dispatcher.process = function() {
     this.startProgressBar();
 
     if (isScriptAllowedToRun()) {
+        Profiler.start('main');
         this.loopThroughRegisteredSpecs();
         this.createGraphicViews();
         this.sortGraphicsByIndexes();
