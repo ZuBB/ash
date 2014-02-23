@@ -450,14 +450,14 @@ Dispatcher.stopProgressBar = function() {
  * @method getTaskObject
  */
 Dispatcher.getTaskObject = function(name) {
-    if (!name) {
-        //DEBUG_START
-        _e(name, 'attemp to access spec by invalid name');
-        //DEBUG_STOP
-        return null;
+    if (name && this.tasksHash.hasOwnProperty(name)) {
+        return this.tasksHash[name];
     }
 
-    return this.tasksHash[name];
+    //DEBUG_START
+    _e(name, 'attemp to access spec by invalid name');
+    //DEBUG_STOP
+    return null;
 };
 
 /**
