@@ -250,19 +250,32 @@ Task.prototype.checkDependencies = function() {
  * @private
  */
 Task.prototype.isDependenciesResolved = function() {
-    var depName = null;
+    var depObj, depName, depItem, dsIndex;
 
     for (var ii = 0; ii < this.dependencies.length; ii++) {
-        depName = this.dependencies[ii];
-        if (depName.charAt(0) === '!') {
+        depItem = this.dependencies[ii];
+        if (depItem.charAt(0) === '!') {
             continue;
         }
 
-        if (!Dispatcher.getValidTaskObject(depName)) {
+        depName = depItem.split(':')[0];
+        depObj = Dispatcher.getValidTaskObject(depName);
+
+        if (!depObj) {
             //DEBUG_START
-            _w(depName, 'Next dependency was not resolved');
+            _e(depItem, 'Next dependency was not resolved');
             //DEBUG_STOP
             return false;
+        }
+
+        if (depItem.split(':')[1]) {
+            dsIndex = parseInt(depItem.split(':')[1], 10);
+            if (depObj.isDataSetExist(dsIndex) === false) {
+                //DEBUG_START
+                _e(depItem, 'cant find dataSet with specified index');
+                //DEBUG_STOP
+                return false;
+            }
         }
     }
 
@@ -333,6 +346,67 @@ Task.prototype.getDependencyObject = function(index) {
     }
 
     return null;
+};
+
+/**
+ * Returns a dependency task by its index in 'dependencies' array
+ *
+ * @method
+ * @param {Number} index zero based index of the dependency
+ *  in 'dependencies' prop
+ * @return {Task} task object
+ */
+Task.prototype.getDepDataSet = function(index) {
+    index = Math.abs(parseInt(index, 10)) || 0;
+    // check if index is not out of array limits
+    if (index >= this.dependencies.length) {
+        return null;
+    }
+
+    // split dependency string into logical parts
+    // dependency string may have following format
+    //      TaskName[:DataSetIndex[:DataKey[:Index]]]
+    var depSpec = this.dependencies[index].split(':');
+    // get dependency task
+    var depObj = Dispatcher.getValidTaskObject(depSpec[0]);
+
+    // quit if task has not been found
+    if (!depObj) {
+        return null;
+    }
+
+    // get dataSetIndex
+    var dsIndex = parseInt((depSpec[1] || '0'), 10);
+
+    // quit if dataSet has not been found
+    if (depObj.isDataSetExist(dsIndex) === false) {
+        return null;
+    }
+
+    // process request of all datasets
+    if (depSpec[1] === '*') {
+        return this.getDataSets();
+    }
+
+    // get dataSet
+    var dataSet = depObj.getDataSet(dsIndex);
+    var dataKey = depSpec[2];
+
+    // if dataKey is valid and dataSet has that dataKey
+    if (dataKey && dataSet.hasOwnProperty(dataKey)) {
+        // if index exists
+        if (depSpec[3] !== undefined) {
+            // parse it and return that item
+            var ii = Math.abs(parseInt(depSpec[3], 10)) || 0;
+            return dataSet[dataKey][ii];
+        }
+
+        // if index does not exist, return data that is behind dataKey
+        return dataSet[dataKey];
+    }
+
+    // in default case return dataSet by specified index
+    return dataSet;
 };
 
 /**
@@ -977,6 +1051,20 @@ Task.prototype.getConfirmedView = function() {
     }
 
     return null;
+};
+
+/**
+ * Checks if dataSet with specified index exists within task
+ *
+ * @method isDataSetExist
+ * @private
+ *
+ * @param {Number} index zero-based index of the set that is checked.
+ * @return {Boolean} result of the action execution
+ */
+Task.prototype.isDataSetExist = function(index) {
+    index = Math.abs(parseInt(index, 10)) || 0;
+    return this.graphics[index].constructor === Object;
 };
 
 /**
