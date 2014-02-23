@@ -520,36 +520,32 @@ Task.prototype.calc_data = function() {
  */
 //DEBUG_START
 Task.prototype.logDataStats = function() {
-    for (var ii = 0, specObj, tmp; ii < this.graphics.length; ii++) {
-        specObj = this.graphics[ii];
-        if (specObj.dataX.length || specObj.dataY.length) {
-            _d('-------------------------');
+    this.graphics.forEach(function (dataSet, index) {
+        _d('%%%%% ' + index + ' %%%%%');
+        Object.keys(dataSet).forEach(function (key) {
+            if (dataSet[key].empty()) {
+                _d('key `' + key + '` does not have data');
+                return false;
+            }
 
-            _d(specObj.dataY.length, 'Y items');
-            _d(specObj.dataY.min(), 'min Y');
-            _d(specObj.dataY.max(), 'max Y');
-            tmp = Math.max.apply(null, specObj.dataY);
+            if (typeof dataSet[key][0] !== 'number') {
+                _d('key `' + key + '` holds non number items');
+                return false;
+            }
 
-            if (typeof specObj.dataY[0] === 'number' && Utils.isNumberInvalid(tmp)) {
-                _e(tmp, 'dataY contains invalid item');
+            var min = dataSet[key].min();
+            var max = dataSet[key].max();
+
+            if (Utils.isNumberInvalid(min) || Utils.isNumberInvalid(max)) {
+                _e('key `' + key + '` contains invalid item');
                 return this.updateStatus(false);
             }
 
-            if (specObj.dataX.length === 0) {
-                continue;
-            }
-
-            _d(specObj.dataX.length, 'X items');
-            _d(specObj.dataX.min(), 'min X');
-            _d(specObj.dataX.max(), 'max X');
-            tmp = Math.max.apply(null, specObj.dataX);
-
-            if (Utils.isNumberInvalid(tmp)) {
-                _e(tmp, 'dataY contains invalid item');
-                return this.updateStatus(false);
-            }
-        }
-    }
+            _d(dataSet[key].length, '`' + key + '` items');
+            _d(min, 'min `' + key + '`');
+            _d(max, 'max `' + key + '`');
+        }, this);
+    }, this);
 };
 //DEBUG_STOP
 
