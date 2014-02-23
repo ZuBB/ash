@@ -3,14 +3,16 @@
  *
  * @method createDataSetStub
  */
-Utils.createDataSetStub = function(optionalKeys) {
-    var result = {'dataX': [], 'dataY': []};
+Utils.createDataSetStub = function(keys) {
+    var result = {};
 
-    if (Array.isArray(optionalKeys)) {
-        optionalKeys.forEach(function(item) {
-            result[item.toString()] = [];
-        });
+    if (!Array.isArray(keys) || keys.empty()) {
+        keys = Script.defaultKeys;
     }
+
+    keys.forEach(function(item) {
+        result[item.toString()] = [];
+    });
 
     return result;
 };
