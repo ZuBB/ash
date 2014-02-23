@@ -637,7 +637,7 @@ Task.prototype.joinViewsProps = function() {
     var params          = null;
     var result          = true;
     var indexes         = [];
-    var graphics        = this.drawGraphic();
+    var graphics        = this.drawGraphics();
     var viewIndexes     = this.parseViewIndex();
     var sourcesStates   = [
         graphics.empty(),
@@ -846,13 +846,13 @@ Task.prototype.adjustGraphicTypeValue = function() {
 /**
  * function that ...
  *
- * @method drawGraphic
+ * @method drawGraphics
  * @param {Object} graphicObj - value itself
  * @private
  */
-Task.prototype.drawGraphic = function() {
+Task.prototype.drawGraphics = function() {
     var graphics = [];
-    if (!this.getTaskStatus() || !this.viewIndex || !this.graphics.length) {
+    if (!this.getTaskStatus() || !this.viewIndex) {
         return graphics;
     }
 
@@ -860,58 +860,26 @@ Task.prototype.drawGraphic = function() {
     this.adjustGraphicTypeValue();
 
     // process every graphic
-    for (var ii = 0; ii < this.graphics.length; ii++) {
-        var specObj = this.graphics[ii];
-        if (!specObj.dataX.length || !specObj.dataY.length) {
-            continue;
-        }
-
-        //DEBUG_START
-        if (specObj.dataX.length !== specObj.dataY.length) {
-            _e('data length mismatch!');
-        }
-        //DEBUG_STOP
-
-        var graphic = null;
-        var axisName = _t('units.' + this.axisName);
-        var graphicName = _t(this.getGraphicName(ii + 1), ii + 1);
-        var graphicColor = Array.isArray(this.graphicColor) ?
-            this.graphicColor[ii] : this.graphicColor;
-
-        graphicColor = graphicColor === null ?
-            Utils.createRandomColor() : graphicColor;
-
-        if (this.multicolorGraphic !== true) {
-            // color issue: no matter what color to pass here
-            graphic = Host.CreateGraphic(graphicName, axisName, 0x000000);
-        } else {
-            graphic = Host.CreateColoredGraphic(graphicName, axisName, graphicColor);
-        }
-
-        if (!this.setGraphicPoints(specObj, graphic)) {
-            continue;
-        }
-
-        if (this.setLimits) {
-            var edge_values = this.getLimitPoints(specObj);
-            graphic.SetLimits(edge_values[0], edge_values[1]);
-        }
-
-        if (this.setScale) {
-            graphic.SetScale(this.scaleValue, this.scaleColor);
-        }
+    this.graphics.forEach(function(dataSet, ii) {
+        var graphicParams = {
+            axis: _t('units.' + this.axisName),
+            name: this.getGraphicName(ii + 1),
+            color: this.getGraphicColor(ii)
+        };
 
         var visible = this.hiddenGraphics === '*' ? false : true;
         visible = Array.isArray(this.hiddenGraphics) ?
             !Boolean(this.hiddenGraphics[ii]) : visible;
 
+        var graphic = this.draw2DGraphic(dataSet, graphicParams);
+
         graphics.push({
             'graphic' : graphic,
             'visible' : visible,
-            'color'   : graphicColor,
-            'name'    : graphicName
+            'color'   : graphicParams.color,
+            'name'    : graphicParams.name
         });
-    }
+    }, this);
 
     this.updateStatus(graphics.length > 0);
     return graphics;
@@ -928,6 +896,7 @@ Task.prototype.getGraphicName = function(currentIndex) {
     var result = null;
 
     if (typeof this.graphicName === 'function') {
+        // TODO: no need to send total index in instance method
         result = this.graphicName(currentIndex, this.graphics.length);
     } else if (typeof this.graphicName === 'string') {
         result = 'specs.' + this.graphicName + '.name';
@@ -935,7 +904,28 @@ Task.prototype.getGraphicName = function(currentIndex) {
         result = 'specs.' + this.specName + '.name';
     }
 
-    return result;
+    return _t(result, currentIndex);
+};
+
+/**
+ * function that ...
+ *
+ * @method getGraphicColor
+ * @param {Object} graphicObj - value itself
+ * @private
+ */
+Task.prototype.getGraphicColor = function(index) {
+    var graphicColor = null;
+
+    if (Array.isArray(this.graphicColor)) {
+        graphicColor = this.graphicColor[index];
+    } else if (this.graphicColor) {
+        graphicColor = this.graphicColor;
+    } else {
+        graphicColor = Utils.createRandomColor();
+    }
+
+    return graphicColor;
 };
 
 /**
@@ -960,47 +950,91 @@ Task.prototype.getLimitPoints = function(dataSet) {
 /**
  * function that ...
  *
+ * @method draw2DGraphic
+ * @param {Object} graphicObj - value itself
+ * @private
+ */
+Task.prototype.draw2DGraphic = function(specObj, params) {
+    var _1axis = this.defaultKeys[0];
+    var _2axis = this.defaultKeys[1];
+
+    if (!specObj[_1axis].length || !specObj[_2axis].length) {
+        return null;
+    }
+
+    //DEBUG_START
+    if (specObj[_1axis].length !== specObj[_2axis].length) {
+        _e('data length mismatch!');
+    }
+    //DEBUG_STOP
+
+    var graphic = null;
+
+    if (this.multicolorGraphic !== true) {
+        // color issue: no matter what color to pass here
+        graphic = Host.CreateGraphic(params.name, params.axis, 0x000000);
+    } else {
+        graphic = Host.CreateColoredGraphic(params.name, params.axis, params.color);
+    }
+
+    if (!this.setGraphicPoints(specObj, graphic)) {
+        return null;
+    }
+
+    if (this.setLimits) {
+        var edge_values = this.getLimitPoints(specObj);
+        graphic.SetLimits(edge_values[0], edge_values[1]);
+    }
+
+    if (this.setScale) {
+        graphic.SetScale(this.scaleValue, this.scaleColor);
+    }
+
+    return graphic;
+};
+
+/**
+ * function that ...
+ *
  * @method setGraphicPoints
  * @param {Object} setGraphicPoints - value itself
  * @private
  */
 Task.prototype.setGraphicPoints = function(specObj, graphic) {
+    var _1axis = this.defaultKeys[0];
+    var _2axis = this.defaultKeys[1];
     var prevYValue = null;
-    var checkFunc = function(suffix) {
-        return Utils.isNumberInvalid(specObj['data' + suffix][jj]);
-    };
 
-    for (var jj = 0; jj < specObj.dataY.length && Host.CanContinue(); jj++) {
+    for (var jj = 0; jj < specObj[_2axis].length && Host.CanContinue(); jj++) {
         if (this.drawGraphicsAsShelf && prevYValue !== null) {
-            graphic.AddPoint(specObj.dataX[jj], prevYValue);
+            graphic.AddPoint(specObj[_1axis][jj], prevYValue);
         }
 
-        if (['X', 'Y'].some(checkFunc)) {
+        var x = specObj[_1axis][jj];
+        var y = specObj[_2axis][jj];
+        try {
+            if (this.multicolorGraphic === false) {
+                graphic.AddPoint(x, y);
+            } else {
+                graphic.AddColorPoint(x, y, specObj.color[jj]);
+            }
+        } catch (e) {
             //DEBUG_START
             _e(jj, 'got a NaN insead of number at');
-            _i(specObj.dataX[jj], 'X equals to');
-            _i(specObj.dataY[jj], 'Y equals to');
+            _i(x, '`' + _1axis + '` equals to');
+            _i(y, '`' + _2axis + '` equals to');
             return this.updateStatus(false);
             //DEBUG_STOP
 
             Dispatcher.addBug('core.error1');
-            continue;
         }
 
-        if (this.multicolorGraphic === false) {
-            graphic.AddPoint(specObj.dataX[jj], specObj.dataY[jj]);
-        } else {
-            graphic.AddColorPoint(
-                specObj.dataX[jj],
-                specObj.dataY[jj],
-                specObj.color[jj]
-            );
-        }
+        prevYValue = specObj[_2axis][jj];
 
-        prevYValue = specObj.dataY[jj];
-
-        if (this.drawMarkers) {
-            this.drawMarker(specObj.dataX[jj] * Host.Frequency, specObj.name);
+        // TODO temporary disable this markers
+        // untill we figure out how to proceed them
+        if (false && this.drawMarkers) {
+            this.drawMarker(specObj.x[jj] * Host.Frequency, specObj.name);
         }
     }
 
