@@ -1,7 +1,7 @@
 /**
  * function that ...
  *
- * @method init
+ * @constructor
  */
 Dispatcher = {
     sortableProps: ['area', 'graphic', 'graphicex'],
@@ -44,7 +44,7 @@ Dispatcher = {
 /**
  * function that ...
  *
- * @method process
+ * @method registerNewTask
  */
 Dispatcher.registerNewTask = function(taskDefObj) {
     if (!taskDefObj) {
@@ -161,9 +161,10 @@ Dispatcher.announce = function() {
 };
 
 /**
- * function that ...
+ * Logs any data that has been input by user
  *
- * log processed and optionally loaded files, entered data
+ * @method logIncomingParams
+ * @private
  */
 //DEBUG_START
 Dispatcher.logIncomingParams = function() {
@@ -185,7 +186,8 @@ Dispatcher.logIncomingParams = function() {
 /**
  * function that ...
  *
- * @method loop
+ * @method loopThroughRegisteredSpecs
+ * @private
  */
 Dispatcher.loopThroughRegisteredSpecs = function() {
     //DEBUG_START
@@ -225,7 +227,8 @@ Dispatcher.loopThroughRegisteredSpecs = function() {
 /**
  * function that ...
  *
- * @method init
+ * @method createMessageInfractructure
+ * @private
  */
 Dispatcher.createMessageInfractructure = function(messages) {
     this.messageTypes = messages && messages.constructor === Object ?
@@ -265,6 +268,7 @@ Dispatcher.createMessageInfractructure = function(messages) {
  * function that ...
  *
  * @method printMessages
+ * @private
  */
 Dispatcher.printMessages = function() {
     var printMessageFunc = function(item) {
@@ -287,6 +291,7 @@ Dispatcher.printMessages = function() {
         }
     }
 
+    // TODO: make this optional
     Host.ShowReport();
 };
 
@@ -294,6 +299,7 @@ Dispatcher.printMessages = function() {
  * function that ...
  *
  * @method createGraphicViews
+ * @private
  */
 Dispatcher.createGraphicViews = function() {
     //DEBUG_START
@@ -330,6 +336,7 @@ Dispatcher.createGraphicViews = function() {
  * function that ...
  *
  * @method sortGraphicsByIndexes
+ * @private
  */
 Dispatcher.sortGraphicsByIndexes = function() {
     var mapFunc  = function(item) { return item.slice(1); };
@@ -359,6 +366,7 @@ Dispatcher.sortGraphicsByIndexes = function() {
  * function that ...
  *
  * @method applyPropsToGraphicViews
+ * @private
  */
 Dispatcher.applyPropsToGraphicViews = function() {
     //DEBUG_START
@@ -377,6 +385,12 @@ Dispatcher.applyPropsToGraphicViews = function() {
     }, this);
 };
 
+/**
+ * function that ...
+ *
+ * @method applyMethodToView
+ * @private
+ */
 Dispatcher.applyMethodToView = function(view, key, instancesParams) {
     var propsHash = {
         'area':        'AddArea',
@@ -435,11 +449,23 @@ Dispatcher.applyMethodToView = function(view, key, instancesParams) {
     }, this);
 };
 
+/**
+ * function that ...
+ *
+ * @method startProgressBar
+ * @private
+ */
 Dispatcher.startProgressBar = function() {
     var taskTotal = Object.keys(this.tasksHash).length + 1;
     Host.ShowProgress(_t('core.status.start'), taskTotal);
 };
 
+/**
+ * function that ...
+ *
+ * @method stopProgressBar
+ * @private
+ */
 Dispatcher.stopProgressBar = function() {
     Host.HideProgress();
 };
@@ -448,6 +474,7 @@ Dispatcher.stopProgressBar = function() {
  * function that ...
  *
  * @method getTaskObject
+ * @private
  */
 Dispatcher.getTaskObject = function(name) {
     if (name && this.tasksHash.hasOwnProperty(name)) {
@@ -464,6 +491,7 @@ Dispatcher.getTaskObject = function(name) {
  * function that ...
  *
  * @method getValidTaskObject
+ * @private
  */
 Dispatcher.getValidTaskObject = function(name) {
     var taskObj = this.getTaskObject(name);
@@ -479,17 +507,30 @@ Dispatcher.getValidTaskObject = function(name) {
  * function that ...
  *
  * @method storeViewsProps
+ * @private
  */
 Dispatcher.storeViewsProps = function(viewsProps) {
     this.viewsProps = Utils.mergeRecursive(this.viewsProps, viewsProps);
 };
 
+/**
+ * function that ...
+ *
+ * @method storeConfirmedView
+ * @private
+ */
 Dispatcher.storeConfirmedView = function(view) {
     if (view) {
         this.confirmedViews.push(view);
     }
 };
 
+/**
+ * function that ...
+ *
+ * @method storeGraphicObject
+ * @private
+ */
 Dispatcher.storeGraphicObject = function(graphicObj) {
     if (graphicObj) {
         return this.drownGraphics.push(graphicObj);
@@ -503,6 +544,8 @@ Dispatcher.storeGraphicObject = function(graphicObj) {
  * function that ...
  *
  * @method addSpec4Saving
+ * @private
+ * @deprecated
  */
 Dispatcher.addSpec4Saving = function(specName2Save) {
     if (!specName2Save) {
