@@ -52,12 +52,6 @@ Logger.log = function(b_lf, level, value, desc) {
     }
 
     try {
-        // nice to have some free space before each announce
-        if (output_str.indexOf('>>>>>>>>>>>>>>>') > 0) {
-            // TODO platform specific code
-            output_str = '\r\n\r\n\r\n' + output_str;
-        }
-
         this._fileHandler.Write(output_str);
     } catch (e) {
         this._stopBuffering();

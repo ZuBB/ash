@@ -206,6 +206,7 @@ Dispatcher.loopThroughRegisteredSpecs = function() {
         var outputStr = ['>'.repeat(15), ' Processing next '];
         outputStr.push('(', (ii + 1).toString().lpad(' ', len.length), '/');
         outputStr.push(len, ') spec: ', specName.rpad(' ', padLen));
+        _d('\n'.repeat(4));
         _rw(outputStr.join(''));
         //DEBUG_STOP
 
