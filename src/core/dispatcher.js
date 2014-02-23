@@ -318,9 +318,9 @@ Dispatcher.createGraphicViews = function() {
                 _e('Next view has been already created');
                 return;
             }
-            //DEBUG_STOP
 
             viewIndexes.push(view[1]);
+            //DEBUG_STOP
             var title = _t('views.' + view[0] + '.name');
             this.graphicsViews[view[0]] = Host.CreateGraphicView(title);
         }, this);
