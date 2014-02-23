@@ -211,7 +211,7 @@ Dispatcher.loopThroughRegisteredSpecs = function() {
 
         specObj.process();
         this.storeViewsProps(specObj.getViewsProps());
-        this.confirmedViews.push(specObj.getConfirmedView());
+        this.storeConfirmedView(specObj.getConfirmedView());
 
         //DEBUG_START
         _rl(specObj.getTaskStatus() ? '+' : '-');
@@ -302,7 +302,6 @@ Dispatcher.createGraphicViews = function() {
     //DEBUG_STOP
 
     this.confirmedViews
-        .filter(function(view) { return view; })
         .map(function(view) { return view.split(':'); })
         .sort(function(a, b) { return a[1] - b[1]; })
         .forEach(function(view) {
@@ -483,6 +482,12 @@ Dispatcher.getValidTaskObject = function(name) {
  */
 Dispatcher.storeViewsProps = function(viewsProps) {
     this.viewsProps = Utils.mergeRecursive(this.viewsProps, viewsProps);
+};
+
+Dispatcher.storeConfirmedView = function(view) {
+    if (view) {
+        this.confirmedViews.push(view);
+    }
 };
 
 Dispatcher.storeGraphicObject = function(graphicObj) {
