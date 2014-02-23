@@ -144,20 +144,6 @@ Logger._createOutputStr = function(b_lf, level, value, desc) {
         return b_lf;
     }
 
-    if (level === 1) {
-        // do not log status of specs from report tab
-        if ((/[\+\-]{1}\n/).test(value)) {
-            return '';
-        }
-
-        // TODO this 'if' is a hack :(
-        if (typeof value === 'string') {
-            value = value.replace(/^\n/, '');
-            value = value.replace(/\n$/, '');
-        }
-        b_lf = false;
-    }
-
     if (level < this.level) {
         return;
     }
