@@ -4,15 +4,16 @@
  * function that ...
  */
 Task = function(params) {
-    this.specName = null;
     this.statusCodes = [];
-    this.dataSource = null;
+    this.graphics = [];
     this.sourceType = null;
+    this.viewsProps = {};
+
+    this.specName = null;
+    this.defaultKeys = [];
+    this.dataSource = null;
     this.dependencies = [];
     this.softDependencies = [];
-    this.graphics = [];
-    this.dataX = [];
-    this.dataY = [];
   //this.revokedSpecs = [];
   //this.forbiddenChannel = null;
 
@@ -20,7 +21,6 @@ Task = function(params) {
     this.loadData4Compare = false;
 
     this.viewIndex = null;
-    this.viewsProps = {};
     this.providedView = null;
 
     this.axisName = '';
@@ -95,6 +95,7 @@ Task.prototype.updateStatus = function(taskStatus) {
  * @private
  */
 Task.prototype.process = function() {
+    this.createGetSetPropMethods();
     this.checkDataSource();
   //this.checkForbiddenChannel();
     this.checkDependencies();
@@ -341,6 +342,9 @@ Task.prototype.isSoftDependenciesResolved = function() {
  * @return {Task} task object
  */
 Task.prototype.getDependencyObject = function(index) {
+    //DEBUG_START
+    //_w('This method (`getDependencyObject`) is deprecated');
+    //DEBUG_STOP
     if (index < this.dependencies.length) {
         return Dispatcher.getTaskObject(this.dependencies[index]);
     }
@@ -449,10 +453,8 @@ Task.prototype.processCalcs = function() {
         //DEBUG_STOP
         result = this.calc_data();
 
-        if (this.graphics.length > 0 || this.dataY.length > 0) {
-            if (typeof result === 'undefined') {
-                result = true;
-            }
+        if (this.graphics.length > 0) {
+            result = typeof result === 'undefined' ? true : result;
         } else {
             //DEBUG_START
             _d('this spec does not have data');
@@ -462,12 +464,6 @@ Task.prototype.processCalcs = function() {
             }
         }
 
-        if (result && this.graphics.length === 0) {
-            this.graphics.push({
-                dataX: this.dataX,
-                dataY: this.dataY
-            });
-        }
         //DEBUG_START
         _d(result, 'calcs complete');
         //DEBUG_STOP
@@ -936,8 +932,8 @@ Task.prototype.getGraphicColor = function(index) {
  * @private
  */
 Task.prototype.getLimitPoints = function(dataSet) {
-    var minVal = dataSet.dataY.min();
-    var maxVal = dataSet.dataY.max();
+    var minVal = dataSet[this.defaultKeys[1]].min();
+    var maxVal = dataSet[this.defaultKeys[1]].max();
     var minFunc = typeof this.minLimit === 'function';
     var maxFunc = typeof this.maxLimit === 'function';
     var filterFunc = function(n) { return n !== null; };
@@ -1102,6 +1098,17 @@ Task.prototype.isDataSetExist = function(index) {
 };
 
 /**
+ * helper function that creates data set stub
+ *
+ * @method createDataSet
+ */
+Task.prototype.createDataSet = function(forcedKeys) {
+    var keys = Array.isArray(forcedKeys) ? forcedKeys : this.defaultKeys;
+
+    return Utils.createDataSetStub(keys);
+};
+
+/**
  * Stores data that has been calculated for this task (or particular graphic)
  *
  * @param {Hash} dataSet set of props in hash/dict that represent data
@@ -1163,22 +1170,68 @@ Task.prototype.getDataSet = function(index, key) {
     var sliceParams = start < 0 ? [start] : [start, start + 1];
     var dataSet = Array.prototype.slice.apply(this.graphics, sliceParams)[0];
 
-    if (key && dataSet) {
-        if (['dataX', 'datax', 'X', 'x'].indexOf(key) > -1) {
-            key = 'dataX';
-        }
-
-        if (['dataY', 'datay', 'Y', 'y'].indexOf(key) > -1) {
-            key = 'dataY';
-        }
-
-        if (dataSet.hasOwnProperty(key)) {
-            return dataSet[key];
-        }
+    if (dataSet && key && dataSet.hasOwnProperty(key)) {
+        return dataSet[key];
     }
 
     return dataSet || null;
 };
+
+/**
+ * Returns all dataSet of this task
+ *
+ * @return {Array} result of the action execution
+ */
+Task.prototype.getDataSets = function() {
+    return this.graphics;
+};
+
+/**
+ * helper function that ...
+ *
+ * @method createDataSet
+ * @private
+ */
+Task.prototype.createGetSetPropMethods = function() {
+    var addValueFunc = function(self, key) {
+        return function(number, dataSetIndex) {
+            dataSetIndex = Math.abs(parseInt(dataSetIndex, 10)) || 0;
+
+            if (typeof self.graphics[dataSetIndex] === 'undefined') {
+                self.graphics[dataSetIndex] = {};
+            }
+
+            if (typeof self.graphics[dataSetIndex][key] === 'undefined') {
+                self.graphics[dataSetIndex][key] = [];
+            }
+
+            self.graphics[dataSetIndex][key].push(number);
+        };
+    };
+
+    var getValueFunc = function(self, key) {
+        return function(index, dataSetIndex) {
+            index = Math.abs(parseInt(index, 10)) || 0;
+            dataSetIndex = Math.abs(parseInt(dataSetIndex, 10)) || 0;
+
+            if (dataSetIndex < self.graphics.length) {
+                return self.graphics[dataSetIndex][key][index];
+            }
+
+            return []._undefined;
+        };
+    };
+
+    if (this.defaultKeys.empty()) {
+        this.defaultKeys = Script.defaultKeys;
+    }
+
+    this.defaultKeys.forEach(function(prop) {
+        this['add' + prop.capitalize()] = addValueFunc(this, prop);
+        this['get' + prop.capitalize()] = getValueFunc(this, prop);
+    }, this);
+};
+
 
 /**
  * function that ...
@@ -1186,53 +1239,6 @@ Task.prototype.getDataSet = function(index, key) {
  * @method addDataSets
  * @private
  */
-Task.prototype.addValue = function(key, number, dataSetIndex) {
-    dataSetIndex = Math.abs(parseInt(dataSetIndex, 10)) || 0;
-
-    if (typeof this.graphics[dataSetIndex] === 'undefined') {
-        this.graphics[dataSetIndex] = {};
-    }
-
-    if (typeof this.graphics[dataSetIndex][key] === 'undefined') {
-        this.graphics[dataSetIndex].dataX = [];
-        this.graphics[dataSetIndex].dataY = [];
-    }
-
-    this.graphics[dataSetIndex][key].push(number);
-};
-
-/**
- * Adds new item to 'dataX' prop/array
- *
- * @param {Object} item item that is going to be added
- * @param {Number} dataSetIndex zero-based index of destination dataSet. Optional
- */
-Task.prototype.addX = function(item, dataSetIndex) {
-    this.addValue('dataX', item, dataSetIndex);
-};
-
-/**
- * Adds new item to 'dataY' prop/array
- *
- * @param {Object} item item that is going to be added
- * @param {Number} dataSetIndex zero-based index of destination dataSet. Optional
- */
-Task.prototype.addY = function(item, dataSetIndex) {
-    this.addValue('dataY', item, dataSetIndex);
-};
-
-/**
- * Adds new items to 'dataY' and 'dataY' props/arrays
- *
- * @param {Object} xValue item that is going to be added to 'dataX' prop
- * @param {Object} yValue item that is going to be added to 'dataY' prop
- * @param {Number} dataSetIndex zero-based index of destination dataSet. Optional
- */
-Task.prototype.addXY = function(xValue, yValue, dataSetIndex) {
-    this.addX(xValue, dataSetIndex);
-    this.addY(yValue, dataSetIndex);
-};
-
 /**
  * Returns requested value/item from specified prop/array
  *
@@ -1243,38 +1249,3 @@ Task.prototype.addXY = function(xValue, yValue, dataSetIndex) {
  * @return {Object} result of the action execution
  * @private
  */
-Task.prototype.getItem = function(key, index, dataSetIndex) {
-    index = Math.abs(parseInt(index, 10)) || 0;
-    dataSetIndex = Math.abs(parseInt(dataSetIndex, 10)) || 0;
-
-    if (dataSetIndex < this.graphics.length) {
-        return this.graphics[dataSetIndex][key][index];
-    }
-
-    return []._undefined;
-};
-
-/**
- * Returns requested value/item from 'dataX' prop/array
- *
- * @param {Number} index zero-based index of the item that should be returned. Optional
- * @param {Number} dataSetIndex index of the dataSet that should be used to look in. Optional
- *
- * @return {Object} result of the action execution
- */
-Task.prototype.getX = function(index, dataSetIndex) {
-    return this.getItem('dataX', index, dataSetIndex);
-};
-
-/**
- * Returns requested value/item from 'dataY' prop/array
- *
- * @param {Number} index zero-based index of the item that should be returned. Optional
- * @param {Number} dataSetIndex index of the dataSet that should be used to look in. Optional
- *
- * @return {Object} result of the action execution
- */
-Task.prototype.getY = function(index, dataSetIndex) {
-    return this.getItem('dataY', index, dataSetIndex);
-};
-
