@@ -18,6 +18,8 @@ AHF.aveValueAt = function(channel, params) {
         return null;
     }
 
+    var _1axis = Script.defaultKeys[0];
+    var _2axis = Script.defaultKeys[1];
     var result  = Utils.createDataSetStub();
     var length1 = parseInt(params.samples2Average, 10) || 0;
     var length2 = parseInt(params.intervalSamples, 10) || 0;
@@ -31,8 +33,8 @@ AHF.aveValueAt = function(channel, params) {
     }
 
     if (Boolean(params.mergeFirst) !== false) {
-        result.dataX.unshift(1 / Host.Frequency);
-        result.dataY.unshift(Host.ValueAt(channel, 0));
+        result[_1axis].unshift(1 / Host.Frequency);
+        result[_2axis].unshift(Host.ValueAt(channel, 0));
     }
 
     var interval = (length3 || length2) || length1;
@@ -47,8 +49,8 @@ AHF.aveValueAt = function(channel, params) {
 
     for (var ii = 0, position; ii < length; ii++) {
         position = fstVal + (interval * ii) + shift;
-        result.dataX.push(position / Host.Frequency);
-        result.dataY.push(Host.AveValueAt(channel, position, samples));
+        result[_1axis].push(position / Host.Frequency);
+        result[_2axis].push(Host.AveValueAt(channel, position, samples));
 
         if (!Host.CanContinue()) {
             //DEBUG_START
@@ -61,8 +63,8 @@ AHF.aveValueAt = function(channel, params) {
     if (Boolean(params.skipTrailing) !== true) {
         position  = Math.floor((Host.NumberOfSamples - fstVal) / interval);
         position += Math.floor(((Host.NumberOfSamples - fstVal) % interval) / 2);
-        result.dataX.push(Host.NumberOfSamples / Host.Frequency);
-        result.dataY.push(Host.AveValueAt(channel, position, samples));
+        result[_1axis].push(Host.NumberOfSamples / Host.Frequency);
+        result[_2axis].push(Host.AveValueAt(channel, position, samples));
     }
 
     return result;
