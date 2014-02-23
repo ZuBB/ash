@@ -154,7 +154,7 @@ Logger._createOutputStr = function(b_lf, level, value, desc) {
     return Utils.createOutputStr(b_lf, true, value, desc)
         .replace(/^(\n)?/, '$1' + this._levels[level] + ' ')
         // TODO platform specific code
-        .replace(/(\n)$/, '\r$1');
+        .replace(/(\n)$/gm, '\r$1');
 };
 
 /**
