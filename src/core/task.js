@@ -591,14 +591,22 @@ Task.prototype.calc_data = function() {
 //DEBUG_START
 Task.prototype.logDataStats = function() {
     this.graphics.forEach(function (dataSet, index) {
-        _d('%%%%% ' + index + ' %%%%%');
+        _d('----- ' + index + ' -----');
         Object.keys(dataSet).forEach(function (key) {
             if (dataSet[key].empty()) {
                 _d('key `' + key + '` does not have data');
                 return false;
             }
 
-            if (typeof dataSet[key][0] !== 'number') {
+            var not_a_num = typeof dataSet[key][0] !== 'number';
+            _d(dataSet[key].length, key + '.length');
+
+            if (not_a_num && dataSet[key].length === 1) {
+                _d(dataSet[key][0], key + '[0]');
+                return false;
+            }
+
+            if (not_a_num) {
                 _d('key `' + key + '` holds non number items');
                 return false;
             }
@@ -611,9 +619,8 @@ Task.prototype.logDataStats = function() {
                 return this.updateStatus(false);
             }
 
-            _d(dataSet[key].length, '`' + key + '` items');
-            _d(min, 'min `' + key + '`');
-            _d(max, 'max `' + key + '`');
+            _d(min, key + '.min()');
+            _d(max, key + '.max()');
         }, this);
     }, this);
 };
