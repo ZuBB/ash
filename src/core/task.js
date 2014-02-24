@@ -694,7 +694,7 @@ Task.prototype.joinViewsProps = function() {
 
             if (this.graphicIsBackground) {
                 params.push(graphics[jj].color);
-            } else {
+            } else if (!this.multicolorGraphic) {
                 params.push(this.graphicType);
                 params.push(graphics[jj].color);
             }
