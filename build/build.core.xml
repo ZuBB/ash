@@ -106,7 +106,7 @@
                         <file name="./src/core/src/resources/${curr.file}"/>
                         <file name="./src/resources/${curr.file}"/>
                     </filelist>
-                    <fileset dir="./src/modules/">
+                    <fileset dir="./src/modules/" erroronmissingdir="false">
                         <patternset>
                             <include name="**/${curr.file}"/>
                         </patternset>
