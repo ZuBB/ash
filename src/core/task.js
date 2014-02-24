@@ -53,6 +53,9 @@ Task = function(params) {
  * @deprecated
  */
 Task.prototype.getFullName = function() {
+    //DEBUG_START
+    _w('Usage of `getDependencyObject` method is deprecated');
+    //DEBUG_STOP
     return this.getTaskName();
 };
 
@@ -66,9 +69,8 @@ Task.prototype.getTaskName = function() {
 };
 
 /**
- * Returns status of the last processed action for current task
+ * Returns status of the last completed action for current task
  *
- * @method
  * @return {Boolean} status
  */
 Task.prototype.getTaskStatus = function() {
@@ -78,7 +80,7 @@ Task.prototype.getTaskStatus = function() {
 /**
  * Stores status of newly completed action. Also returns it
  *
- * @param  {Boolean} value of the status that is going to be set
+ * @param  {Object} value of the status that is going to be set
  * @return {Boolean} status that has been set
  * @private
  */
@@ -199,9 +201,10 @@ Task.prototype.checkDataSourceFile = function(rawDataSource) {
 };
 
 /**
- * function that ...
+ * Checks if non allowed channel is entered by user for this task
  *
  * @return {Boolean} result of the check
+ * @experimental
  * @private
  */
 Task.prototype.checkForbiddenChannel = function() {
@@ -221,7 +224,7 @@ Task.prototype.checkForbiddenChannel = function() {
 };
 
 /**
- * Wrapper function that checks all kind of dependencies for this task
+ * Checks all kind of dependencies for this task
  *
  * @return {Boolean} result of the check
  * @private
@@ -245,7 +248,7 @@ Task.prototype.checkDependencies = function() {
 };
 
 /**
- * checks if direct dependencies of the task is resolved
+ * Checks if direct dependencies of the task is resolved
  *
  * @return {Boolean} result of the check
  * @private
@@ -337,10 +340,11 @@ Task.prototype.isSoftDependenciesResolved = function() {
  * Returns a dependency task by its index in 'dependencies' array.
  *      Usage of this method is highly unwanted.
  *
- * @method
  * @param {Number} index zero based index of the dependency
  *  in 'dependencies' prop
  * @return {Task} task object
+ * @experimental
+ * @private
  */
 Task.prototype.getDependencyObject = function(index) {
     //DEBUG_START
@@ -356,10 +360,9 @@ Task.prototype.getDependencyObject = function(index) {
 /**
  * Returns a dependency data by its index in 'dependencies' array
  *
- * @method
  * @param {Number} index zero based index of the dependency
  *  in 'dependencies' prop
- * @return {Task} task object
+ * @return {Object} value that has been requested
  */
 Task.prototype.getDepDataSet = function(index) {
     index = Math.abs(parseInt(index, 10)) || 0;
@@ -380,6 +383,7 @@ Task.prototype.getDepDataSet = function(index) {
  * Returns first active soft dependency
  *
  * @return {Task} satisfied task
+ * @experimental
  */
 Task.prototype.getActiveSoftDependency = function() {
     var depName = null;
@@ -398,10 +402,9 @@ Task.prototype.getActiveSoftDependency = function() {
  * Returns a dependency task by its index in 'dependencies' array.
  *      Usage of this method is highly unwanted.
  *
- * @method
- * @param {Number} index zero based index of the dependency
- *  in 'dependencies' prop
- * @return {Object} task object
+ * @param {String} datalink with next format
+ *     'TaskName[:DataSetIndex[:DataKey[:Index]]]'
+ * @return {Object} value that has been requested
  */
 Task.prototype.getUnsureTaskData = function(dataLink) {
     var specName = dataLink.match(/[^:]+(?!:)?/);
@@ -415,7 +418,7 @@ Task.prototype.getUnsureTaskData = function(dataLink) {
 };
 
 /**
- * function that ...
+ * Produces data/numbers for this task
  *
  * @return {Boolean} status/result of the action
  * @private
@@ -459,7 +462,7 @@ Task.prototype.processCalcs = function() {
 };
 
 /**
- * function that ...
+ * Creates filename where data for task might be
  *
  * @return {Boolean} status/result of the action
  * @private
@@ -499,7 +502,7 @@ Task.prototype.loadGraphicsData = function() {
 };
 
 /**
- * function that ...
+ * Reads data for this task from file
  *
  * @return {Boolean} status/result of the action
  * @private
@@ -551,13 +554,13 @@ Task.prototype.readGraphicsData = function(filename) {
 
 /**
  * Function that should perform a calculation of data.
- * You **should not** call it directly (this is being done automatically).
+ * Call of this function is being done automatically.
  * Define a 'calc_data' prop in hash that is passed to
  * `Dispatcher#registerNewTask` method.
  * Code you see below is a stub
  *
- * @method
  * @return {Boolean} fake status/result of the action
+ * @example
  */
 Task.prototype.calc_data = function() {
     //DEBUG_START
@@ -566,12 +569,12 @@ Task.prototype.calc_data = function() {
     return true;
 };
 
+//DEBUG_START
 /**
- * Logs short stats for task's data
+ * Logs statistics for all datasets of this task
  *
  * @private
  */
-//DEBUG_START
 Task.prototype.logDataStats = function() {
     this.graphics.forEach(function (dataSet, index) {
         _d('----- ' + index + ' -----');
@@ -610,9 +613,8 @@ Task.prototype.logDataStats = function() {
 //DEBUG_STOP
 
 /**
- * function that ...
+ * Generates and join view(s) prop(s) generated by this task into hash
  *
- * @method joinViewsProps
  * @private
  */
 Task.prototype.joinViewsProps = function() {
@@ -728,13 +730,13 @@ Task.prototype.joinViewsProps = function() {
 
 /**
  * Function that should perform a creation of properties for view(s).
- * You **should not** call it directly (this is being done automatically).
+ * Call of this function is being done automatically.
  * Define a 'make_props' prop in hash that is passed to
  * `Dispatcher#registerNewTask` method.
  * Code you see below is a stub
  *
- * @method
  * @return {Boolean} fake status/result of the action
+ * @example
  */
 Task.prototype.make_props = function() {
     //DEBUG_START
@@ -744,9 +746,8 @@ Task.prototype.make_props = function() {
 };
 
 /**
- * function that ...
+ * Parses index of the graphic(s) at views
  *
- * @method parseViewIndex
  * @private
  */
 Task.prototype.parseViewIndex = function() {
@@ -786,9 +787,9 @@ Task.prototype.parseViewIndex = function() {
 };
 
 /**
- * function that ...
+ * Converts magic numbers and props to values that define graphic look&feel
  *
- * @method adjustGraphicTypeValue
+ * @experimental
  * @private
  */
 Task.prototype.adjustGraphicTypeValue = function() {
@@ -830,10 +831,10 @@ Task.prototype.adjustGraphicTypeValue = function() {
 };
 
 /**
- * function that ...
+ * Top-level function that creates graphic(s)
  *
- * @method drawGraphics
  * @param {Object} graphicObj - value itself
+ * @return {Array} set of hashes that describe graphic
  * @private
  */
 Task.prototype.drawGraphics = function() {
@@ -872,10 +873,10 @@ Task.prototype.drawGraphics = function() {
 };
 
 /**
- * function that ...
+ * Generates graphic name/title
  *
- * @method getGraphicName
- * @param {Object} graphicObj - value itself
+ * @param {Number} index of the graphic in graphics array of this task
+ * @return {String} graphic name
  * @private
  */
 Task.prototype.getGraphicName = function(currentIndex) {
@@ -894,10 +895,10 @@ Task.prototype.getGraphicName = function(currentIndex) {
 };
 
 /**
- * function that ...
+ * Generates graphic color
  *
- * @method getGraphicColor
- * @param {Object} graphicObj - value itself
+ * @param {Number} index of the graphic in graphics array of this task
+ * @return {String} graphic color
  * @private
  */
 Task.prototype.getGraphicColor = function(index) {
@@ -915,29 +916,11 @@ Task.prototype.getGraphicColor = function(index) {
 };
 
 /**
- * function that ...
+ * Created regular 2d graphic
  *
- * @method getLimitPoints
- * @param {Object} graphicObj - value itself
- * @private
- */
-Task.prototype.getLimitPoints = function(dataSet) {
-    var minVal = dataSet[this.defaultKeys[1]].min();
-    var maxVal = dataSet[this.defaultKeys[1]].max();
-    var minFunc = typeof this.minLimit === 'function';
-    var maxFunc = typeof this.maxLimit === 'function';
-    var filterFunc = function(n) { return n !== null; };
-    var minValues = [minFunc ? this.minLimit(minVal) : this.minLimit, minVal];
-    var maxValues = [maxFunc ? this.maxLimit(maxVal) : this.maxLimit, maxVal];
-
-    return [minValues.filter(filterFunc)[0], maxValues.filter(filterFunc)[0]];
-};
-
-/**
- * function that ...
- *
- * @method draw2DGraphic
- * @param {Object} graphicObj - value itself
+ * @param {Hash} specObj - hash with data for graphic (dataset)
+ * @param {Hash} params - additional params for graphic
+ * @return {Object} graphic - graphic itself
  * @private
  */
 Task.prototype.draw2DGraphic = function(specObj, params) {
@@ -980,10 +963,11 @@ Task.prototype.draw2DGraphic = function(specObj, params) {
 };
 
 /**
- * function that ...
+ * Sets point to grapic
  *
- * @method setGraphicPoints
- * @param {Object} setGraphicPoints - value itself
+ * @param {Hash} specObj - hash with data for graphic (dataset)
+ * @param {Hash} params - additional params for graphic
+ * @return {Boolean} result of the operation
  * @private
  */
 Task.prototype.setGraphicPoints = function(specObj, graphic) {
@@ -1028,10 +1012,28 @@ Task.prototype.setGraphicPoints = function(specObj, graphic) {
 };
 
 /**
+ * Calculates limits of the graphic
+ *
+ * @param {Object} graphicObj - value itself
+ * @private
+ */
+Task.prototype.getLimitPoints = function(dataSet) {
+    var minVal = dataSet[this.defaultKeys[1]].min();
+    var maxVal = dataSet[this.defaultKeys[1]].max();
+    var minFunc = typeof this.minLimit === 'function';
+    var maxFunc = typeof this.maxLimit === 'function';
+    var filterFunc = function(n) { return n !== null; };
+    var minValues = [minFunc ? this.minLimit(minVal) : this.minLimit, minVal];
+    var maxValues = [maxFunc ? this.maxLimit(maxVal) : this.maxLimit, maxVal];
+
+    return [minValues.filter(filterFunc)[0], maxValues.filter(filterFunc)[0]];
+};
+
+/**
  * function that ...
  *
- * @method drawMarker
  * @param {Object} graphicObj - value itself
+ * @experimental
  * @private
  */
 Task.prototype.drawMarker = function(position, markerName) {
@@ -1047,9 +1049,9 @@ Task.prototype.drawMarker = function(position, markerName) {
 };
 
 /**
- * function that ...
+ * Returns view props generated by task
  *
- * @method getViewsProps
+ * @return {Object} viewsProps
  * @private
  */
 Task.prototype.getViewsProps = function() {
@@ -1057,9 +1059,9 @@ Task.prototype.getViewsProps = function() {
 };
 
 /**
- * function that ...
+ * Returns name view that has been confirmed for creation
  *
- * @method getConfirmedView
+ * @return {String} providedView
  * @private
  */
 Task.prototype.getConfirmedView = function() {
@@ -1076,11 +1078,9 @@ Task.prototype.getConfirmedView = function() {
 /**
  * Checks if dataSet with specified index exists within task
  *
- * @method isDataSetExist
- * @private
- *
  * @param {Number} index zero-based index of the set that is checked.
- * @return {Boolean} result of the action execution
+ * @return {Boolean} result of the check
+ * @private
  */
 Task.prototype.isDataSetExist = function(index) {
     index = Math.abs(parseInt(index, 10)) || 0;
@@ -1088,9 +1088,11 @@ Task.prototype.isDataSetExist = function(index) {
 };
 
 /**
- * helper function that creates data set stub
+ * creates data set hash with default or passed keys
  *
- * @method createDataSet
+ * @param {Array} forcedKeys - array of keys
+ *      that should be present in resulted hash
+ * @return {Hash} result
  */
 Task.prototype.createDataSet = function(forcedKeys) {
     var keys = Array.isArray(forcedKeys) ? forcedKeys : this.defaultKeys;
@@ -1101,9 +1103,7 @@ Task.prototype.createDataSet = function(forcedKeys) {
 /**
  * Stores data that has been calculated for this task (or particular graphic)
  *
- * @param {Hash} dataSet set of props in hash/dict that represent data
- *      for this task (or particular graphic)
- *
+ * @param {Hash} dataSet set of props in hash/dict
  * @return {Boolean} result of the action execution
  */
 Task.prototype.addDataSet = function(dataSet) {
@@ -1123,7 +1123,6 @@ Task.prototype.addDataSet = function(dataSet) {
  * Stores array of datas that has been calculated for this task
  *
  * @param {Array} dataSets array of dataSets
- *
  * @return {Boolean} result of the action execution
  */
 Task.prototype.addDataSets = function(dataSets) {
@@ -1177,10 +1176,9 @@ Task.prototype.getDataSets = function() {
 };
 
 /**
- * helper function that ...
+ * Creates helper methods for adding/getting values from datasets
  *
- * @method createDataSet
- * @private
+ * @protected
  */
 Task.prototype.createGetSetPropMethods = function() {
     var addValueFunc = function(self, key) {
@@ -1223,12 +1221,12 @@ Task.prototype.createGetSetPropMethods = function() {
 };
 
 /**
- * Get a data from task by its 'link'
+ * Get a data from task by its 'datalink'
  *
- * @method getTaskData
- * @param {Taks} task object
+ * @param {Task} task object
  * @param {String} data link
- * @return {Object} data object
+ * @return {Object} requested data
+ * @static
  */
 Task.getTaskData = function(depObj, dataLink) {
     var depSpec = dataLink.split(':');
