@@ -217,7 +217,7 @@ Dispatcher.loopThroughRegisteredSpecs = function() {
 
         //DEBUG_START
         _rl(specObj.getTaskStatus() ? '+' : '-');
-        _i('Processing finished! Passed (ms) ' + Profiler.stop(specName));
+        _i('>'.repeat(15) + ' Done! Passed (ms) ' + Profiler.stop(specName));
         //DEBUG_STOP
 
         Host.SetProgress(ii);
