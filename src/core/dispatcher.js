@@ -57,9 +57,9 @@ Dispatcher.registerNewTask = function(taskDefObj) {
     var taskObj = new Task(taskDefObj);
     var graphicFullName = taskObj.getFullName();
 
-    if (!graphicFullName) {
+    if (!graphicFullName || graphicFullName.indexOf(':') > -1) {
         //DEBUG_START
-        _e('passed spec misses name!');
+        _e('passed spec misses name or name contains \':\'!');
         //DEBUG_STOP
         return;
     }
