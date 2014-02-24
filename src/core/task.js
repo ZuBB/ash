@@ -334,7 +334,8 @@ Task.prototype.isSoftDependenciesResolved = function() {
 };
 
 /**
- * Returns a dependency task by its index in 'dependencies' array
+ * Returns a dependency task by its index in 'dependencies' array.
+ *      Usage of this method is highly unwanted.
  *
  * @method
  * @param {Number} index zero based index of the dependency
@@ -343,7 +344,7 @@ Task.prototype.isSoftDependenciesResolved = function() {
  */
 Task.prototype.getDependencyObject = function(index) {
     //DEBUG_START
-    //_w('This method (`getDependencyObject`) is deprecated');
+    _w('Usage of this method (`getDependencyObject`) is highly unwanted');
     //DEBUG_STOP
     if (index < this.dependencies.length) {
         return Dispatcher.getTaskObject(this.dependencies[index]);
@@ -353,7 +354,7 @@ Task.prototype.getDependencyObject = function(index) {
 };
 
 /**
- * Returns a dependency task by its index in 'dependencies' array
+ * Returns a dependency data by its index in 'dependencies' array
  *
  * @method
  * @param {Number} index zero based index of the dependency
@@ -367,50 +368,12 @@ Task.prototype.getDepDataSet = function(index) {
         return null;
     }
 
-    // split dependency string into logical parts
-    // dependency string may have following format
-    //      TaskName[:DataSetIndex[:DataKey[:Index]]]
-    var depSpec = this.dependencies[index].split(':');
+    // dependency string
+    var specName = this.dependencies[index].match(/[^:]+(?!:)?/);
     // get dependency task
-    var depObj = Dispatcher.getValidTaskObject(depSpec[0]);
+    var depObj = Dispatcher.getValidTaskObject(specName);
 
-    // quit if task has not been found
-    if (!depObj) {
-        return null;
-    }
-
-    // get dataSetIndex
-    var dsIndex = parseInt((depSpec[1] || '0'), 10);
-
-    // quit if dataSet has not been found
-    if (depObj.isDataSetExist(dsIndex) === false) {
-        return null;
-    }
-
-    // process request of all datasets
-    if (depSpec[1] === '*') {
-        return this.getDataSets();
-    }
-
-    // get dataSet
-    var dataSet = depObj.getDataSet(dsIndex);
-    var dataKey = depSpec[2];
-
-    // if dataKey is valid and dataSet has that dataKey
-    if (dataKey && dataSet.hasOwnProperty(dataKey)) {
-        // if index exists
-        if (depSpec[3] !== undefined) {
-            // parse it and return that item
-            var ii = Math.abs(parseInt(depSpec[3], 10)) || 0;
-            return dataSet[dataKey][ii];
-        }
-
-        // if index does not exist, return data that is behind dataKey
-        return dataSet[dataKey];
-    }
-
-    // in default case return dataSet by specified index
-    return dataSet;
+    return Task.getTaskData(depObj, this.dependencies[index]);
 };
 
 /**
@@ -426,6 +389,26 @@ Task.prototype.getActiveSoftDependency = function() {
         if (Dispatcher.getValidTaskObject(depName)) {
             return Dispatcher.getValidTaskObject(depName);
         }
+    }
+
+    return null;
+};
+
+/**
+ * Returns a dependency task by its index in 'dependencies' array.
+ *      Usage of this method is highly unwanted.
+ *
+ * @method
+ * @param {Number} index zero based index of the dependency
+ *  in 'dependencies' prop
+ * @return {Object} task object
+ */
+Task.prototype.getUnsureTaskData = function(dataLink) {
+    var specName = dataLink.match(/[^:]+(?!:)?/);
+    var task = Dispatcher.getValidTaskObject(specName);
+
+    if (task !== null) {
+        return Task.getTaskData(task, dataLink);
     }
 
     return null;
@@ -1239,20 +1222,53 @@ Task.prototype.createGetSetPropMethods = function() {
     }, this);
 };
 
+/**
+ * Get a data from task by its 'link'
+ *
+ * @method getTaskData
+ * @param {Taks} task object
+ * @param {String} data link
+ * @return {Object} data object
+ */
+Task.getTaskData = function(depObj, dataLink) {
+    var depSpec = dataLink.split(':');
 
-/**
- * function that ...
- *
- * @method addDataSets
- * @private
- */
-/**
- * Returns requested value/item from specified prop/array
- *
- * @param {String} key name of key that should be retrieved
- * @param {Number} index zero-based index of the item that should be returned.
- * @param {Number} dataSetIndex index of the dataSet that should be used to look in
- *
- * @return {Object} result of the action execution
- * @private
- */
+    // quit if task has not been found
+    if (!depObj) {
+        return null;
+    }
+
+    // get dataSetIndex
+    var dsIndex = parseInt((depSpec[1] || '0'), 10);
+
+    // quit if dataSet has not been found
+    if (depObj.isDataSetExist(dsIndex) === false) {
+        return null;
+    }
+
+    // process request of all datasets
+    if (depSpec[1] === '*') {
+        return depObj.getDataSets();
+    }
+
+    // get dataSet
+    var dataSet = depObj.getDataSet(dsIndex);
+    var dataKey = depSpec[2];
+
+    // if dataKey is valid and dataSet has that dataKey
+    if (dataKey && dataSet.hasOwnProperty(dataKey)) {
+        // if index exists
+        if (depSpec[3] !== undefined) {
+            // parse it and return that item
+            var ii = Math.abs(parseInt(depSpec[3], 10)) || 0;
+            return dataSet[dataKey][ii];
+        }
+
+        // if index does not exist, return data that is behind dataKey
+        return dataSet[dataKey];
+    }
+
+    // in default case return dataSet by specified index
+    return dataSet;
+};
+
