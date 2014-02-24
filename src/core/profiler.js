@@ -76,8 +76,8 @@ Profiler.get_detailed_time = function(name) {
 
     // TODO: microseconds
     return {
-        's' : Math.floor(diff / 1000),
         'm' : Math.floor(diff / 60000),
+        's' : Math.floor((diff % 60000) / 1000),
         'ms': diff % 1000
     };
 };
