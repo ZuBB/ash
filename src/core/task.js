@@ -628,6 +628,75 @@ Task.prototype.processViewsProps = function() {
 };
 
 /**
+ * Stores user wanted rules of props for further usage
+ *
+ * @param {String|Array} views name of view (or array of views) that should get prop
+ * @param {String} prop human readable name of prop that should be set. Next
+ * props are confirmed to work:
+ *
+ * - `area`        is treated as `AddArea`
+ * - `comment`     is treated as `AddComment`
+ * - `description` is treated as `SetDescription`
+ * - `graphic`     is treated as `AddGraphic`
+ * - `graphicex`   is treated as `AddGraphicEx`
+ * - `limits`      is treated as `SetLimits`
+ * - `notation`    is treated as `AddNotation`
+ * - `scale`       is treated as `SetScale`
+ * - `set`         is treated as `SetGraphic`
+ * - `zoom`        is treated as `ZoomToValues`
+ *
+ * Some of above props is handled automatically. No need to use them. Here
+ * they are:
+ *
+ * - `area`
+ * - `graphic`
+ * - `graphicex`
+ * @param {Array} params array of params for that prop
+ * @return {Boolean} result of addition
+ */
+Task.prototype.addViewsProp = function(views, prop, params) {
+    if (!views || typeof views !== 'string') {
+        //DEBUG_START
+        _d('views param should be a string or an array of strings');
+        //DEBUG_STOP
+        return false;
+    }
+
+    if (Array.isArray(views) === false) {
+        views = [views];
+        return false;
+    }
+
+    if (!prop || typeof prop !== 'string') {
+        //DEBUG_START
+        _d('prop param should be non empty string');
+        //DEBUG_STOP
+        return false;
+    }
+
+    if (Array.isArray(params) === false || params.empty()) {
+        //DEBUG_START
+        _d('params param should be non empty array');
+        //DEBUG_STOP
+        return false;
+    }
+
+    views.forEach(function(view) {
+        if (this.viewsProps.hasOwnProperty(view) === false) {
+            this.viewsProps[view] = {};
+        }
+
+        if (this.viewsProps[view].hasOwnProperty(prop) === false) {
+            this.viewsProps[view][prop] = [];
+        }
+
+        this.viewsProps[view][prop].push(params);
+    }, this);
+
+    return true;
+};
+
+/**
  * Converts view(s) prop(s) received from
  * {@link Task#prototype#processViewsProps} to state that is acceptable for
  * {@link Dispatcher#applyPropsToGraphicViews} method
