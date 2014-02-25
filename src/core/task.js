@@ -1229,12 +1229,22 @@ Task.prototype.createGetSetPropMethods = function() {
  * @static
  */
 Task.getTaskData = function(depObj, dataLink) {
-    var depSpec = dataLink.split(':');
-
     // quit if task has not been found
-    if (!depObj) {
+    if ((depObj instanceof Task) === false) {
+        //DEBUG_START
+        _e('Passed depObj params is not a Task instance object');
+        //DEBUG_STOP
         return null;
     }
+
+    if (typeof dataLink !== 'string' || dataLink.length === 0) {
+        //DEBUG_START
+        _e('Passed dataLink params is not a non empty string');
+        //DEBUG_STOP
+        return null;
+    }
+
+    var depSpec = dataLink.split(':');
 
     // get dataSetIndex
     var dsIndex = parseInt((depSpec[1] || '0'), 10);
