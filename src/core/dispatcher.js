@@ -8,7 +8,6 @@ Dispatcher = {
 
     runTimestamp: new Date(),
 
-    revokedGraphics: [],
     drownGraphics: [],
 
     confirmedViews: [],
@@ -17,26 +16,6 @@ Dispatcher = {
     viewsProps: {},
 
     messageTypes: [],
-    messagePrintProps: {
-        'bug': {
-            'headerControlChars': {
-                'colors': [0xFFFFFF, 0xFF0000]
-            }
-        },
-        'error': {
-            'headerControlChars': {
-                'colors': [0xF05025]
-            }
-        },
-        'hint': {
-            'headerControlChars': {
-                'colors': [0x0F8052]
-            }
-        },
-        'message': {
-            'skipHeader': true
-        }
-    },
 
     tasksHash: {}
 };
@@ -51,24 +30,24 @@ Dispatcher.registerNewTask = function(taskDefObj) {
         //DEBUG_START
         _e('can not register empty graphic specs object!');
         //DEBUG_STOP
-        return;
+        return false;
     }
 
     var taskObj = new Task(taskDefObj);
-    var graphicFullName = taskObj.getFullName();
+    var graphicFullName = taskObj.getTaskName();
 
     if (!graphicFullName || graphicFullName.indexOf(':') > -1) {
         //DEBUG_START
         _e('passed spec misses name or name contains \':\'!');
         //DEBUG_STOP
-        return;
+        return false;
     }
 
     if (graphicFullName in this.tasksHash) {
         //DEBUG_START
         _e(graphicFullName, 'spec name duplication');
         //DEBUG_STOP
-        return;
+        return false;
     }
 
     this.tasksHash[graphicFullName] = taskObj;
@@ -79,19 +58,7 @@ Dispatcher.registerNewTask = function(taskDefObj) {
     //DEBUG_START
     _d(graphicFullName, 'next graphic has been successfully registered');
     //DEBUG_STOP
-};
-
-/**
- * function that ...
- *
- * @method init
- */
-Dispatcher.init = function(params) {
-    if (typeof params !== 'object') {
-        return false;
-    }
-
-    this.createMessageInfractructure(params.messageTypes);
+    return true;
 };
 
 /**
@@ -104,8 +71,9 @@ Dispatcher.process = function() {
     Logger.init();
     //DEBUG_STOP
 
+    this.createMessageInfractructure();
     this.announce();
-    Input.createConfiguration(Script.inputs, Script.inputFields);
+    Input.createConfiguration();
     //DEBUG_START
     this.logIncomingParams();
     //DEBUG_STOP
@@ -113,7 +81,7 @@ Dispatcher.process = function() {
 
     if (isScriptAllowedToRun()) {
         Profiler.start('main');
-        this.loopThroughRegisteredSpecs();
+        this.runRegisteredTasks();
         this.createGraphicViews();
         this.sortGraphicsByIndexes();
         this.applyPropsToGraphicViews();
@@ -189,7 +157,7 @@ Dispatcher.logIncomingParams = function() {
  * @method loopThroughRegisteredSpecs
  * @private
  */
-Dispatcher.loopThroughRegisteredSpecs = function() {
+Dispatcher.runRegisteredTasks = function() {
     //DEBUG_START
     var specs  = Object.keys(this.tasksHash);
     var sortFn = function(a, b) { return a.length - b.length; };
@@ -230,9 +198,8 @@ Dispatcher.loopThroughRegisteredSpecs = function() {
  * @method createMessageInfractructure
  * @private
  */
-Dispatcher.createMessageInfractructure = function(messages) {
-    this.messageTypes = messages && messages.constructor === Object ?
-        messages : this.messagePrintProps;
+Dispatcher.createMessageInfractructure = function() {
+    this.messageTypes = Script.messagePrintProps;
 
     var addMessageFunc = function(item, self) {
         return function(message) {
@@ -271,8 +238,13 @@ Dispatcher.createMessageInfractructure = function(messages) {
  * @private
  */
 Dispatcher.printMessages = function() {
+    var self = this;
     var printMessageFunc = function(item) {
-        _rl(_t.apply(null, item.message), item.controlChars);
+        var message = _t.apply(null, item.message);
+        var controlChars = item.controlChars ||
+            self.messageTypes[type].messageControlChars;
+
+        _rl(message, controlChars);
     };
 
     for (var type in this.messageTypes) {
@@ -287,6 +259,7 @@ Dispatcher.printMessages = function() {
             }
 
             this.messageTypes[type].messages.forEach(printMessageFunc);
+
             _rl('');
         }
     }
