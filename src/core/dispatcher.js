@@ -1,27 +1,126 @@
 /**
- * function that ...
+ * Dispatcher class
  *
- * @constructor
+ * Manages process of script run
+ *
+ * All methods except (`registerNewTask`) from this class are called automatically.
+ *
+ * Below are two that you really should be aware of their purpose
+ *
+ * - {@link Dispatcher#registerNewTask} method. Tracks tasks that should
+ *   be processed
+ * - {@link Dispatcher#createMessageInfractructure} dynamically creates
+ *   methods that can be used for collecting messages that need to be printed.
+ *
+ * @class
  */
 Dispatcher = {
+    /**
+     * @property {Array} sortableProps = ['area', 'graphic', 'graphicex']
+     * @readonly
+     *
+     * List of props that need to handled in special way
+     */
     sortableProps: ['area', 'graphic', 'graphicex'],
 
+    /**
+     * @property {Array} runTimestamp = new Date()
+     * @readonly
+     *
+     * Holds time when script started to run
+     */
     runTimestamp: new Date(),
 
+    /**
+     * @property {Array} drownGraphics = []
+     * @private
+     *
+     * An array that holds real graphic objects
+     */
     drownGraphics: [],
 
+    /**
+     * @property {Array} confirmedViews = []
+     * @private
+     *
+     * An array that holds names of views that has been confirmed to be drown
+     */
     confirmedViews: [],
+
+    /**
+     * @property {{name: Object}} graphicsViews = {}
+     * @private
+     *
+     * A dictionary that holds key/value pairs related to real graphic views
+     * Each `key` is a internam name of view.
+     * Each `value` paired to corresponding key is real view object
+     */
     graphicsViews: {},
-    // hash that holds all properties and theirs values for all views
+
+    /**
+     * @property {{name: Object}} viewsProps = {}
+     * @private
+     *
+     * A dictionary that holds key/value pairs related to graphic views names
+     * and props that should be applied to them
+     *
+     * Each `key` is a internam name of view.
+     * Each `value` paired to corresponding key is a dictionary with props
+     * that should be applied to it
+     */
     viewsProps: {},
 
-    messageTypes: [],
+    /**
+     * @property {Object} messageTypes = null
+     * @private
+     *
+     * A dictionary for all type of messages will be collected during
+     * script execution. For details see
+     * {@Dispatcher#createMessageInfractructure} method
+     */
+    messageTypes: null,
 
+    /**
+     * @property {{name: Task}} tasksHash = {}
+     * @private
+     *
+     * A dictionary that holds key/value pairs of task name/task instance
+     *
+     * Each `key` is a internam name of task.
+     * Each `value` paired to corresponding key is a task instance
+     */
     tasksHash: {}
 };
 
 /**
- * function that ...
+ * Registers new task with dictionary of options passed as parameter
+ *
+ * @param {Object} taskDefObj A dictionary with options for new Task instance
+ * @return {Boolean} result of the operation
+ *
+ * See short example below on how to use this method
+ *
+ * ```
+ * Dispatcher.registerNewTask({
+ *     specName: 'my_task',
+ *     axisName: 'cm',
+ *     viewIndex: 'view:1',
+ *     graphicType: 'multicolor',
+ *     setLimits: true,
+ *     minLimit: 0,
+ *     maxLimit: 5.0,
+ *     calc_data: function() {
+ *         this.addDataSet({
+ *             x: [0, 5, 15, 20],
+ *             y: [0, 2,  2,  0],
+ *             color: [0xB00000, 0x008000, 0x0000B0, 0x000000]
+ *         });
+ *     }
+ * });
+ * ```
+ *
+ * All subparams that an be used inside `taskDefObj` object id listed in
+ * {@link Task#constructor annotation of Task class}
  *
  * @method registerNewTask
  */
@@ -62,9 +161,11 @@ Dispatcher.registerNewTask = function(taskDefObj) {
 };
 
 /**
- * function that ...
+ * Runs all top-level tasks of Dispatcher. Best annotation here it to see
+ * a source code.
  *
  * @method process
+ * @private
  */
 Dispatcher.process = function() {
     //DEBUG_START
@@ -98,9 +199,10 @@ Dispatcher.process = function() {
 };
 
 /**
- * function that announces version, build time, run time
+ * Prints announce messages at start of script execution
  *
  * @method announce
+ * @private
  */
 Dispatcher.announce = function() {
     var message = null;
@@ -129,7 +231,7 @@ Dispatcher.announce = function() {
 };
 
 /**
- * Logs any data that has been input by user
+ * Logs any data that has been entered by user
  *
  * @method logIncomingParams
  * @private
@@ -152,9 +254,10 @@ Dispatcher.logIncomingParams = function() {
 //DEBUG_STOP
 
 /**
- * function that ...
+ * Runs all tasks (sometimes we call them specs) that has been successfully
+ * registered
  *
- * @method loopThroughRegisteredSpecs
+ * @method runRegisteredTasks
  * @private
  */
 Dispatcher.runRegisteredTasks = function() {
@@ -193,7 +296,52 @@ Dispatcher.runRegisteredTasks = function() {
 };
 
 /**
- * function that ...
+ * Creates infractructure for adding different kind of messages
+ *
+ * We create 'add' methods for message types that are defined in
+ * {@link Script#messagePrintProps property}. Lets show how this magic works
+ * with help of example
+ *
+ * Lets assume `Script.messagePrintProps` property set to next value
+ *
+ * ```
+ * Script.messagePrintProps = {
+ *     'message': {
+ *         'headerControlChars': {
+ *             'colors': [0xFFFFFF, 0xFF0000]
+ *         }
+ *     }
+ * };
+ * ```
+ *
+ * With that definition this new method (shown below) will be
+ * **dynamically addded** to Dispatcher class.
+ *
+ * ```
+ * Dispatcher.addMessage = function(message) {
+ *     if (typeof message === 'string') {
+ *         message = [message];
+ *     }
+ *
+ *     if (Array.isArray(message)) {
+ *         message = {'message': message};
+ *     }
+ *
+ *     if (!message || message.constructor !== Object) {
+ *         return null;
+ *     } else {
+ *         this.messageTypes[item].messages.push(message);
+ *     }
+ * };
+ * ```
+ *
+ * With this newly added method you will be able to add messages that should
+ * be printed at the end of script run to special storage. When script
+ * is near its finish, {@link Dispatcher#printMessages} method will print all
+ * of them with attributes you defined (colors, links, etc).
+ *
+ * All this magic is happened for all type of messages that are present in
+ * `Script#messagePrintProps` property
  *
  * @method createMessageInfractructure
  * @private
@@ -232,7 +380,36 @@ Dispatcher.createMessageInfractructure = function() {
 };
 
 /**
- * function that ...
+ * Prints all messages for all type of messages that were collected during
+ * script execution
+ *
+ * Short note on localization of messages and headers describing their types
+ *
+ * Each header is automatically translated by this function. To get this
+ * working you need to have next line in localization resource file for each
+ * type of message
+ *
+ * ```
+ * report.messages.MY_MESSAGE_TYPE = Сообщения
+ * ```
+ *
+ * Each message can be also automatically translated by this function.
+ * To get this working you need to have line with key you passed in 'add'
+ * method (added by {@link Dispatcher#createMessageInfractructure} method)
+ * in your localization resource file. See next example
+ *
+ * ```
+ * // here we add message
+ * Dispatcher.addMessage('my.super.key');
+ * ```
+ *
+ * To get it automatically translated before printing you need to add next
+ * line to localization resource file
+ *
+ * ```
+ * # line with exactly that key
+ * my.super.key = Измерения были успешно завершены
+ * ```
  *
  * @method printMessages
  * @private
@@ -269,7 +446,7 @@ Dispatcher.printMessages = function() {
 };
 
 /**
- * function that ...
+ * Creates all graphic views that were confirmed for creation
  *
  * @method createGraphicViews
  * @private
@@ -306,7 +483,8 @@ Dispatcher.createGraphicViews = function() {
 };
 
 /**
- * function that ...
+ * Sort all king of graphics to get order they were requested to be appeard
+ * in views they were addressed
  *
  * @method sortGraphicsByIndexes
  * @private
@@ -336,7 +514,7 @@ Dispatcher.sortGraphicsByIndexes = function() {
 };
 
 /**
- * function that ...
+ * Applies all king of props to corresponding views
  *
  * @method applyPropsToGraphicViews
  * @private
@@ -359,7 +537,14 @@ Dispatcher.applyPropsToGraphicViews = function() {
 };
 
 /**
- * function that ...
+ * Apply any  particular prop to specified view
+ *
+ * @param {String} view A key that points to real view object in
+ * `graphicsViews` dictionary
+ * @param {String} key A human readable name of prop that is going to be set.
+ * All possible props a mentioned in {@link Task#addProp4Views} method
+ * @param {Array} instancesParams An array of multiple instances of params for
+ * particular prop that are going to be set.
  *
  * @method applyMethodToView
  * @private
@@ -423,7 +608,7 @@ Dispatcher.applyMethodToView = function(view, key, instancesParams) {
 };
 
 /**
- * function that ...
+ * Starts visualisation on application's progress bar
  *
  * @method startProgressBar
  * @private
@@ -434,7 +619,7 @@ Dispatcher.startProgressBar = function() {
 };
 
 /**
- * function that ...
+ * Stops visualisation on application's progress bar
  *
  * @method stopProgressBar
  * @private
@@ -444,10 +629,15 @@ Dispatcher.stopProgressBar = function() {
 };
 
 /**
- * function that ...
+ * Searches for task in `tasksHash` by its name. Returns task instance
+ * or `null` in case wrong name. Usually you do not need to use this method
+ * directly. However if you do, there should be strong reason for that.
+ *
+ * @param {String} name A task name
+ * @return {Task|null} result
  *
  * @method getTaskObject
- * @private
+ * @protected
  */
 Dispatcher.getTaskObject = function(name) {
     if (name && this.tasksHash.hasOwnProperty(name)) {
@@ -461,10 +651,16 @@ Dispatcher.getTaskObject = function(name) {
 };
 
 /**
- * function that ...
+ * Searches for task in `tasksHash` by its name and positive status.
+ * Returns task instance if found or null in other cases. Usually you
+ * do not need to use this method directly. However if you do, there should
+ * be strong reason for that.
+ *
+ * @param {String} name A task name
+ * @return {Task|null} result
  *
  * @method getValidTaskObject
- * @private
+ * @protected
  */
 Dispatcher.getValidTaskObject = function(name) {
     var taskObj = this.getTaskObject(name);
@@ -477,7 +673,9 @@ Dispatcher.getValidTaskObject = function(name) {
 };
 
 /**
- * function that ...
+ * Stores props of the views that should be set after views will be created
+ *
+ * @param {Object} viewsProps A dictionary with views and theris properties
  *
  * @method storeViewsProps
  * @private
@@ -487,7 +685,9 @@ Dispatcher.storeViewsProps = function(viewsProps) {
 };
 
 /**
- * function that ...
+ * Stores view that is confirmed for creation into internal Dispatcher's array
+ *
+ * @param {String} view Name of view
  *
  * @method storeConfirmedView
  * @private
@@ -499,7 +699,9 @@ Dispatcher.storeConfirmedView = function(view) {
 };
 
 /**
- * function that ...
+ * Stores real graphic object into internal Dispatcher's array
+ *
+ * @param {Object} graphicObj Real graphic object
  *
  * @method storeGraphicObject
  * @private
@@ -514,11 +716,11 @@ Dispatcher.storeGraphicObject = function(graphicObj) {
 };
 
 /**
- * function that ...
+ * Stores name of task which data should be dumped to the disk
  *
  * @method addSpec4Saving
- * @private
- * @deprecated
+ * @experimental
+ * @ignore
  */
 Dispatcher.addSpec4Saving = function(specName2Save) {
     if (!specName2Save) {
