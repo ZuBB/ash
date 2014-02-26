@@ -2,6 +2,8 @@
  * helper function that creates data set stub
  *
  * @method createDataSetStub
+ * @member Utils
+ * @ignore
  */
 Utils.createDataSetStub = function(keys) {
     var result = {};
@@ -22,6 +24,8 @@ Utils.createDataSetStub = function(keys) {
  * http://devcheater.com/
  *
  * @method sleep
+ * @member Utils
+ * @ignore
  */
 Utils.sleep = function(milliSeconds) {
     // get the current time
@@ -34,6 +38,8 @@ Utils.sleep = function(milliSeconds) {
  * helper function that creates random color
  *
  * @method createRandomColor
+ * @member Utils
+ * @ignore
  */
 Utils.createRandomColor = function() {
     return parseInt(Math.floor(Math.random()*16777215).toString(16), 16);
@@ -41,6 +47,9 @@ Utils.createRandomColor = function() {
 
 /**
  * helper function that ...
+ *
+ * @member Utils
+ * @ignore
  */
 Utils.isNumberInvalid = function(number) {
     return isNaN(parseFloat(number)) || !isFinite(number);
@@ -49,7 +58,9 @@ Utils.isNumberInvalid = function(number) {
 /**
  * helper function that clones hash
  *
- * @method _clone_hash
+ * @member Utils
+ * @ignore
+ * @method configureObj
  * @param {any type} value - value itself
  * @param {String} descr - string that will be print before value
  */
@@ -70,9 +81,12 @@ Utils.configureObj = function(_this, params) {
 /**
  * helper function that ...
  *
- * @method _clone_hash
  * @param {any type} value - value itself
  * @param {String} descr - string that will be print before value
+ *
+ * @method prepareParams
+ * @member Utils
+ * @ignore
  */
 Utils.prepareParams = function(orig_params, param1, param2) {
     var params = [].slice.call(orig_params, 0);
@@ -87,6 +101,8 @@ Utils.prepareParams = function(orig_params, param1, param2) {
  * function that ...
  *
  * @method checkChannel
+ * @member Utils
+ * @ignore
  */
 Utils.checkChannel = function(dataSource) {
     return (
@@ -101,6 +117,8 @@ Utils.checkChannel = function(dataSource) {
  * function that ...
  *
  * @method checkChannelsList
+ * @member Utils
+ * @ignore
  */
 Utils.checkChannelsList = function(dataSource) {
     // TODO replace 8 with some constant
@@ -112,6 +130,8 @@ Utils.checkChannelsList = function(dataSource) {
  * function that ...
  *
  * @method getDataFolderListing
+ * @member Utils
+ * @ignore
  */
 Utils.getDataFolderListing = function(dataFolder) {
     var temp = null;
@@ -136,9 +156,13 @@ Utils.getDataFolderListing = function(dataFolder) {
     return result;
 };
 
-/*
-* Recursively merge properties of two objects
-*/
+/**
+ * Recursively merge properties of two objects
+ *
+ * @method mergeRecursive
+ * @member Utils
+ * @ignore
+ */
 Utils.mergeRecursive = function(obj1, obj2) {
     for (var p in obj2) {
         try {
@@ -165,6 +189,9 @@ Utils.mergeRecursive = function(obj1, obj2) {
  * to output (its a common name; indeed it can be different devices)
  *
  * @method createOutputStr
+ * @member Utils
+ * @ignore
+ *
  * @param {boolean} b_lf - indicates if we need to insert '\n' at start
  * @param {boolean} a_lf - indicates if we need to append '\n' at end
  * @param {any type} value - entity itself
@@ -210,10 +237,11 @@ Utils.createOutputStr = function(b_lf, a_lf, value, description) {
 };
 
 /**
- * function that ...
+ * function that ... http://bit.ly/17CTRQX
  *
  * @method getColorForPercentage
- *         // http://bit.ly/17CTRQX
+ * @member Utils
+ * @ignore
  */
 Utils.getColorForPercentage = function(percentColors, pct) {
     var lower = percentColors[0];
@@ -250,9 +278,11 @@ Utils.getColorForPercentage = function(percentColors, pct) {
 
 /**
  * function that ...
+ * https://github.com/jashkenas/underscore/blob/master/underscore.js#L570
  *
  * @method range
- * https://github.com/jashkenas/underscore/blob/master/underscore.js#L570
+ * @member Utils
+ * @ignore
  */
 Utils.range = function(start, stop, step) {
     if (arguments.length <= 1) {
