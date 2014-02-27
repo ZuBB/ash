@@ -1,7 +1,354 @@
 /**
- * @constructor
+ * Task Class
  *
- * function that ...
+ * Running script in general solves some huge task. But that huge task usually
+ * consists of dozens of javascript expressions. Group of expressions
+ * that solves single logical task should be organized in task. This can look
+ * in following way
+ *
+ * ```
+ * Dispatcher.registerNewTask({
+ *     specName: 'my_task0',
+ *     axisName: 'cm',
+ *     viewIndex: 'view:1',
+ *     graphicType: 'plain:thin',
+ *     calc_data: function() {
+ *         this.addDataSet({
+ *             x: [0, 1],
+ *             y: [0, 1]
+ *         });
+ *     }
+ * });
+ *
+ * Dispatcher.registerNewTask({
+ *     specName: 'my_task1',
+ *     dataSource: 'radius',
+ *     defaultKeys: 'perimeter',
+ *     calc_data: function() {
+ *         this.addPerimeter(2 * Math.PI * Input.getValue(this.dataSource));
+ *     }
+ * });
+ *
+ * Dispatcher.registerNewTask({
+ *     specName: 'my_task2',
+ *     dependencies: ['my_task1:0:perimeter:0'],
+ *     dataSource: 'height',
+ *     defaultKeys: 'square',
+ *     calc_data: function() {
+ *         var perimeter = this.getDepDataSet(0);
+ *         this.addSquare(perimeter * Input.getValue(this.dataSource));
+ *     }
+ * });
+ *
+ * Dispatcher.registerNewTask({
+ *     specName: 'my_task3',
+ *     dependencies: ['my_task2:0:square:0'],
+ *     calc_data: function() {
+ *         var square = this.getDepDataSet(0);
+ *         var messageKey = 'my_task3.message.cylinder_square';
+ *         Dispatcher.addMessage([messageKey, square]);
+ *         return true;
+ *     }
+ * });
+ * ```
+ *
+ *
+ *
+ * @param {Object} params **hash/dict with keys that are below**
+ *
+ *
+ *
+ * @param {String} params.specName Name of the task. **mandatory**. Should
+ * not contain `:` and be unique through all tasks that are loaded
+ *
+ *
+ *
+ * @param {String} [params.dataSource = null]
+ * Name of the input that holds data source for this task
+ *
+ *
+ *
+ * @param {Array} [params.dependencies = []]
+ * List of dependent tasks that should be satisfied to have this task run.
+ * Each dependency is defined in format of datalink. For details see
+ * {@link Task#getUnsureTaskData} method
+ *
+ *
+ *
+ * @param {String} [params.viewIndex = null]
+ * List of the views name and indexes of the graphics in that views. Format
+ * of value is following
+ *
+ * `viewName:index[, viewName:index...]`
+ *
+ * where:
+ *
+ * - `viewName` is an name of the view that will get graphics produced by
+ * this task
+ * - `index` is an ordinal number (starting from 1) used to define order
+ * of the graphic(s) in specified view.
+ *
+ *
+ *
+ * @param {String} [params.providedView = null]
+ * Name of the view that should be created. Format of value is following
+ *
+ * `providedView:index`
+ *
+ * where:
+ *
+ * - `index` is an ordinal number (starting from 1) used to define order
+ * of creation specified view.
+ * - `viewName` is an **internal** name of the view. This name is used
+ * everywhere inside scripts. View object itself will attemp to get its
+ * localized name automatically in following way:
+ *
+ * `_t('views.' + providedView + '.name')`
+ *
+ * where:
+ *
+ *   - `'views.'` and `'.name'` are mandatory hardcoded strings
+ *   - `providedView` is internal view name
+ *   - `_t()` is shortcut for localization function
+ *
+ * this means that localization resource file should contain next line
+ *
+ * `views.MY_VIEW_NAME.name = Моя вкладка`
+ *
+ *
+ *
+ * @param {String} [params.axisName = 'none']
+ * Internal name of the axis Y for all graphics produced by this task.
+ * On graphic(s) drawing it will be automatically coverted to localized
+ * version of it in following way
+ *
+ * `_t('units.' + axisName)`
+ *
+ * where
+ *
+ * - `'units.'` is a hardcoded mandatory string
+ * - `axisName` is that internal axis name.
+ *
+ * This means that localization resource file should contain next line
+ *
+ * `units.MY_AXIS_NAME = крт.`
+ *
+ * If you need to hide unit box for graphic(s) produced by this task just
+ * do not pass any value for this key/subparam, since default value for it
+ * just does exaclty what you need.
+ *
+ *
+ *
+ * @param {String|Function} [params.graphicName = null]
+ * Allows to set custom mechanizm for generating localized titles of
+ * graphic(s) produced by this task. If this subparams is not passed than
+ * next method is used
+ *
+ * `_t('specs.' + specName + '.name')`
+ *
+ * where
+ *
+ * - `'specs.'` and `'.name'` are mandatory hardcoded strings
+ * - `specName` is name of task (see above)
+ *
+ * This means that localization resource file should contain next line
+ *
+ * `specs.MY_SPEC_NAME.name = График скорости улитки`
+ *
+ * If this subparam's value is a string than next method is used
+ *
+ * `_t('specs.' + graphicName + '.name', index)`
+ *
+ * where
+ *
+ * - `'specs.'` and `'.name'` are mandatory hardcoded strings
+ * - `graphicName` is value of this subparam
+ * - `index` is an ordinal number (startting from 1) of the graphic produced
+ * by this task. Localization module will substitute a `%1` pattern with
+ * passed index automatically
+ *
+ * This means that localization resource file may contain next line
+ *
+ * `specs.MY_GRAPHIC_NAME.name = График скорости %1-й улитки`
+ *
+ * However also previous approach is possible. In this case passed index will
+ * be ignored and line in localization resource file may looks like this
+ *
+ * `specs.MY_GRAPHIC_NAME.name = График скорости улитки`
+ *
+ * If this subparam's value is a function than following method is used
+ *
+ * `this.graphicName(index, graphicsAmount);`
+ *
+ * In this case you will have all control on text that will be shown as title
+ * for each graphic produced by this task. This function is executed in
+ * context of task so you have full access to all internals of task object,
+ * so please be carefull. Also function gets 2 params
+ *
+ * - `index` ordinal number (startting from 1) of the graphic produced by
+ * this task
+ * - `graphicsAmount` total number of graphics produced by this task
+ *
+ *
+ *
+ * @param {Array|Number} [params.graphicColor = null]
+ * Color(s) for graphics that will generated by this script
+ *
+ * Array of colors is usable when task priduces multiple graphics
+ *
+ * Its possible to directly assign colors to this property. However build
+ * system allows to split code and resources. In this case resources are
+ * colors
+ *
+ * This can be done in following way
+ *
+ * ```
+ * Dispatcher.registerNewTask({
+ *     ...
+ *     graphicColor: @MY_COLORS_KEY@,
+ *     ...
+ * });
+ * ```
+ *
+ * And in colors resource file you need to add next line
+ *
+ * ```
+ * // for multiple colors for one task
+ * MY_COLORS_KEY = [0x101010, 0x050505]
+ *
+ * // ... or one
+ * MY_COLORS_KEY = 0x505050
+ * ```
+ *
+ *
+ * @param {Array|String} [params.hiddenGraphics = null]
+ * Sometimes there is a need to turn off graphic(s) by default in the view.
+ * This can be achieved by setting this property. Possible values are
+ *
+ * - `'*'` - make all graphics invisible
+ * - `[1, 0, 1]` - make 1st and 3rd graphics invisible
+ *
+ * Default value means graphic(s) will be visible
+ *
+ *
+ *
+ * @param {String} [params.graphicType = '']
+ * Specs of graphics that should be applied during drawing
+ *
+ * Commont format if this string is following
+ *
+ * ```
+ * graphic_type:line_type
+ * ```
+ *
+ * We support next types of graphics
+ *
+ * - `plain` - regular graphic
+ * - `multicolor` - when graphic is a multicolor line
+ * - `area` - when graphic is an area
+ * - `sidestep` - when graphic is looks like stair-step
+ *
+ * ```
+ *         (x2, y2)
+ *                 o --
+ *                 |
+ *                 |
+ *           o --- o
+ *  (x1, y1) |     (x2, y1)
+ * ```
+ *
+ * If no value specified `plain` value is assumed
+ *
+ * We support next types of lines
+ *
+ * - `thin` - thin line joined with thick dots
+ * - `thick` - thick line, no dots
+ * - `dots` - no lines, only thick dots
+ *
+ *
+ *
+ * @param {Array} [params.defaultKeys]
+ * If you need to change {link Script#defaultKeys default list} of keys for
+ * particular task feel free to set this property.
+ *
+ * Whenewer you set or not this prop {@link Task#createGetSetPropMethods}
+ * method will use value from `Script#defaultKeys` property and create helper
+ * methods
+ *
+ *
+ *
+ * @param {Boolean} [params.setLimits = false] A flag that indicates if limits
+ * should be applied to graphics produced by this task
+ *
+ *
+ *
+ * @param {Function|Number} [params.minLimit = null] Defined min value of the
+ * limit that should be applied to graphics produced by this task. Will be
+ * ignored if `setScale` subparam does not equals to `true`
+ *
+ * If this subparam is a number than it will be used without any modifications.
+ * If its a function than you get full control on number that will be
+ * calculated for min limit. Function is executed in context of task so you
+ * have full access to all internals of task object, so please be carefull.
+ * Also function gets 1 param
+ *
+ * - `min` minimal value from 2nd default key of the dataset that is currently
+ * processed
+ *
+ *
+ *
+ * @param {Function|Number} [params.maxLimit = null]
+ * Defined max value of the limit that should be applied to graphics produced
+ * by this task. Will be ignored if `setScale` subparam does not equals to
+ * `true`.
+ *
+ * If this subparam is a number than it will be used without any
+ * modifications. If its a function than you get full control on number that
+ * will be calculated for min limit. Function is executed in context of task so you
+ * have full access to all internals of task object, so please be carefull.
+ * Also function gets 1 param
+ *
+ * - `max` maximum value from 2nd default key of the dataset that is currently
+ * processed
+ *
+ *
+ *
+ * @param {Boolean} [params.setScale = false] A flag that indicates if scale
+ * should be applied to graphics produced by this task
+ *
+ *
+ *
+ * @param {Number} [params.scaleValue = null] Value of the scale that should
+ * be applied to graphics produced by this task. Will be ignored if `setScale`
+ * subparam does not equals to `true`
+ *
+ *
+ *
+ * @param {Number} [params.scaleColor = null] Value of the color that should
+ * be applied to graphics produced by this task. Will be ignored if `setScale`
+ * subparam does not equals to `true`
+ *
+ *
+ *
+ * @param {Function} [params.calc_data] Function that should perform
+ * calculation of the data. Call of this function is being done automatically.
+ * Function is executed in context of task so you have full access to all
+ * internals of task object, so please be carefull. Defined 'calc_data' prop
+ * in hash overrides {@link Task#calc_data} method.
+ *
+ * If method does not produce any data, it should return boolean value that
+ * indicates if function ended successfully
+ *
+ *
+ *
+ * @param {Function} [params.make_props] Code wrapped with function block
+ * that should perform a creation of properties for view(s). Call of this
+ * function is being done automatically. Defined 'make_props' prop in hash
+ * overrides {@link Task#make_props} method.
+ *
+ *
+ *
+ * @constructor
  */
 Task = function(params) {
     this.statusCodes = [];
@@ -54,7 +401,7 @@ Task = function(params) {
  * Returns name of the task
  *
  * @private
- * @deprecated
+ * @ignore
  */
 Task.prototype.getFullName = function() {
     //DEBUG_START
@@ -67,6 +414,7 @@ Task.prototype.getFullName = function() {
  * Returns name of the task
  *
  * @return {String} name of the task
+ * @private
  */
 Task.prototype.getTaskName = function() {
     return this.specName;
@@ -84,7 +432,8 @@ Task.prototype.getTaskStatus = function() {
 /**
  * Stores status of newly completed action. Also returns it
  *
- * @param  {Object} value of the status that is going to be set
+ * @param  {Object} value that represent status that is going to be set.
+ * Will be casted to `Boolean`
  * @return {Boolean} status that has been set
  * @private
  */
@@ -120,6 +469,7 @@ Task.prototype.process = function() {
  * Checks user's input for dataSource option for this task
  *
  * @return {Boolean} final status of the task
+ * @experimental
  * @private
  */
 Task.prototype.checkDataSource = function() {
@@ -151,10 +501,13 @@ Task.prototype.checkDataSource = function() {
 };
 
 /**
- * Checks if user's input is a valid single channel number
+ * Checks if user's input is a valid single channel number. Indeed code of
+ * this function should not be here. Will be moved to {@link Input}
  *
+ * @param {String} dataSource contains channel number
  * @return {Boolean} result of the check
  * @private
+ * @ignore
  */
 Task.prototype.checkSingleChannel = function(dataSource) {
     var result = Utils.checkChannel(dataSource);
@@ -163,12 +516,15 @@ Task.prototype.checkSingleChannel = function(dataSource) {
 };
 
 /**
- * Checks if user's input is a list of valid channel numbers
+ * Checks if user's input is a list of valid channel numbers. Indeed code of
+ * this function should not be here. Will be moved to {@link Input}
  *
+ * @param {String} dataSource represents list of channel numbers
  * @return {Boolean} result of the check
  * @private
+ * @ignore
  */
-Task.prototype.checkChannelsList = function( dataSource) {
+Task.prototype.checkChannelsList = function(dataSource) {
     var result = Utils.checkChannelsList(dataSource);
     this.sourceType = result === true ? 'channel' : null;
     return result;
@@ -177,8 +533,10 @@ Task.prototype.checkChannelsList = function( dataSource) {
 /**
  * Checks if user's input is a valid filename that exists
  *
+ * @param {String} rawDataSource represents file name to look for
  * @return {Boolean} result of the check
  * @private
+ * @ignore
  */
 Task.prototype.checkDataSourceFile = function(rawDataSource) {
     var result = null;
@@ -209,8 +567,7 @@ Task.prototype.checkDataSourceFile = function(rawDataSource) {
  * Checks if non allowed channel is entered by user for this task
  *
  * @return {Boolean} result of the check
- * @experimental
- * @private
+ * @ignore
  */
 Task.prototype.checkForbiddenChannel = function() {
     if (this.getTaskStatus() === false) {
@@ -292,10 +649,11 @@ Task.prototype.isDependenciesResolved = function() {
 };
 
 /**
- * checks if specified dependencies of the task is unresolved
+ * Checks if specified dependencies of the task is unresolved
  *
  * @return {Boolean} result of the check
  * @private
+ * @ignore
  */
 Task.prototype.isForbiddenDependenciesResolved = function() {
     var depName = null;
@@ -319,10 +677,11 @@ Task.prototype.isForbiddenDependenciesResolved = function() {
 };
 
 /**
- * checks if any soft dependency of the task is resolved
+ * Checks if any soft dependency of the task is resolved
  *
  * @return {Boolean} result of the check
  * @private
+ * @ignore
  */
 Task.prototype.isSoftDependenciesResolved = function() {
     if (this.softDependencies.length === 0) {
@@ -343,7 +702,6 @@ Task.prototype.isSoftDependenciesResolved = function() {
 
 /**
  * Returns a dependency task by its index in 'dependencies' array.
- *      Usage of this method is highly unwanted.
  *
  * @param {Number} index zero based index of the dependency
  *  in 'dependencies' prop
@@ -367,7 +725,7 @@ Task.prototype.getDependencyObject = function(index) {
  *
  * @param {Number} index zero based index of the dependency
  *  in 'dependencies' prop
- * @return {Object} value that has been requested
+ * @return {DataSet|Array|Number} value that has been requested
  */
 Task.prototype.getDepDataSet = function(index) {
     index = Math.abs(parseInt(index, 10)) || 0;
@@ -385,10 +743,11 @@ Task.prototype.getDepDataSet = function(index) {
 };
 
 /**
- * Returns first active soft dependency
+ * Returns first task from soft dependencies that has positive status
  *
  * @return {Task} satisfied task
- * @experimental
+ * @private
+ * @ignore
  */
 Task.prototype.getActiveSoftDependency = function() {
     var depName = null;
@@ -404,12 +763,17 @@ Task.prototype.getActiveSoftDependency = function() {
 };
 
 /**
- * Returns a dependency task by its index in 'dependencies' array.
- *      Usage of this method is highly unwanted.
+ * Returns a task's data by datalink Its safe to ask a data from task with
+ * unknown status. Thats why it has 'unsafe' word in name. In case task's
+ * status is negative, `null` is returned otherwise we try to reach requested
+ * data with help of {@link Task#getTaskData}
  *
- * @param {String} datalink with next format
- *     'TaskName[:DataSetIndex[:DataKey[:Index]]]'
- * @return {Object} value that has been requested
+ * @param {String} datalink For most quick access to data from dependent tasks
+ * and theris data we use strings that we called dataLink with next format
+ *
+ * `TaskName[:DataSetIndex[:DataKey[:Index]]]`
+ *
+ * @return {DataSet|Array|Number} value that has been requested
  */
 Task.prototype.getUnsureTaskData = function(dataLink) {
     var specName = dataLink.match(/[^:]+(?!:)?/);
@@ -435,7 +799,6 @@ Task.prototype.processCalcs = function() {
         return false;
     }
 
-    // TODO: new save
     if (this.sourceType === 'file' || this.loadData4Compare) {
         result = this.loadGraphicsData();
     } else {
@@ -476,7 +839,6 @@ Task.prototype.loadGraphicsData = function() {
     //DEBUG_START
     _d('loading data...');
     //DEBUG_STOP
-    // TODO: new save
     if (this.loadData4Compare === false && this.sourceType === 'channel') {
         return false;
     }
@@ -491,7 +853,6 @@ Task.prototype.loadGraphicsData = function() {
             filename = null;
         }
     } else {
-        // TODO
         filename = Input.getValue('loadfile');
         // this will not work if number of files in data folder
         // has been changed during run
@@ -509,8 +870,10 @@ Task.prototype.loadGraphicsData = function() {
 /**
  * Reads data for this task from file
  *
+ * @param {String} filename variable with filename to read data from
  * @return {Boolean} status/result of the action
  * @private
+ * @ignore
  */
 Task.prototype.readGraphicsData = function(filename) {
     var FSObject = new ActiveXObject('Scripting.FileSystemObject');
@@ -533,7 +896,6 @@ Task.prototype.readGraphicsData = function(filename) {
     try {
         fileHandler = FSObject.OpenTextFile(filename, 1);
         data = JSON.parse(fileHandler.ReadAll());
-        // TODO
         if (typeof data.specs2compare[dataKey] !== 'undefined') {
             this.graphics = data.specs2compare[dataKey];
             result = true;
@@ -558,14 +920,11 @@ Task.prototype.readGraphicsData = function(filename) {
 };
 
 /**
- * Function that should perform a calculation of data.
- * Call of this function is being done automatically.
- * Define a 'calc_data' prop in hash that is passed to
- * `Dispatcher#registerNewTask` method.
- * Code you see below is a stub
+ * Function that performs calculation of the data. Default source code of this
+ * function is a stub. User should optionally redefine it
  *
- * @return {Boolean} fake status/result of the action
- * @example
+ * @return {Boolean} result of the operation
+ * @private
  */
 Task.prototype.calc_data = function() {
     //DEBUG_START
@@ -658,7 +1017,7 @@ Task.prototype.processViewsProps = function() {
  * @param {Array} params array of params for that prop
  * @return {Boolean} result of addition
  */
-Task.prototype.addViewsProp = function(views, prop, params) {
+Task.prototype.addProp4Views = function(views, prop, params) {
     if (!views || typeof views !== 'string') {
         //DEBUG_START
         _d('views param should be a string or an array of strings');
@@ -702,7 +1061,7 @@ Task.prototype.addViewsProp = function(views, prop, params) {
 
 /**
  * Converts view(s) prop(s) received from
- * {@link Task#prototype#processViewsProps} to state that is acceptable for
+ * {@link Task#processViewsProps} to state that is acceptable for
  * {@link Dispatcher#applyPropsToGraphicViews} method
  *
  * @return {Boolean} status of the operation
@@ -738,6 +1097,7 @@ Task.prototype.joinViewsProps = function() {
     }
 
     // lets add real graphics objects into target array
+    // TODO make this just after graphic creation
     graphics.forEach(function(graphicHash) {
         indexes.push(Dispatcher.storeGraphicObject(graphicHash.graphic) - 1);
     });
@@ -790,13 +1150,14 @@ Task.prototype.joinViewsProps = function() {
             if (this.graphicIsBackground) {
                 params.push(graphics[jj].color);
             } else if (!this.multicolorGraphic) {
-                params.push(this.graphicType);
+                params.push(this.lineType);
                 params.push(graphics[jj].color);
             }
 
             this.viewsProps[view][prop].push(params);
 
             // if this is an area or visible graphic -- skip all that is below
+            // TODO we might got bugs after 2ns part of 'if' will be removed
             if (prop === 'area' || graphics[jj].visible) {
                 continue;
             }
@@ -821,14 +1182,11 @@ Task.prototype.joinViewsProps = function() {
 };
 
 /**
- * Function that should perform a creation of properties for view(s).
- * Call of this function is being done automatically.
- * Define a 'make_props' prop in hash that is passed to
- * `Dispatcher#registerNewTask` method.
- * Code you see below is a stub
+ * Function that performs creation of the properties for view(s). Default
+ * source code of this function is a stub. User should optionally redefine it
  *
- * @return {Boolean} fake status/result of the action
- * @example
+ * @return {Boolean} result of the operation
+ * @private
  */
 Task.prototype.make_props = function() {
     //DEBUG_START
@@ -840,6 +1198,7 @@ Task.prototype.make_props = function() {
 /**
  * Parses index of the graphic(s) at views
  *
+ * @return {Array} array with hashes that describes graphic 'address'
  * @private
  */
 Task.prototype.parseViewIndex = function() {
@@ -881,7 +1240,6 @@ Task.prototype.parseViewIndex = function() {
 /**
  * Converts magic numbers and props to values that define graphic look&feel
  *
- * @experimental
  * @private
  */
 Task.prototype.adjustGraphicTypeValue = function() {
@@ -937,8 +1295,7 @@ Task.prototype.adjustGraphicTypeValue = function() {
 /**
  * Top-level function that creates graphic(s)
  *
- * @param {Object} graphicObj - value itself
- * @return {Array} set of hashes that describe graphic
+ * @return {Array} set of hashes that describe graphics
  * @private
  */
 Task.prototype.drawGraphics = function() {
@@ -975,7 +1332,9 @@ Task.prototype.drawGraphics = function() {
 /**
  * Generates graphic name/title
  *
- * @param {Number} index of the graphic in graphics array of this task
+ * @param {Number} index index of the graphic (graphic is based on dataset)
+ * of this task that is currently drawing.
+ *
  * @return {String} graphic name
  * @private
  */
@@ -997,8 +1356,10 @@ Task.prototype.getGraphicName = function(currentIndex) {
 /**
  * Generates graphic color
  *
- * @param {Number} index of the graphic in graphics array of this task
- * @return {String} graphic color
+ * @param {Number} index index of the graphic (graphic is based on dataset)
+ * of this task that is currently drawing.
+ *
+ * @return {Number} graphic color
  * @private
  */
 Task.prototype.getGraphicColor = function(index) {
@@ -1054,9 +1415,9 @@ Task.prototype.getGraphicVisibility = function(index) {
 /**
  * Created regular 2d graphic
  *
- * @param {Hash} specObj - hash with data for graphic (dataset)
- * @param {Hash} params - additional params for graphic
- * @return {Object} graphic - graphic itself
+ * @param {DataSet} specObj hash with data for graphic (dataset)
+ * @param {Object} params hash/dics with additional params for graphic
+ * @return {Object} graphic object that represents real graphic
  * @private
  */
 Task.prototype.draw2DGraphic = function(specObj, params) {
@@ -1101,8 +1462,8 @@ Task.prototype.draw2DGraphic = function(specObj, params) {
 /**
  * Sets point to grapic
  *
- * @param {Hash} specObj - hash with data for graphic (dataset)
- * @param {Hash} params - additional params for graphic
+ * @param {DataSet} specObj hash with data for graphic (dataset)
+ * @param {Object} graphic object that represents real graphic
  * @return {Boolean} result of the operation
  * @private
  */
@@ -1148,9 +1509,10 @@ Task.prototype.setGraphicPoints = function(specObj, graphic) {
 };
 
 /**
- * Calculates limits of the graphic
+ * Calculates limits for the graphic based on passed dataset
  *
- * @param {Object} graphicObj - value itself
+ * @param {DataSet} dataSet hash with keys and corresponding arrays of values
+ * @return {Array} result array with minimum and maximum values
  * @private
  */
 Task.prototype.getLimitPoints = function(dataSet) {
@@ -1166,11 +1528,9 @@ Task.prototype.getLimitPoints = function(dataSet) {
 };
 
 /**
- * function that ...
+ * Draws markers on oscillogram
  *
- * @param {Object} graphicObj - value itself
- * @experimental
- * @private
+ * @ignore
  */
 Task.prototype.drawMarker = function(position, markerName) {
     if (this.customMarkers.length === 0) {
@@ -1185,9 +1545,9 @@ Task.prototype.drawMarker = function(position, markerName) {
 };
 
 /**
- * Returns view props generated by task
+ * Returns views props generated by task
  *
- * @return {Object} viewsProps
+ * @return {Object} hash with views anth theirs props
  * @private
  */
 Task.prototype.getViewsProps = function() {
@@ -1197,7 +1557,7 @@ Task.prototype.getViewsProps = function() {
 /**
  * Returns name view that has been confirmed for creation
  *
- * @return {String} providedView
+ * @return {String} view name
  * @private
  */
 Task.prototype.getConfirmedView = function() {
@@ -1214,7 +1574,7 @@ Task.prototype.getConfirmedView = function() {
 /**
  * Checks if dataSet with specified index exists within task
  *
- * @param {Number} index zero-based index of the set that is checked.
+ * @param {Number} index index of the set that is checked.
  * @return {Boolean} result of the check
  * @private
  */
@@ -1224,13 +1584,15 @@ Task.prototype.isDataSetExist = function(index) {
 };
 
 /**
- * creates data set hash with default or passed keys
+ * Creates data set hash with default or passed keys
  *
- * @param {Array} forcedKeys - array of keys
- *      that should be present in resulted hash
- * @return {Hash} result
+ * @param {Array} forcedKeys array of keys
+ *      that will be present in resulted hash
+ * @return {DataSet} result hash (or dict) in next form
+ * `{'1ST_KEY': Array.new()[, 'NEXT_KEY':  Array.new()...]}`
  */
 Task.prototype.createDataSet = function(forcedKeys) {
+    // TODO: non empty array
     var keys = Array.isArray(forcedKeys) ? forcedKeys : this.defaultKeys;
 
     return Utils.createDataSetStub(keys);
@@ -1239,7 +1601,7 @@ Task.prototype.createDataSet = function(forcedKeys) {
 /**
  * Stores data that has been calculated for this task (or particular graphic)
  *
- * @param {Hash} dataSet set of props in hash/dict
+ * @param {DataSet} dataSet set of props in hash/dict
  * @return {Boolean} result of the action execution
  */
 Task.prototype.addDataSet = function(dataSet) {
@@ -1279,11 +1641,11 @@ Task.prototype.addDataSets = function(dataSets) {
 /**
  * Returns requested dataSet or one of its values by optionally specified key
  *
- * @param {Number} index zero-based index of the set that should be returned.
- *      Negative index is also accepted
- * @param {String} key name of key that should be retrieved. Optional
+ * @param {Number} [index] zero-based index of the data set that
+ * should be returned. Negative index is also accepted.
+ * @param {String} [key] name of key that should be retrieved.
  *
- * @return {Object} result of the action execution
+ * @return {DataSet} result of the action execution
  */
 Task.prototype.getDataSet = function(index, key) {
     if (typeof index === 'string') {
@@ -1303,9 +1665,9 @@ Task.prototype.getDataSet = function(index, key) {
 };
 
 /**
- * Returns all dataSet of this task
+ * Returns all dataSets of this task
  *
- * @return {Array} result of the action execution
+ * @return {Array} dataSets array
  */
 Task.prototype.getDataSets = function() {
     return this.graphics;
@@ -1314,7 +1676,67 @@ Task.prototype.getDataSets = function() {
 /**
  * Creates helper methods for adding/getting values from datasets
  *
- * @protected
+ * Lets assume next list of keys has been requested for this task
+ *
+ *
+ * ```
+ * Dispatcher.registerNewTask({
+ *     ...
+ *     defaultKeys: ['temperature'],
+ *     ...
+ * });
+ * ```
+ *
+ * After this next methods will be **dynamically added** to instance of Task
+ * class
+ *
+ * ```
+ * Task.property.addTemperature = function(number, dataSetIndex) {
+ *     dataSetIndex = Math.abs(parseInt(dataSetIndex, 10)) || 0;
+ *
+ *     if (typeof this.graphics[dataSetIndex] === 'undefined') {
+ *         this.graphics[dataSetIndex] = {};
+ *     }
+ *
+ *     if (typeof this.graphics[dataSetIndex]['temperature'] === 'undefined') {
+ *         this.graphics[dataSetIndex]['temperature'] = [];
+ *     }
+ *
+ *     this.graphics[dataSetIndex]['temperature'].push(number);
+ * };
+ *
+ * Task.property.getTemperature = function(index, dataSetIndex) {
+ *     index = Math.abs(parseInt(index, 10)) || 0;
+ *     dataSetIndex = Math.abs(parseInt(dataSetIndex, 10)) || 0;
+ *
+ *     if (dataSetIndex < this.graphics.length) {
+ *         return this.graphics[dataSetIndex]['temperature'][index];
+ *     }
+ *
+ *     return []._undefined;
+ * };
+ * ```
+ *
+ * `addTemperature` method accepts next params
+ *
+ * - `number`, **mandatory** - item that should be added to array that is
+ *   bind to 'temperature' key
+ * - `dataSetIndex` - index of the data set which holds array that will get
+ *   new item. This param is optional. 0 as index will be used if it is omitted
+ *
+ * `getTemperature` method accepts next params
+ *
+ * - `index` - index of the item that is requested from 'temperature' array.
+ *   Can be omitted. 0 is used in that case
+ * - `dataSetIndex` - index of the dataSet we going to look in
+ *
+ * Note its not possible to specify a `dataSetIndex` without specifying `index`
+ *
+ * Please note also that get/add methods capitalize keys in name of methods
+ *
+ * All this magic is happened for all keys of this task
+ *
+ * @private
  */
 Task.prototype.createGetSetPropMethods = function() {
     var addValueFunc = function(self, key) {
@@ -1361,8 +1783,8 @@ Task.prototype.createGetSetPropMethods = function() {
  * Get a data from task by its 'datalink'
  *
  * @param {Task} task object
- * @param {String} data link
- * @return {Object} requested data
+ * @param {String} dataLink See {@link Task#getUnsureTaskData} for details
+ * @return {DataSet|Array|Number} requested data
  * @static
  */
 Task.getTaskData = function(depObj, dataLink) {
