@@ -806,10 +806,9 @@ Task.prototype.joinViewsProps = function() {
             // request making graphic invisible at start
             this.viewsProps[view].set.push([
                 graphics[jj].name,
-                this.graphicType,
+                this.lineType,
                 graphics[jj].color,
-                // to set graphic initially invisible we need to pass 1 here
-                Number(!graphics[jj].visible)
+                graphics[jj].visible
             ]);
         }
     }
@@ -943,15 +942,11 @@ Task.prototype.drawGraphics = function() {
             color: this.getGraphicColor(ii)
         };
 
-        var visible = this.hiddenGraphics === '*' ? false : true;
-        visible = Array.isArray(this.hiddenGraphics) ?
-            !Boolean(this.hiddenGraphics[ii]) : visible;
-
         var graphic = this.draw2DGraphic(dataSet, graphicParams);
 
         graphics.push({
             'graphic' : graphic,
-            'visible' : visible,
+            'visible' : this.getGraphicVisibility(ii),
             'color'   : graphicParams.color,
             'name'    : graphicParams.name
         });
@@ -1002,6 +997,42 @@ Task.prototype.getGraphicColor = function(index) {
     }
 
     return graphicColor;
+};
+
+/**
+ * Generates graphic visibility
+ *
+ * @param {Number} index index of the graphic (graphic is based on dataset)
+ * of this task that is currently drawing.
+ *
+ * @return {Number} visibility
+ * @private
+ */
+Task.prototype.getGraphicVisibility = function(index) {
+    // to set graphic initially invisible we need to return 1
+    var result = 0;
+
+    switch (true) {
+    case this.hiddenGraphics === '*':
+        result = 1;
+        break;
+    case Array.isArray(this.hiddenGraphics):
+        result = Number(Boolean(this.hiddenGraphics[index]));
+        break;
+    case typeof this.hiddenGraphics === 'boolean':
+        result = Number(this.hiddenGraphics[index]);
+        break;
+    case this.hiddenGraphics === null:
+        result = 0;
+        break;
+    default:
+        //DEBUG_START
+        _e('invalid visibility token. graphic will be visible');
+        //DEBUG_STOP
+        result = 0;
+    }
+
+    return result;
 };
 
 /**
