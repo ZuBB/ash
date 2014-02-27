@@ -9,6 +9,10 @@ Task = function(params) {
     this.sourceType = null;
     this.viewsProps = {};
 
+    this.drawGraphicsAsShelf = false;
+    this.graphicIsBackground = false;
+    this.multicolorGraphic = false;
+
     this.specName = null;
     this.defaultKeys = [];
     this.dataSource = null;
@@ -17,23 +21,23 @@ Task = function(params) {
   //this.revokedSpecs = [];
   //this.forbiddenChannel = null;
 
+    // experimental
     this.saveData4Compare = false;
     this.loadData4Compare = false;
+    // experimental
+    this.drawMarkers = false;
+    this.customMarkers = [];
 
     this.viewIndex = null;
     this.providedView = null;
 
-    this.axisName = '';
+    this.axisName = 'none';
     this.graphicName = null;
-    this.graphicType = $GRAPHIC_TYPE$;
-    this.defaultGraphicType = $GRAPHIC_TYPE$;
-    this.drawMarkers = false;
+    this.graphicType = '';
+    this.lineType = 2;
+    this.defaultLineType = $GRAPHIC_TYPE$;
     this.graphicColor = null;
-    this.customMarkers = [];
     this.hiddenGraphics = null;
-    this.drawGraphicsAsShelf = false;
-    this.graphicIsBackground = false;
-    this.multicolorGraphic = false;
 
     this.setLimits = false;
     this.minLimit  = null;
@@ -938,13 +942,13 @@ Task.prototype.adjustGraphicTypeValue = function() {
  * @private
  */
 Task.prototype.drawGraphics = function() {
-    var graphics = [];
     if (!this.viewIndex) {
-        return graphics;
+        return [];
     }
 
     // do magic with graphic types
     this.adjustGraphicTypeValue();
+    var graphics = [];
 
     // process every graphic
     this.graphics.forEach(function(dataSet, ii) {
@@ -1071,11 +1075,11 @@ Task.prototype.draw2DGraphic = function(specObj, params) {
 
     var graphic = null;
 
-    if (this.multicolorGraphic !== true) {
-        // color issue: no matter what color to pass here
-        graphic = Host.CreateGraphic(params.name, params.axis, 0x000000);
-    } else {
+    if (this.multicolorGraphic === true) {
         graphic = Host.CreateColoredGraphic(params.name, params.axis, params.color);
+    } else {
+        // NOTE color issue: no matter what color to pass here
+        graphic = Host.CreateGraphic(params.name, params.axis, 0x000000);
     }
 
     if (!this.setGraphicPoints(specObj, graphic)) {
@@ -1314,7 +1318,7 @@ Task.prototype.getDataSets = function() {
  */
 Task.prototype.createGetSetPropMethods = function() {
     var addValueFunc = function(self, key) {
-        return function(number, dataSetIndex) {
+        return function(item, dataSetIndex) {
             dataSetIndex = Math.abs(parseInt(dataSetIndex, 10)) || 0;
 
             if (typeof self.graphics[dataSetIndex] === 'undefined') {
@@ -1325,7 +1329,7 @@ Task.prototype.createGetSetPropMethods = function() {
                 self.graphics[dataSetIndex][key] = [];
             }
 
-            self.graphics[dataSetIndex][key].push(number);
+            self.graphics[dataSetIndex][key].push(item);
         };
     };
 
@@ -1346,6 +1350,7 @@ Task.prototype.createGetSetPropMethods = function() {
         this.defaultKeys = Script.defaultKeys;
     }
 
+    // TODO filter keys that are note valid
     this.defaultKeys.forEach(function(prop) {
         this['add' + prop.capitalize()] = addValueFunc(this, prop);
         this['get' + prop.capitalize()] = getValueFunc(this, prop);
