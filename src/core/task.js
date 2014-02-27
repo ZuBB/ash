@@ -881,41 +881,53 @@ Task.prototype.parseViewIndex = function() {
  * @private
  */
 Task.prototype.adjustGraphicTypeValue = function() {
-    if (this.getTaskStatus() === false || isNaN(this.graphicType)) {
-        return false;
+    if (typeof this.graphicType !== 'string') {
+        return this.updateStatus(false);
     }
 
-    if (this.graphicType < 0 || this.graphicType > 9) {
-        return false;
-    }
+    var graphicSpecs = this.graphicType.split(':');
 
-    if (this.graphicType === 3) {
-        this.graphicIsBackground = true;
-        this.graphicType = this.defaultGraphicType;
-        return true;
-    }
-
-    // multicolor graphic
-    if (this.graphicType === 4) {
+    switch (graphicSpecs[0]) {
+    case 'multicolor':
         this.multicolorGraphic = true;
-        this.graphicType = 0;
-        return true;
-    }
-
-    if (this.graphicType === 8) {
+        break;
+    case 'sidestep':
         this.drawGraphicsAsShelf = true;
-        // thin lines with dots
-        this.graphicType = 2;
-        return true;
+        break;
+    case 'area':
+        this.graphicIsBackground = true;
+        break;
+    case 'plain':
+    case '':
+        break;
+    default:
+        //DEBUG_START
+        _e(graphicSpecs[0], 'unknown graphic type');
+        //DEBUG_STOP
+        return this.updateStatus(false);
     }
 
-    if (this.graphicType === 9) {
-        this.drawGraphicsAsShelf = true;
-        this.graphicType = this.defaultGraphicType;
-        return true;
+    switch (graphicSpecs[1]) {
+    case 'thin':
+        this.lineType = 2;
+        break;
+    case 'thick':
+        this.lineType = 0;
+        break;
+    case 'dots':
+        this.lineType = 1;
+        break;
+    case undefined:
+        this.lineType = this.defaultLineType;
+        break;
+    default:
+        //DEBUG_START
+        _e(graphicSpecs[1], 'unknown line type');
+        //DEBUG_STOP
+        return this.updateStatus(false);
     }
 
-    return false;
+    return this.updateStatus(true);
 };
 
 /**
