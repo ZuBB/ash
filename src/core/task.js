@@ -1018,16 +1018,15 @@ Task.prototype.processViewsProps = function() {
  * @return {Boolean} result of addition
  */
 Task.prototype.addProp4Views = function(views, prop, params) {
-    if (!views || typeof views !== 'string') {
+    if (!(views && (typeof views === 'string' || Array.isArray(views)))) {
         //DEBUG_START
         _d('views param should be a string or an array of strings');
         //DEBUG_STOP
         return false;
     }
 
-    if (Array.isArray(views) === false) {
+    if (typeof views === 'string') {
         views = [views];
-        return false;
     }
 
     if (!prop || typeof prop !== 'string') {
