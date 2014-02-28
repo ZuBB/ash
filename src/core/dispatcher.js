@@ -119,8 +119,17 @@ Dispatcher = {
  * });
  * ```
  *
- * All subparams that an be used inside `taskDefObj` object id listed in
+ * All subparams that an be used inside `taskDefObj` object is listed in
  * {@link Task#constructor annotation of Task class}
+ *
+ * Each definition like above should reside in separate file in `src/tasks`
+ * directory. Build system concatenates all files including files with tasks
+ * into single file. This allows `Dispatcher` class to automatically register
+ * all tasks that were included into result file. Since tasks may depend on
+ * each other order of register **do matters**. That order is same as order of
+ * files with tasks in `src/tasks` directly sorted alphabetically. Make sure
+ * you name files with tasks properly
+ *
  *
  * @method registerNewTask
  */
