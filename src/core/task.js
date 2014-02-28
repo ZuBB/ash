@@ -210,7 +210,8 @@
  * });
  * ```
  *
- * And in colors resource file you need to add next line
+ * And in colors resource file (usually its a
+ * `src/resources/colors.properties`) you need to add next line
  *
  * ```
  * // for multiple colors for one task
