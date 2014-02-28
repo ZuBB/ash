@@ -9,7 +9,7 @@
  *
  * - {@link Dispatcher#registerNewTask} method. Tracks tasks that should
  *   be processed
- * - {@link Dispatcher#createMessageInfractructure} dynamically creates
+ * - {@link Dispatcher#createAddMessageMethods} dynamically creates
  *   methods that can be used for collecting messages that need to be printed.
  *
  * @class
@@ -76,7 +76,7 @@ Dispatcher = {
      *
      * A dictionary for all type of messages will be collected during
      * script execution. For details see
-     * {@Dispatcher#createMessageInfractructure} method
+     * {@Dispatcher#createAddMessageMethods} method
      */
     messageTypes: null,
 
@@ -172,7 +172,6 @@ Dispatcher.process = function() {
     Logger.init();
     //DEBUG_STOP
 
-    this.createMessageInfractructure();
     this.announce();
     Input.createConfiguration();
     //DEBUG_START
@@ -182,6 +181,7 @@ Dispatcher.process = function() {
 
     if (isScriptAllowedToRun()) {
         Profiler.start('main');
+        this.createAddMessageMethods();
         this.runRegisteredTasks();
         this.createGraphicViews();
         this.sortGraphicsByIndexes();
@@ -343,10 +343,10 @@ Dispatcher.runRegisteredTasks = function() {
  * All this magic is happened for all type of messages that are present in
  * `Script#messagePrintProps` property
  *
- * @method createMessageInfractructure
+ * @method createAddMessageMethods
  * @private
  */
-Dispatcher.createMessageInfractructure = function() {
+Dispatcher.createAddMessageMethods = function() {
     this.messageTypes = Script.messagePrintProps;
 
     var addMessageFunc = function(item, self) {
@@ -395,7 +395,7 @@ Dispatcher.createMessageInfractructure = function() {
  *
  * Each message can be also automatically translated by this function.
  * To get this working you need to have line with key you passed in 'add'
- * method (added by {@link Dispatcher#createMessageInfractructure} method)
+ * method (added by {@link Dispatcher#createAddMessageMethods} method)
  * in your localization resource file. See next example
  *
  * ```
