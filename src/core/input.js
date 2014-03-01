@@ -7,9 +7,8 @@
  * If script needs from user any external data it needs to show dialog(s)
  * with input fields in it.
  *
- * By default inputs script does not know any inputs (see
- * {@link Script#inputFields} property) and content of dialogs is also not set
- * (see {@link Script#dialogsContent} property))
+ * By default neither (see {@link Script#inputFields} property) nor content
+ * of dialogs (see {@link Script#dialogsContent} property) are defined.
  *
  * To change that you need to define value of `Script.inputFields` property
  * in next file
