@@ -481,14 +481,14 @@ Task.prototype.checkDataSource = function() {
     var result = true;
 
     if (this.dataSource) {
-        var rawDataSource = Input.getRawValue(this.dataSource);
+        //var rawDataSource = Input.getRawValue(this.dataSource);
         var dataSource = Input.getValue(this.dataSource);
 
         if (dataSource === null) {
             result = false;
         } else {
-            result = false;
-            if (dataSource === rawDataSource) {
+            result = true;
+            /*if (dataSource === rawDataSource) {
                 result |= this.checkSingleChannel(dataSource);
             }
 
@@ -498,7 +498,7 @@ Task.prototype.checkDataSource = function() {
 
             if (!result) {
                 result |= this.checkDataSourceFile(rawDataSource);
-            }
+            }*/
         }
     }
 

@@ -258,10 +258,9 @@ Dispatcher = (function() {
         _d(Host.NumberOfSamples, 'samples');
         _d(Host.NumberOfSamples / Host.Frequency, 'duration');
 
-        for (var ii = 0, input; ii < Input.createdInputs.length; ii++) {
-            input = Input.createdInputs[ii];
+        Input.getFilledInputs().forEach(function(input) {
             _d(Input.getValue(input), input);
-        }
+        });
 
         _d('');
     };

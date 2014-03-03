@@ -100,35 +100,6 @@ Utils.prepareParams = function(orig_params, param1, param2) {
 /**
  * function that ...
  *
- * @method checkChannel
- * @member Utils
- * @ignore
- */
-Utils.checkChannel = function(dataSource) {
-    return (
-        (typeof (dataSource) === 'number') &&
-        !isNaN(dataSource) &&
-        (dataSource > 0) &&
-        (dataSource <= Host.Channels)
-    );
-};
-
-/**
- * function that ...
- *
- * @method checkChannelsList
- * @member Utils
- * @ignore
- */
-Utils.checkChannelsList = function(dataSource) {
-    // TODO replace 8 with some constant
-    // TODO rework
-    return (/^[1-8](\s,\s[1-8])?$/).test(dataSource);
-};
-
-/**
- * function that ...
- *
  * @method getDataFolderListing
  * @member Utils
  * @ignore

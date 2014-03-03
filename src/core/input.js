@@ -89,7 +89,7 @@
  * ```
  * Script.dialogsContent = [
  *     'input1',
- *     Input.separator,
+ *     'SEPARATOR',
  *     'input2',
  *     'input3',
  *     'input4',
@@ -132,230 +132,335 @@
  *
  * @class
  */
-Input = {
-    dialogIndex:   0,
-    input2dialogMap: {},
-    createdInputs: [],
-    dialogs: []
-};
+Input = (function() {
+    // shorthand for separator
+    var SEPARATOR = 'SEPARATOR';
+    // defaults
+    var DATATYPE = {
+        'int': {
+            // we use any negative value for sending signal that
+            // current option should not be used at all
+            'defaultValue': function(udv) {
+                return udv || -1;
+            },
+            'parse': function(rawValue) {
+                var parsedValue = parseInt(rawValue, 10);
+                return isNaN(parsedValue) ? rawValue : parsedValue;
+            }
+        },
+        'float': {
+            // we forced to append a fractional part to have possibility
+            // to pass fractional values into graph scripts
+            'defaultValue': function(udv) {
+                return udv || -1.1;
+            },
+            'parse': function(rawValue) {
+                var parsedValue = parseFloat(rawValue);
+                return isNaN(parsedValue) ? rawValue : parsedValue;
+            }
+        },
+        'string': {
+            // string
+            'defaultValue': function(udv) {
+                return udv || '';
+            },
+            'parse': function(rawValue) {
+                return rawValue;
+            }
+        },
+        'combobox': {
+            'initialValue': function(items) {
+                if (Array.isArray(items)) {
+                    return getComboContent(items);
+                } else {
+                    return '\n';
+                }
+            },
+            'defaultValue': function() {
+                return 0;
+            },
+            'parse': function(rawValue) {
+                return parseInt(rawValue, 10);
+            }
+        },
+        'channel': {
+            'initialValue': function(/* udv */) {
+                // TODO take into account previously selected item
+                return getComboContent(Utils.range(Host.Channels + 1));
+            },
+            'defaultValue': function() {
+                return 0;
+            },
+            'parse': function(rawValue) {
+                var channel = parseInt(rawValue, 10);
+                var result = null;
+                var checks = [
+                    function(channel) { return typeof channel === 'number'; },
+                    function(channel) { return channel <= Host.Channels; },
+                    function(channel) { return !isNaN(channel); },
+                    function(channel) { return channel > 0; }
+                ];
 
-// shorthand for separator
-Input.separator = 'SEPARATOR';
-// default values
-Input.DEFAULT_VALUE = {
-    // we use any negative value for sending signal that
-    // current option should not be used at all
-    'int': -1,
-    // we forced to append a fractional part to have possibility
-    // to pass fractional values into graph scripts
-    'float': -1.1,
-    // string
-    'string': ''
-};
+                result = checks.every(function(chk) { return chk(channel); });
+                return result ? channel : null;
+            }
+        },
+        'channels': {
+            'defaultValue': function(udv) {
+                return udv || '1,2';
+            },
+            'parse': function(rawValue) {
+                return rawValue.split(/\s?,\s?/).map(function(item) {
+                    return DATATYPE.channel.parse(item);
+                });
+            }
+        }
+    };
 
-/**
- * Returns default value for input
- *
- * @param {String} name Internal name of the input
- * @return {String} default value for input name we passed
- *
- * @member Input
- * @private
- */
-Input.getDefaultValue = function(name) {
-    if ('value' in this.possible_fields[name]) {
-        if (typeof this.possible_fields[name].value === 'function') {
-            return this.possible_fields[name].value();
-        } else if (Array.isArray(this.possible_fields[name].value)) {
-            var comboItems = [];
-            var length = this.possible_fields[name].value.length;
+    // for copy
+    var inputFields = null;
+    var dialogsContent = null;
 
-            for (var ii = 0; ii < length; ii++) {
-                comboItems.push(_t(this.possible_fields[name].value[ii]));
+    // internal
+    var input2dialogMap = {};
+    var dialogs = [];
+
+    // out
+    var module = {};
+
+    /**
+     * Returns dialog/configuration object
+     *
+     * @param {Number} index internal index of configuration
+     * @return {Object} real configuration object
+     *
+     * @member Input
+     * @private
+     */
+    var createDialog = function(index) {
+        return Host.CreateConfigure('Dialog' + index);
+    };
+
+    /**
+     * Returns content ready to be set as combo items
+     *
+     * @param {Array} items List of combo items
+     * @return {String} stringified comto items
+     *
+     * @member Input
+     * @private
+     */
+    var getComboContent = function(items) {
+        if (items && Array.isArray(items)) {
+            var func = function(item) { return _t(item.toString()); };
+            return items.map(func).join('\n');
+        } else {
+            return '\n';
+        }
+    };
+
+    /**
+     * Returns initial value for input
+     *
+     * @param {String} name Internal name of the input
+     * @return {String|Number|null} default value for input name we passed
+     *
+     * @member Input
+     * @private
+     */
+    var getInitialValue = function(name) {
+        var inputType = inputFields[name].type;
+        var inputValue = inputFields[name].value;
+
+        return DATATYPE[inputType].initialValue(inputValue);
+    };
+
+    /**
+     * Returns default value for input
+     *
+     * @param {String} name Internal name of the input
+     * @return {String|Number|null} default value for input name we passed
+     *
+     * @member Input
+     * @private
+     */
+    var getDefaultValue = function(name) {
+        var inputType = inputFields[name].type;
+        var inputValue = inputFields[name].value;
+        var method = DATATYPE[inputType].defaultValue ? 'default' : 'initial';
+
+        return DATATYPE[inputType][method + 'Value'](inputValue);
+    };
+
+    /**
+     * Checks if given input is known for this script
+     *
+     * @param {String} name Internal name of the input
+     * @return {Boolean} localized name
+     *
+     * @member Input
+     * @private
+     */
+    var isInputNameKnown = function(name) {
+        if (!name) {
+            return false;
+        }
+
+        if (inputFields.hasOwnProperty(name) === false) {
+            return false;
+        }
+
+        if (inputFields[name].hasOwnProperty('type') === false) {
+            return false;
+        }
+
+        if (DATATYPE.hasOwnProperty(inputFields[name].type) === false) {
+            return false;
+        }
+
+        return true;
+    };
+
+    /**
+     * Returns localized name of the input by its internal name
+     *
+     * @param {String} name Internal name of the input
+     * @return {String} localized name
+     *
+     * @member Input
+     * @private
+     */
+    var getInputI18Name = function(name) {
+        return _t('inputs.' + name + '.name');
+    };
+
+    /**
+     * Creates dialog window(s), and shows them.
+     * Content of the dialogs is based on content of
+     * {@link Script#dialogsContent} property. Specs of input fields are
+     * taken from {@link Script#inputFields} property
+     *
+     * @member Input
+     * @private
+     */
+    module.createConfiguration = function() {
+        if (Array.isArray(Script.dialogsContent) === false) {
+            //DEBUG_START
+            _w("Can't create configuration. Options is not an array");
+            //DEBUG_STOP
+            return false;
+        }
+
+        inputFields = JSON.parse(JSON.stringify(Script.inputFields));
+        dialogsContent = Script.dialogsContent.slice(0);
+
+        var dialogIndex = 0;
+        var dialogItems = 0;
+        var inputName = null;
+        var currentDialog = createDialog(dialogIndex);
+
+        while (dialogsContent.length) {
+            // lets retrieve first element
+            inputName = dialogsContent.shift();
+
+            // it its a function
+            if (typeof inputName === 'function') {
+                // execute it
+                inputName = inputName();
+
+                // convert to array if its not
+                if (Array.isArray(inputName) === false) {
+                    inputName = [inputName.toString()];
+                }
+
+                // append result at start
+                dialogsContent = inputName.concat(dialogsContent);
+                continue;
             }
 
-            return comboItems.join('\n');
-        } else {
-            return this.possible_fields[name].value;
-        }
-    }
+            if (inputName === SEPARATOR) {
+                dialogItems = dialogItems === 0 ? 0 : 7;
+            } else if (isInputNameKnown(inputName)) {
+                var i18nName = getInputI18Name(inputName);
+                var value = getInitialValue(inputName);
 
-    var type = this.possible_fields[name].type;
-    if (type && typeof Input.DEFAULT_VALUE[type] !== 'undefined') {
-        return Input.DEFAULT_VALUE[type];
-    }
-
-    //DEBUG_START
-    _w(name, 'Next config option needs love');
-    //DEBUG_STOP
-    return -1;
-};
-
-/**
- * Creates dialog window(s), and shows them.
- * Content of dialog(s) based on content of `Script.dialogsContent` variable
- * Specs of input field(s) are taken from `Script.inputFields` variable
- *
- * @member Input
- * @private
- */
-Input.createConfiguration = function() {
-    var items = Script.dialogsContent;
-    var possibleInputs = Script.inputFields;
-
-    if (Array.isArray(items) === false) {
-        //DEBUG_START
-        _w("Can't create configuration. Options is not an array");
-        //DEBUG_STOP
-        return;
-    }
-
-    var currentDialog = Host.CreateConfigure('Dialog' + this.dialogIndex);
-    this.possible_fields = possibleInputs;
-    var internal_name = null;
-    var dialogItems = 0;
-
-    while (items.length) {
-        if (typeof (internal_name = items.shift()) === 'function') {
-            items = internal_name().concat(items);
-            continue;
-        }
-
-        if (internal_name !== Input.separator) {
-            if (this.isInputNameKnown(internal_name)) {
-                this.input2dialogMap[internal_name] = this.dialogIndex;
-                var i18n_name = this.getInputI18Name(internal_name);
-                var value = this.getDefaultValue(internal_name);
-                currentDialog.AddItem(i18n_name, value);
-                this.createdInputs.push(internal_name);
+                input2dialogMap[inputName] = dialogIndex;
+                currentDialog.AddItem(i18nName, value);
                 dialogItems++;
             } else {
                 //DEBUG_START
-                _e(internal_name, 'Next input field is not known');
+                _e(inputName, 'Next input field is not known');
                 //DEBUG_STOP
+                continue;
             }
-        } else {
-            dialogItems = dialogItems === 0 ? 0 : 7;
+
+            if (dialogItems === 7) {
+                dialogItems = 0;
+                currentDialog.Configure();
+                dialogs.push(currentDialog);
+                currentDialog = createDialog(++dialogIndex);
+            }
         }
 
-        if (dialogItems === 7) {
-            dialogItems = 0;
-            this.dialogIndex++;
+        if (dialogItems > 0) {
             currentDialog.Configure();
-            this.dialogs.push(currentDialog);
-            currentDialog = Host.CreateConfigure('Dialog' + this.dialogIndex);
-        }
-    }
-
-    if (dialogItems > 0) {
-        currentDialog.Configure();
-        this.dialogs.push(currentDialog);
-    }
-
-    currentDialog = null;
-};
-
-/**
- * Returns localized name of the input by its internal name
- *
- * @param {String} name Internal name of the input
- * @return {String} localized name
- *
- * @member Input
- * @private
- */
-Input.getInputI18Name = function(name) {
-    return this.possible_fields[name].hasOwnProperty('name') ?
-        this.possible_fields[name].name : _t('inputs.' + name + '.name');
-};
-
-/**
- * Checks if given input is known for this script
- *
- * @param {String} name Internal name of the input
- * @return {Boolean} localized name
- *
- * @member Input
- * @private
- */
-Input.isInputNameKnown = function(name) {
-    if (!name) {
-        return false;
-    }
-
-    if (typeof this.possible_fields[name] === 'undefined') {
-        return false;
-    }
-
-    if (!(this.possible_fields[name].type ||
-                this.possible_fields[name].value)) {
-        return false;
-    }
-
-    return true;
-};
-
-/**
- * Returns raw value that was entered by user by given input name
- * That value is not casted to type that was defined on input creation
- *
- * @param {String} name Internal name of the input
- * @return {Object} result
- *
- * @member Input
- * @private
- */
-Input.getRawValue = function(name) {
-    if (!this.isInputNameKnown(name)) {
-        //DEBUG_START
-        _e(name, 'Input: attempt to access value with nonexistent name');
-        //DEBUG_STOP
-        return []._undefined;
-    }
-
-    var index = this.input2dialogMap[name];
-
-    if (typeof(index) === 'undefined') {
-        if (this.possible_fields[name].type === 'combobox') {
-            return 0;
+            dialogs.push(currentDialog);
         }
 
-        //DEBUG_START
-        _i(name, 'attempt to get a value that is not inited yet');
-        //DEBUG_STOP
-        return null;
-    }
+        currentDialog = null;
+    };
 
-    return this.dialogs[index].GetValue(this.getInputI18Name(name));
-};
+    /**
+     * Returns value that was entered by user by given input name
+     * That value is additionally casted to type that was defined on input creation
+     *
+     * @param {String} name Internal name of the input
+     * @return {Object} result
+     *
+     * @member Input
+     */
+    module.getValue = function(name) {
+        if (!isInputNameKnown(name)) {
+            //DEBUG_START
+            _e(name, 'Input: attempt to access value with nonexistent name');
+            //DEBUG_STOP
+            return []._undefined;
+        }
 
-/**
- * Returns value that was entered by user by given input name
- * That value is additionally casted to type that was defined on input creation
- *
- * @param {String} name Internal name of the input
- * @return {Object} result
- *
- * @member Input
- */
-Input.getValue = function(name) {
-    var raw_value = this.getRawValue(name);
-    var parsedValue = null;
+        var index = input2dialogMap[name];
 
-    if (typeof raw_value === 'undefined') {
-        return raw_value;
-    }
+        if (typeof(index) === 'undefined') {
+            //DEBUG_START
+            _i(name, 'getting value of input that was not inited');
+            //DEBUG_STOP
+            return getDefaultValue(name);
+        }
 
-    if (this.possible_fields[name].type === 'int') {
-        parsedValue = parseInt(raw_value, 10);
-        return isNaN(parsedValue) ? raw_value : parsedValue;
-    }
+        var rawValue = dialogs[index].GetValue(getInputI18Name(name));
 
-    if (this.possible_fields[name].type === 'float') {
-        parsedValue = parseFloat(raw_value);
-        return isNaN(parsedValue) ? raw_value : parsedValue;
-    }
+        if (inputFields[name].type) {
+            return DATATYPE[inputFields[name].type].parse(rawValue);
+        } else {
+            //DEBUG_START
+            _i(name, 'getting value of input that was not inited');
+            //DEBUG_STOP
+            return rawValue;
+        }
+    };
 
-    return raw_value;
-};
+    /**
+     * Returns localized name of the input by its internal name
+     *
+     * @param {String} name Internal name of the input
+     * @return {String} localized name
+     *
+     * @member Input
+     * @private
+     */
+    module.getFilledInputs = function() {
+        return Object.keys(input2dialogMap);
+    };
+
+    return module;
+})();
 
