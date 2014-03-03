@@ -8,6 +8,13 @@ module.exports = function(grunt) {
                 options: {
                     'external': ['DataSet']
                 }
+            },
+            test: {
+                src: ['src/core/*.js'],
+                dest: '/tmp/docs',
+                options: {
+                    'external': ['DataSet']
+                }
             }
         },
         gitcommit: {
