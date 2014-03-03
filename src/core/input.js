@@ -341,7 +341,6 @@ Input = (function() {
      * taken from {@link Script#inputFields} property
      *
      * @member Input
-     * @private
      */
     module.createConfiguration = function() {
         if (Array.isArray(Script.dialogsContent) === false) {
@@ -455,7 +454,6 @@ Input = (function() {
      * @return {String} localized name
      *
      * @member Input
-     * @private
      */
     module.getFilledInputs = function() {
         return Object.keys(input2dialogMap);
