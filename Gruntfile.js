@@ -67,7 +67,7 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('git', ['gitcommit', 'gitpush']);
-    grunt.registerTask('jsdoc', ['jsduck', 'work-dir:change', 'git', 'work-dir:restore']);
+    grunt.registerTask('jsdoc', ['jsduck:main', 'work-dir:change', 'git', 'work-dir:restore']);
     grunt.registerTask('default', ['jsdoc']);
 };
 
