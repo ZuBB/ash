@@ -218,10 +218,10 @@ Reporter._insertLink2OSCGRM = function(string, oscillogram) {
  * Prints message to report tab. Any newline symbols will not be appended
  *
  * @member Reporter
- * method _rp
+ * @method _rw
  */
 _rw = function() {
-    Reporter.report.apply(Reporter,
+    Reporter.report.apply(null,
         Utils.prepareParams(arguments, false, false));
 };
 
@@ -230,10 +230,10 @@ _rw = function() {
  * appended
  *
  * @member Reporter
- * method _rl
+ * @method _rl
  */
 _rl = function() {
-    Reporter.report.apply(Reporter,
+    Reporter.report.apply(null,
         Utils.prepareParams(arguments, true, false));
 };
 
@@ -245,7 +245,7 @@ _rl = function() {
  * @method _rp
  */
 _rp = function() {
-    Reporter.report.apply(Reporter,
+    Reporter.report.apply(null,
         Utils.prepareParams(arguments, true, true));
 };
 
