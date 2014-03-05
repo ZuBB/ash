@@ -250,7 +250,7 @@
         <copy encoding="${current.cp}" outputencoding="${current.cp}"
             file="${old.file}" tofile="${new.file}"/>
 
-        <jscomp compilationLevel="simple" output="${new.file}"
+        <jscomp compilationLevel="${COMPRESS.LEVEL}" output="${new.file}"
             forceRecompile="true" debug="false"
             encoding="${current.cp}" outputencoding="${current.cp}">
 
