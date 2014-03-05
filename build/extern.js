@@ -1,17 +1,25 @@
 function Host() {}
 
-Host.CanContinue = function() {}
-Host.CreateConfigure = function() {}
-Host.CreateGraphic = function() {}
-Host.CreateGraphicView = function() {}
-Host.GetCurLanguage = function() {}
-Host.ReportOut = function() {}
-Host.SetMarker = function() {}
-Host.SynchByEx = function() {}
-Host.ValueAt = function() {}
+Host.CanContinue = function() {};
+Host.CreateConfigure = function() {};
+Host.CreateGraphic = function() {};
+Host.CreateGraphicView = function() {};
+Host.GetCurLanguage = function() {};
+Host.ReportOut = function() {};
+Host.SetMarker = function() {};
+Host.SynchByEx = function() {};
+Host.ValueAt = function() {};
+Host.HideProgress = function() {};
+Host.SetProgress = function() {};
+Host.AveValueAt = function() {};
+Host.SetStatusText = function() {};
+Host.ShowReport = function() {};
+Host.ShowProgress = function() {};
 
 Host.DataType = null;
 Host.Frequency = null;
+Host.CurFileName = null;
+Host.NumberOfSamples =null;
 
 function Enumerator() {}
 
