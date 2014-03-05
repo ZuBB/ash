@@ -282,7 +282,7 @@ Logger._stopBuffering = function() {
  * @param {String} [description] Text that describes value
  */
 _d = function() {
-    Logger.log.apply(Logger, Utils.prepareParams(arguments, 0));
+    Logger.log.apply(null, Utils.prepareParams(arguments, 0));
 };
 
 /**
@@ -292,7 +292,7 @@ _d = function() {
  * @param {String} [description] Text that describes value
  */
 _i = function() {
-    Logger.log.apply(Logger, Utils.prepareParams(arguments, 1));
+    Logger.log.apply(null, Utils.prepareParams(arguments, 1));
 };
 
 /**
@@ -303,7 +303,7 @@ _i = function() {
  * @param {String} [description] Text that describes value
  */
 _p = function() {
-    Logger.log.apply(Logger, Utils.prepareParams(arguments, 1, true));
+    Logger.log.apply(null, Utils.prepareParams(arguments, 1, true));
 };
 
 /**
@@ -313,7 +313,7 @@ _p = function() {
  * @param {String} [description] Text that describes value
  */
 _w = function() {
-    Logger.log.apply(Logger, Utils.prepareParams(arguments, 2));
+    Logger.log.apply(null, Utils.prepareParams(arguments, 2));
 };
 
 /**
@@ -323,7 +323,7 @@ _w = function() {
  * @param {String} [description] Text that describes value
  */
 _e = function() {
-    Logger.log.apply(Logger, Utils.prepareParams(arguments, 3));
+    Logger.log.apply(null, Utils.prepareParams(arguments, 3));
 };
 
 /**
@@ -333,7 +333,7 @@ _e = function() {
  * @param {String} [description] Text that describes value
  */
 _f = function() {
-    Logger.log.apply(Logger, Utils.prepareParams(arguments, 4));
+    Logger.log.apply(null, Utils.prepareParams(arguments, 4));
 };
 //DEBUG_STOP
 
