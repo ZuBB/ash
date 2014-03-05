@@ -22,7 +22,7 @@
             file="${old.file}" tofile="${new.file}"/>
     </target>
 
-    <target name="release" depends="rqbuild-vars, vcs, base, strip, check-log-calls, compress">
+    <target name="release" depends="rqbuild-vars, vcs, base, strip, check-log-calls, compress, unminify">
         <var name="old.file" value="${new.file}"/>
 
         <if>
@@ -207,7 +207,7 @@
         <var name="new.file" value="${old.file}"/>
     </target>
 
-    <target name="strip">
+    <target name="strip" unless="${CLOSURE.DEBUG}">
         <var name="old.file" value="${new.file}"/>
         <var name="new.file" value="${OUTPUT.DIR}/${FILE.NAME}.strip.${FILE.EXT}"/>
 
@@ -219,7 +219,7 @@
         </replaceregexp>
     </target>
 
-    <target name="check-log-calls">
+    <target name="check-log-calls" unless="${CLOSURE.DEBUG}">
         <loadfile property="LOG_CALLS" srcfile="${new.file}">
             <filterchain>
                 <linecontainsregexp>
@@ -262,6 +262,19 @@
                 <file name="${old.file}"/>
             </sources>
         </jscomp>
+    </target>
+
+    <target name="unminify" if="${CLOSURE.DEBUG}">
+        <var name="old.file" value="${new.file}"/>
+        <var name="new.file" value="${OUTPUT.DIR}/${FILE.NAME}.unminify.${FILE.EXT}"/>
+
+        <exec executable="js-beautify">
+            <arg value="-q"/>
+            <arg value="-f"/>
+            <arg value="${old.file}"/>
+            <arg value="-o"/>
+            <arg value="${new.file}"/>
+        </exec>
     </target>
 
     <target name="uib" depends="vcs, dev" if="${git-present}">
