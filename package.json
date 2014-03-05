@@ -2,15 +2,18 @@
   "name": "ash",
   "version": "0.1.8",
   "description": "autoscope script helper framework",
-  "keywords": ["USB Oscilloscope", "script"],
+  "keywords": [
+    "USB Oscilloscope",
+    "script"
+  ],
   "homepage": "https://bitbucket.org/ZuBB/ash",
   "bugs": {
-    "url" : "https://bitbucket.org/ZuBB/ash/issues"
+    "url": "https://bitbucket.org/ZuBB/ash/issues"
   },
   "license": "GPL-3.0+",
   "author": {
-      "name" : "Vasyl Zuzyak", 
-      "email" : "zvaylvv@gmail.com"
+    "name": "Vasyl Zuzyak",
+    "email": "zvaylvv@gmail.com"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -19,5 +22,9 @@
     "type": "git",
     "url": "git@bitbucket.org:ZuBB/ash.git"
   },
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "grunt-jsduck": "^1.0.1",
+    "grunt": "^0.4.2"
+  }
 }
