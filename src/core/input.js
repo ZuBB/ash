@@ -272,7 +272,7 @@ Input = (function() {
         var inputType = inputFields[name].type;
         var inputValue = inputFields[name].value;
 
-        return DATATYPE[inputType].initialValue(inputValue);
+        return DATATYPE[inputType]['initialValue'](inputValue);
     };
 
     /**
@@ -285,11 +285,17 @@ Input = (function() {
      * @private
      */
     var getDefaultValue = function(name) {
+        var method = null;
         var inputType = inputFields[name].type;
         var inputValue = inputFields[name].value;
-        var method = DATATYPE[inputType].defaultValue ? 'default' : 'initial';
 
-        return DATATYPE[inputType][method + 'Value'](inputValue);
+        if (DATATYPE[inputType].hasOwnProperty('defaultValue'))  {
+            method = 'defaultValue';
+        } else {
+            method = 'initialValue';
+        }
+
+        return DATATYPE[inputType][method](inputValue);
     };
 
     /**
