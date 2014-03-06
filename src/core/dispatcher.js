@@ -736,9 +736,8 @@ Dispatcher = (function() {
      * Stores name of task which data should be dumped to the disk
      *
      * @experimental
-     * @ignore
      */
-    module.addTask4Saving = function(taskName) {
+    module.scheduleTask4Saving = function(taskName) {
         if (module.getTaskObject(getTaskObject) === false) {
             return false;
         }
