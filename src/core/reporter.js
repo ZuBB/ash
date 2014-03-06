@@ -87,7 +87,7 @@ Reporter.report = function(b_lf, a_lf, value, description, controlChars) {
         Host.ReportOut(string);
 //DEBUG_START
         // 2nd condition: no need to log status of specs
-        if (Logger._buffering && !(/[\+\-]{1}\n/).test(rawString)) {
+        if (!(/[\+\-]{1}\n/).test(rawString)) {
             rawString = rawString.replace(/^\n/, '');
             rawString = rawString.replace(/\n$/, '');
             _i(rawString);
