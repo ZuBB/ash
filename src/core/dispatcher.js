@@ -3,7 +3,7 @@
  *
  * Manages process of script run
  *
- * All methods except `registerNewTask` from this class are called
+ * All methods except `registerNewTask` of this class are called
  * automatically.
  *
  * Below are two things that you really should be aware of their existance:
@@ -28,7 +28,7 @@ Dispatcher = (function() {
      * @property {Array} runTimestamp = new Date()
      * @private
      *
-     * Holds time when script started to run
+     * Holds time when script started to run. Is used in development mode only
      */
     //DEBUG_START
     var runTimestamp = new Date();
@@ -738,13 +738,13 @@ Dispatcher = (function() {
      * @experimental
      * @ignore
      */
-    module.addSpec4Saving = function(specName2Save) {
-        if (!specName2Save) {
+    module.addTask4Saving = function(taskName) {
+        if (module.getTaskObject(getTaskObject) === false) {
             return false;
         }
 
-        var specName = 'specs2compare';
-        module.getTaskObject(specName).dataY.push(specName2Save);
+        // TODO
+        //someStorage.push(taskName);
     };
 
     return module;
