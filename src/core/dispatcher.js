@@ -252,7 +252,7 @@ Dispatcher = (function() {
      * @private
      */
     var logIncomingParams = function() {
-        _d('');
+        _p('');
         _d(Host.CurFileName, 'current file');
         _d(Host.Frequency, 'frequency');
         _d(Host.NumberOfSamples, 'samples');
@@ -261,8 +261,6 @@ Dispatcher = (function() {
         Input.getFilledInputs().forEach(function(input) {
             _d(Input.getValue(input), input);
         });
-
-        _d('');
     };
     //DEBUG_STOP
 
@@ -380,6 +378,9 @@ Dispatcher = (function() {
             };
         };
 
+        //DEBUG_START
+        _p('');
+        //DEBUG_STOP
         for (var item in messageTypes) {
             if (messageTypes.hasOwnProperty(item)) {
                 messageTypes[item].messages = [];

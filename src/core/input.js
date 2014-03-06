@@ -349,6 +349,10 @@ Input = (function() {
      * @member Input
      */
     module.createConfiguration = function() {
+        //DEBUG_START
+        _p('');
+        //DEBUG_STOP
+
         if (Array.isArray(Script.dialogsContent) === false) {
             //DEBUG_START
             _w("Can't create configuration. Options is not an array");
