@@ -102,13 +102,11 @@
  */
 Logger = {
     _buffer: [],
-    _buffering: true,
     _backDirName: 'C:\\$SCRIPT$_logs\\',
     _fileHandler: null,
     _filename: 'C:\\report-last.log',
     _levels: ['DEBUG', 'INFO ', 'WARN ', 'ERROR', 'FATAL'],
     _stats: {'WARN ': 0, 'ERROR': 0, 'FATAL': 0},
-    dump2FS: true,
     level: 0
 };
 
@@ -120,13 +118,13 @@ Logger = {
  * @private
  */
 Logger.init = function() {
-    if (this.dump2FS && this._initFSHandler()) {
+    if (this._initFSHandler()) {
         while (this._buffer.length) {
             this.log(this._buffer.shift());
         }
-    } else {
-        this._stopBuffering();
     }
+
+    this._buffer = null;
 };
 
 /**
@@ -143,20 +141,20 @@ Logger.log = function(b_lf, level, value, desc) {
         return;
     }
 
-    if (this._buffering && (!this.dump2FS || !this._fileHandler)) {
+    if (this._buffer && this._fileHandler === null) {
         this._buffer.push(output_str);
         return;
     }
 
     // no need to do logging if it is disabled for some reason
-    if (this.dump2FS === false && this._fileHandler === null) {
+    if (this._fileHandler === null) {
         return;
     }
 
     try {
         this._fileHandler.Write(output_str);
     } catch (e) {
-        this._stopBuffering();
+        this.close();
         _rl('Logger faced with next runtime IO error');
         _rp(e.message);
     }
@@ -170,19 +168,21 @@ Logger.log = function(b_lf, level, value, desc) {
  * @private
  */
 Logger.close = function() {
-    if (this.dump2FS && this._fileHandler) {
-        try {
-            this._fileHandler.Close();
-            this.dump2FS = false;
-        } catch(e) {
-            _rl('Failed to save logger file due to next error');
-            _rp(e.message);
-        } finally {
-            _rl('');
-            _rl(this._stats[this._levels[2]], 'WARN ');
-            _rl(this._stats[this._levels[3]], 'ERROR');
-            _rl(this._stats[this._levels[4]], 'FATAL');
-        }
+    if (this._fileHandler === null) {
+        return;
+    }
+
+    try {
+        this._fileHandler.Close();
+        this._fileHandler = null;
+    } catch(e) {
+        _rl('Failed to save logger file due to next error');
+        _rp(e.message);
+    } finally {
+        _rl('');
+        _rl(this._stats[this._levels[2]], 'WARN ');
+        _rl(this._stats[this._levels[3]], 'ERROR');
+        _rl(this._stats[this._levels[4]], 'FATAL');
     }
 };
 
@@ -194,51 +194,65 @@ Logger.close = function() {
  * @private
  */
 Logger._initFSHandler = function() {
-    this.dump2FS = false;
+    var result = false;
 
     try {
         var backname = null;
         var FileObj  = new ActiveXObject('Scripting.FileSystemObject');
 
         if (FileObj.FileExists(this._filename)) {
-            if (!FileObj.FolderExists(this._backDirName)) {
-                FileObj.CreateFolder(this._backDirName);
-            }
-
-            backname = FileObj.GetFile(this._filename).DateLastModified;
-            backname = new Date(Date.parse(backname));
-
-            backname =
-                backname.getFullYear() + '.' +
-                (backname.getMonth() + 1).toString().lpad('0', 2) + '.' +
-                backname.getDate().toString().lpad('0', 2) + '_' +
-                backname.getHours().toString().lpad('0', 2) + '-' +
-                backname.getMinutes().toString().lpad('0', 2) + '-' +
-                backname.getSeconds().toString().lpad('0', 2);
-
-            backname = this._filename.replace(/last/, backname);
-
-            FileObj.MoveFile(this._filename, backname);
-            FileObj.MoveFile(backname, this._backDirName);
+            this._backupPrevFile();
         }
 
         this._fileHandler = FileObj.CreateTextFile(this._filename, true, true);
         _rp('File: \'' + this._filename + '\' will be used for external logging');
-        this.dump2FS = true;
+        _i('');
+        result = true;
     } catch(e) {
-        this._stopBuffering();
         _rl('Failed to create external file for logging due to next message');
         _rp(e.message);
     }
 
-    return this.dump2FS;
+    return result;
 };
 
 /**
  * function that ...
  *
  * @member Logger
- * @method createOutputStr
+ * @method _backupPrevFile
+ * @private
+ */
+Logger._backupPrevFile = function() {
+    var FileObj  = new ActiveXObject('Scripting.FileSystemObject');
+
+    if (!FileObj.FolderExists(this._backDirName)) {
+        FileObj.CreateFolder(this._backDirName);
+    }
+
+    backname = FileObj.GetFile(this._filename).DateLastModified;
+    backname = new Date(Date.parse(backname));
+
+    backname =
+        backname.getFullYear() + '.' +
+        (backname.getMonth() + 1).toString().lpad('0', 2) + '.' +
+        backname.getDate().toString().lpad('0', 2) + '_' +
+        backname.getHours().toString().lpad('0', 2) + '-' +
+        backname.getMinutes().toString().lpad('0', 2) + '-' +
+        backname.getSeconds().toString().lpad('0', 2);
+
+    backname = this._filename.replace(/last/, backname);
+
+    FileObj.MoveFile(this._filename, backname);
+    FileObj.MoveFile(backname, this._backDirName);
+    FileObj = null;
+};
+
+/**
+ * function that ...
+ *
+ * @member Logger
+ * @method _createOutputStr
  * @private
  */
 Logger._createOutputStr = function(b_lf, level, value, desc) {
@@ -257,20 +271,7 @@ Logger._createOutputStr = function(b_lf, level, value, desc) {
         .replace(/^(\n)?/, '$1' + this._levels[level] + ' ')
         // TODO platform specific code
         .replace(/(\n)$/gm, '\r$1');
-};
 
-/**
- * function that ...
- *
- * @member Logger
- * @method _stopBuffering
- * @private
- */
-Logger._stopBuffering = function() {
-    this.dump2FS      = false;
-    this._buffer      = null;
-    this._buffering   = false;
-    this._fileHandler = null;
 };
 
 // ==========================================
