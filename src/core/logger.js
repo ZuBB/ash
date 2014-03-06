@@ -267,11 +267,17 @@ Logger._createOutputStr = function(b_lf, level, value, desc) {
     // increase number of logged messages of current log level
     this._stats[this._levels[level]]++;
 
-    return Utils.createOutputStr(b_lf, true, value, desc)
-        .replace(/^(\n)?/, '$1' + this._levels[level] + ' ')
-        // TODO platform specific code
-        .replace(/(\n)$/gm, '\r$1');
+    var result =  Utils.createOutputStr(b_lf, true, value, desc);
 
+    // a quircky way to check where to append log level string
+    if ((/^\n[^\n]/).test(result) && result.length > 1) {
+        result = result.replace(/^(\n)?/, '$1' + this._levels[level] + ' ');
+    } else {
+        result = this._levels[level] + ' ' + result;
+    }
+
+    // TODO platform specific code
+    return result.replace(/(\n)$/gm, '\r$1');
 };
 
 // ==========================================
