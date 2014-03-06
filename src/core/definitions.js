@@ -36,9 +36,8 @@ var CONSTS = {};
 /**
  * @class
  *
- * Script is a namespace that holds options
- * for setting up different apsects of Script, Dispatcher and Task
- * classes work.
+ * Script is a namespace that holds options for setting up different aspects
+ * of Task, Dispatcher and other classes of this library.
  *
  * Any of non readonly properties that defined below may be redefined by
  * author of the script in any file located in `src/app` directory (called
