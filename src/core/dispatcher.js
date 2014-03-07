@@ -738,7 +738,7 @@ Dispatcher = (function() {
      * @experimental
      */
     module.scheduleTask4Saving = function(taskName) {
-        if (module.getTaskObject(getTaskObject) === false) {
+        if (module.getTaskObject(taskName) === false) {
             return false;
         }
 
