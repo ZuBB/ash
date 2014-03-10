@@ -54,7 +54,7 @@
  * You can do logging at any place you want and any amount you need. Single
  * limit here is a free space on your hard drive
  *
- * There is two notes on usage of those comments
+ * There are 4 notes on usage of those comments
  *
  * - `DEBUG_STOP` must written with 'O'. In example above we have to do
  *   a little cheat to actually pass a fake DEBUG_STOP pair to this strict
@@ -77,7 +77,7 @@
  * _d([{a: 1}, {b: 'hi'}])
  * ```
  *
- * In log file will get somethig like this
+ * In log file you will get somethig like this
  *
  * ```
  * DEBUG [[Object object], [Object object]]
@@ -89,196 +89,215 @@
  * _d(JSON.stringify([{a: 1}, {b: 'hi'}], null, 4));
  * ```
  *
- * - Location of log file for now is hardcoded. As a rule its located in
- * `C:\report-last.log`. This happens when your user on PC has a write access
- * to root of disk `C`. By default it has under MS Windows XP. Quite possible
- * same will be on later MS OSes (7, 8, 8.1) that has been installed from
- * tweaked CD/DVDs. Otherwise it ought to be in next location
- * `C:\Users\YOUR_USER_NAME\AppData\Local\VirtualStore\report-last.log`
+ * Location of the log file is hardcoded. There are two options where it can
+ * be located.
  *
- * On consequent run on your script log file is being rotated to dir that
- * belongs to your script. This one should be constant (`C:\YOUR_SCRIPT_NAME`)
- *
+ * - if script that is run is located in `build/output` dir of project where
+ *   development of script is done, log file will appears at root dir (`./`)
+ *   and will have `NAME_OF_YOUR_SCRIPT-last-log.txt` name. Log files will be
+ *   rotated to `./logs` dir
+ * - if script is not located in `build/output` dir, then log file will be
+ *   within same dir as script does. Log files will be rotated to
+ *   `./NAME_OF_YOUR_SCRIPT-logs` dir
  */
-Logger = {
-    _buffer: [],
-    _backDirName: 'C:\\$SCRIPT$_logs\\',
-    _fileHandler: null,
-    _filename: 'C:\\report-last.log',
-    _levels: ['DEBUG', 'INFO ', 'WARN ', 'ERROR', 'FATAL'],
-    _stats: {'WARN ': 0, 'ERROR': 0, 'FATAL': 0},
-    level: 0
-};
+Logger = (function() {
+    var fileHandler = null;
+    var FSObject = null;
+    var levels = ['DEBUG', 'INFO ', 'WARN ', 'ERROR', 'FATAL'];
+    var stats = {'WARN ': 0, 'ERROR': 0, 'FATAL': 0};
+    var buffer = [];
+    var module = {};
 
-/**
- * function that ...
- *
- * @member Logger
- * @method init
- * @private
- */
-Logger.init = function() {
-    if (this._initFSHandler()) {
-        while (this._buffer.length) {
-            this.log(this._buffer.shift());
-        }
-    }
-
-    this._buffer = null;
-};
-
-/**
- * function that ...
- *
- * @member Logger
- * @method log
- * @private
- */
-Logger.log = function(b_lf, level, value, desc) {
-    var output_str = this._createOutputStr(b_lf, level, value, desc);
-
-    if (!output_str) {
-        return;
-    }
-
-    if (this._buffer && this._fileHandler === null) {
-        this._buffer.push(output_str);
-        return;
-    }
-
-    // no need to do logging if it is disabled for some reason
-    if (this._fileHandler === null) {
-        return;
-    }
-
-    try {
-        this._fileHandler.Write(output_str);
-    } catch (e) {
-        this.close();
-        _rl('Logger faced with next runtime IO error');
-        _rp(e.message);
-    }
-};
-
-/**
- * function that ...
- *
- * @member Logger
- * @method close
- * @private
- */
-Logger.close = function() {
-    if (this._fileHandler === null) {
-        return;
-    }
-
-    try {
-        this._fileHandler.Close();
-        this._fileHandler = null;
-    } catch(e) {
-        _rl('Failed to save logger file due to next error');
-        _rp(e.message);
-    } finally {
-        _rl('');
-        _rl(this._stats[this._levels[2]], 'WARN ');
-        _rl(this._stats[this._levels[3]], 'ERROR');
-        _rl(this._stats[this._levels[4]], 'FATAL');
-    }
-};
-
-/**
- * function that ...
- *
- * @member Logger
- * @method _initFSHandler
- * @private
- */
-Logger._initFSHandler = function() {
-    var result = false;
-
-    try {
-        var backname = null;
-        var FileObj  = new ActiveXObject('Scripting.FileSystemObject');
-
-        if (FileObj.FileExists(this._filename)) {
-            this._backupPrevFile();
+    /**
+     * function that ...
+     *
+     * @member Logger
+     * @method init
+     */
+    module.init = function() {
+        if (initFSHandler()) {
+            while (buffer.length) {
+                module.log(buffer.shift());
+            }
         }
 
-        this._fileHandler = FileObj.CreateTextFile(this._filename, true, true);
-        _rp('File: \'' + this._filename + '\' will be used for external logging');
-        _i('');
-        result = true;
-    } catch(e) {
-        _rl('Failed to create external file for logging due to next message');
-        _rp(e.message);
-    }
+        buffer = null;
+    };
 
-    return result;
-};
+    /**
+     * function that ...
+     *
+     * @private
+     */
+    var initFSHandler = function() {
+        var commonPath = null;
+        var result = false;
+        var filePath = null;
+        var logPath = '';
+        var fileDir = null;
 
-/**
- * function that ...
- *
- * @member Logger
- * @method _backupPrevFile
- * @private
- */
-Logger._backupPrevFile = function() {
-    var FileObj  = new ActiveXObject('Scripting.FileSystemObject');
+        try {
+            if ((/\\build\\output\\$/).test(Host.CurPath)) {
+                logPath = '..\\..\\';
+            }
 
-    if (!FileObj.FolderExists(this._backDirName)) {
-        FileObj.CreateFolder(this._backDirName);
-    }
+            var logDir = logPath === '' ? Script.name + '_logs' : 'logs';
+            var fileName = Script.name + '-last-log.txt';
 
-    backname = FileObj.GetFile(this._filename).DateLastModified;
-    backname = new Date(Date.parse(backname));
+            FSObject = new ActiveXObject('Scripting.FileSystemObject');
+            commonPath = FSObject.BuildPath(Host.CurPath, logPath);
+            commonPath = FSObject.GetAbsolutePathName(commonPath);
 
-    backname =
-        backname.getFullYear() + '.' +
-        (backname.getMonth() + 1).toString().lpad('0', 2) + '.' +
-        backname.getDate().toString().lpad('0', 2) + '_' +
-        backname.getHours().toString().lpad('0', 2) + '-' +
-        backname.getMinutes().toString().lpad('0', 2) + '-' +
-        backname.getSeconds().toString().lpad('0', 2);
+            filePath   = FSObject.BuildPath(commonPath, fileName);
+            logDirPath = FSObject.BuildPath(commonPath, logDir);
 
-    backname = this._filename.replace(/last/, backname);
+            backupPrevFile(filePath, logDirPath);
 
-    FileObj.MoveFile(this._filename, backname);
-    FileObj.MoveFile(backname, this._backDirName);
-    FileObj = null;
-};
+            fileHandler = FSObject.CreateTextFile(filePath, true, true);
+            _rp('File: \'' + filePath + '\' will be used for external logging');
+            result = true;
+            _i('');
+        } catch(e) {
+            _rl('Failed to create external log file due to next message');
+            _rp(e.message);
+            FSObject = null;
+        }
 
-/**
- * function that ...
- *
- * @member Logger
- * @method _createOutputStr
- * @private
- */
-Logger._createOutputStr = function(b_lf, level, value, desc) {
-    if (typeof b_lf === 'string') {
-        return b_lf;
-    }
+        return result;
+    };
 
-    if (level < this.level) {
-        return;
-    }
+    /**
+     * function that ...
+     *
+     * @member Logger
+     * @method backupPrevFile
+     * @private
+     */
+    var backupPrevFile = function(filePath, logDirPath) {
+        if (FSObject.FileExists(filePath) === false) {
+            return;
+        }
 
-    // increase number of logged messages of current log level
-    this._stats[this._levels[level]]++;
+        if (FSObject.FolderExists(logDirPath) === false) {
+            FSObject.CreateFolder(logDirPath);
+        }
 
-    var result =  Utils.createOutputStr(b_lf, true, value, desc);
+        var backTimeStr = FSObject.GetFile(filePath).DateLastModified;
+        var backname = new Date(Date.parse(backTimeStr));
 
-    // a quircky way to check where to append log level string
-    if ((/^\n[^\n]/).test(result) && result.length > 1) {
-        result = result.replace(/^(\n)?/, '$1' + this._levels[level] + ' ');
-    } else {
-        result = this._levels[level] + ' ' + result;
-    }
+        backname =
+            backname.getFullYear() + '.' +
+            (backname.getMonth() + 1).toString().lpad('0', 2) + '.' +
+            backname.getDate().toString().lpad('0', 2) + '_' +
+            backname.getHours().toString().lpad('0', 2) + '-' +
+            backname.getMinutes().toString().lpad('0', 2) + '-' +
+            backname.getSeconds().toString().lpad('0', 2);
 
-    // TODO platform specific code
-    return result.replace(/(\n)$/gm, '\r$1');
-};
+        backname = filePath.replace(/last/, backname);
+
+        FSObject.MoveFile(filePath, backname);
+        FSObject.MoveFile(backname, logDirPath + '\\');
+    };
+
+    /**
+     * function that ...
+     *
+     * @member Logger
+     * @method log
+     */
+    module.log = function(lfBefore, level, value, desc) {
+        var outputStr = createOutputStr(lfBefore, level, value, desc);
+
+        if (!outputStr) {
+            return;
+        }
+
+        if (buffer && fileHandler === null) {
+            buffer.push(outputStr);
+            return;
+        }
+
+        // no need to do logging if it is disabled for some reason
+        if (fileHandler === null) {
+            return;
+        }
+
+        try {
+            fileHandler.Write(outputStr);
+        } catch (e) {
+            module.close();
+            _rl('Logger faced with next runtime IO error');
+            _rp(e.message);
+        }
+    };
+
+    /**
+     * function that ...
+     *
+     * @member Logger
+     * @method createOutputStr
+     * @private
+     */
+    var createOutputStr = function(lfBefore, level, value, desc) {
+        if (typeof lfBefore === 'string') {
+            return lfBefore;
+        }
+
+        // increase number of logged messages of current log level
+        stats[levels[level]]++;
+
+        var result =  Utils.createOutputStr(lfBefore, true, value, desc);
+
+        // a quircky way to check where to append log level string
+        if ((/^\n[^\n]/).test(result) && result.length > 1) {
+            result = result.replace(/^(\n)?/, '$1' + levels[level] + ' ');
+        } else {
+            result = levels[level] + ' ' + result;
+        }
+
+        // TODO platform specific code
+        return result.replace(/(\n)$/gm, '\r$1');
+    };
+
+    /**
+     * function that ...
+     *
+     * @member Logger
+     * @method close
+     */
+    module.close = function() {
+        if (fileHandler === null) {
+            return;
+        }
+
+        try {
+            printLogStats();
+
+            fileHandler.Close();
+            fileHandler = null;
+            FSObject = null;
+        } catch(e) {
+            _rl('Failed to save logger file due to next error');
+            _rp(e.message);
+        }
+    };
+
+    /**
+     * function that ...
+     *
+     * @private
+     */
+    var printLogStats = function() {
+        if (stats[levels[2]] || stats[levels[3]] || stats[levels[4]]) {
+            _rl('');
+            _rl('WARN : ' + stats[levels[2]]);
+            _rl('ERROR: ' + stats[levels[3]]);
+            _rl('FATAL: ' + stats[levels[4]]);
+        }
+    };
+
+    return module;
+})();
 
 // ==========================================
 
