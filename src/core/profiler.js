@@ -3,20 +3,14 @@
  */
 Profiler = {
     _items: {},
-    _running: [],
-    _names: []
+    _running: []
 };
 
 Profiler.start = function(name, time) {
     time = time || new Date();
     var key = name || time.toString();
 
-    if (key in this._items) {
-        key = name + ' ' + time.toString();
-    }
-
     this._items[key] = [time];
-    this._names.push(key);
     this._running.push(key);
 };
 
