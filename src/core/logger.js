@@ -102,7 +102,9 @@
  */
 Logger = (function() {
     var fileHandler = null;
+    var useUTF16 = true;
     var FSObject = null;
+    var filePath = null;
     var levels = ['DEBUG', 'INFO ', 'WARN ', 'ERROR', 'FATAL'];
     var stats = {'WARN ': 0, 'ERROR': 0, 'FATAL': 0};
     var buffer = [];
@@ -132,9 +134,8 @@ Logger = (function() {
     var initFSHandler = function() {
         var commonPath = null;
         var result = false;
-        var filePath = null;
-        var logPath = '';
         var fileDir = null;
+        var logPath = '';
 
         try {
             if ((/\\build\\output\\$/).test(Host.CurPath)) {
@@ -153,14 +154,22 @@ Logger = (function() {
 
             backupPrevFile(filePath, logDirPath);
 
-            fileHandler = FSObject.CreateTextFile(filePath, true, true);
+            if (useUTF16) {
+                fileHandler = FSObject.CreateTextFile(filePath, true, true);
+            } else {
+                // http://goo.gl/J8OH5J
+                fileHandler = new ActiveXObject("ADODB.Stream");
+                fileHandler.Charset = "utf-8";
+                fileHandler.Open();
+            }
+
             _rp('File: \'' + filePath + '\' will be used for external logging');
             result = true;
             _i('');
         } catch(e) {
             _rl('Failed to create external log file due to next message');
             _rp(e.message);
-            FSObject = null;
+            module.close();
         }
 
         return result;
@@ -223,7 +232,11 @@ Logger = (function() {
         }
 
         try {
-            fileHandler.Write(outputStr);
+            if (useUTF16) {
+                fileHandler.Write(outputStr);
+            } else {
+                fileHandler.WriteText(outputStr);
+            }
         } catch (e) {
             module.close();
             _rl('Logger faced with next runtime IO error');
@@ -266,16 +279,20 @@ Logger = (function() {
      * @method close
      */
     module.close = function() {
-        if (fileHandler === null) {
-            return;
-        }
-
         try {
             printLogStats();
 
-            fileHandler.Close();
+            if (fileHandler !== null) {
+                if (useUTF16) {
+                    fileHandler.Close();
+                } else {
+                    fileHandler.SaveToFile(filePath, 2);
+                }
+            }
+
             fileHandler = null;
             FSObject = null;
+            buffer = null;
         } catch(e) {
             _rl('Failed to save logger file due to next error');
             _rp(e.message);
