@@ -167,7 +167,6 @@ Dispatcher = (function() {
         }
 
         tasksHash[graphicFullName] = taskObj;
-
         taskOpts = null;
         taskObj = null;
 
@@ -189,15 +188,16 @@ Dispatcher = (function() {
         //DEBUG_STOP
 
         announce();
-        Input.createConfiguration();
-        //DEBUG_START
-        logIncomingParams();
-        //DEBUG_STOP
+        Profiler.start('main');
+        createAddMessageMethods();
         startProgressBar();
 
         if (isScriptAllowedToRun()) {
+            Input.createConfiguration();
+            //DEBUG_START
+            logIncomingParams();
+            //DEBUG_STOP
             Profiler.start('main');
-            createAddMessageMethods();
             runRegisteredTasks();
             createGraphicViews();
             sortGraphicsByIndexes();
