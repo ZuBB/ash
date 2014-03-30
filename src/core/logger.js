@@ -135,6 +135,7 @@ Logger = (function() {
         var result      = false;
 
         var fileHandlerOptions = {
+            safe: true,
             filedir: [Host.CurPath, logPath],
             filename: Script.name + '-last-log.txt',
             backupDir: [Host.CurPath, logPath, logDir],
