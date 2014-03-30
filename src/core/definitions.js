@@ -2,9 +2,7 @@
 var Dispatcher = null;
 var Task       = null;
 var Input      = null;
-//DEBUG_START
-var Logger     = null;
-//DEBUG_STOP
+var IO         = null;
 var Reporter   = null;
 var Profiler   = null;
 var Utils      = {};
@@ -16,7 +14,7 @@ var isScriptAllowedToRun = function() { return true; };
 var _t = null;
 
 //DEBUG_START
-// logger stuff
+var Logger     = null;
 var _d = null;
 var _i = null;
 var _p = null;
