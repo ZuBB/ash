@@ -208,6 +208,14 @@ Script.name = '$SCRIPT$';
 
 
 /**
+ * @property {Boolean} dumpTasksData = '$DUMP_TASKS_DATA$'
+ *
+ * Flag that indicates if dispatcher should dump tasks data. Usefull only for
+ * tests
+ */
+Script.dumpTasksData = $DUMP_TASKS_DATA$;
+
+/**
  * @property {Object} messagePrintProps = {}
  *
  * Contains dictionary of key/pair values that define message types and

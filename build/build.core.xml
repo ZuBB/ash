@@ -169,6 +169,7 @@
                     <token key="GRAPHIC_TYPE" value="${DEFAULT_GRAPHIC_TYPE}"/>
                     <token key="DATATYPE" value="${DATATYPE}"/>
                     <token key="DEMO_MODE" value="${DEMO_MODE}"/>
+                    <token key="DUMP_TASKS_DATA" value="${DUMP_TASKS_DATA}"/>
                 </replacetokens>
             </filterchain>
         </copy>

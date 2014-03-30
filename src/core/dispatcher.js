@@ -210,6 +210,7 @@ Dispatcher = (function() {
         _rp(_t('report.done', Profiler.get_HRF_time('main')));
 
         //DEBUG_START
+        dumpTasks2Disk();
         Logger.close();
         //DEBUG_STOP
     };
@@ -732,19 +733,42 @@ Dispatcher = (function() {
         }
     };
 
+    //DEBUG_START
     /**
-     * Stores name of task which data should be dumped to the disk
+     * Dumps data of the tasks to the disk that were allowed to export it
      *
-     * @experimental
+     * @private
      */
-    module.scheduleTask4Saving = function(taskName) {
-        if (module.getTaskObject(taskName) === false) {
+    var dumpTasks2Disk = function() {
+        if (Script.dumpTasksData !== true) {
+            return;
+        }
+
+        var fh = null;
+        var fileOptopns = {
+            filename: Host.CurPath + '\\' + 'data.txt'
+        };
+
+        if ((fh = IO.createFile(fileOptopns)) === null) {
             return false;
         }
 
-        // TODO
-        //someStorage.push(taskName);
+        Object.keys(tasksHash).forEach(function(item) {
+            var taskObj = module.getTaskObject(item);
+
+            if (taskObj.isSavingRequired() === false) {
+                return false;
+            }
+
+            fh.writeln(item);
+            fh.writeln(taskObj.getTaskStatuses());
+            fh.writeln(JSON.stringify(taskObj.getDataSets(), null, 4));
+            fh.writeln('');
+        });
+
+        fh.close();
     };
+    //DEBUG_STOP
 
     return module;
 

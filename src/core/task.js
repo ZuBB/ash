@@ -372,6 +372,7 @@ Task = function(params) {
     // experimental
     this.saveData4Compare = false;
     this.loadData4Compare = false;
+    this.isSavingAllowed = true;
     // experimental
     this.drawMarkers = false;
     this.customMarkers = [];
@@ -431,6 +432,15 @@ Task.prototype.getTaskStatus = function() {
 };
 
 /**
+ * Returns all statuses for current task
+ *
+ * @return {Array} status
+ */
+Task.prototype.getTaskStatuses = function() {
+    return this.statusCodes.slice(0);
+};
+
+/**
  * Stores status of newly completed action. Also returns it
  *
  * @param  {Object} value that represent status that is going to be set.
@@ -462,10 +472,6 @@ Task.prototype.process = function() {
     // contact with Dispatcher
     this.sendViewsProps();
     this.sendConfirmedView();
-
-    if (this.getTaskStatus() && this.saveData4Compare) {
-        Dispatcher.addSpec4Saving(this.getFullName());
-    }
 
     return this.getTaskStatus();
 };
@@ -1783,6 +1789,16 @@ Task.prototype.createGetSetPropMethods = function() {
         this['add' + prop.capitalize()] = addValueFunc(this, prop);
         this['get' + prop.capitalize()] = getValueFunc(this, prop);
     }, this);
+};
+
+/**
+ * Returns boolean flag that indicates if data of current task should
+ * be stored
+ *
+ * @return {Boolean} flag to store data or not
+ */
+Task.prototype.isSavingRequired = function() {
+    return this.isSavingAllowed;
 };
 
 /**
