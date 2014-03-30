@@ -102,9 +102,6 @@
  */
 Logger = (function() {
     var fileHandler = null;
-    var useUTF16 = true;
-    var FSObject = null;
-    var filePath = null;
     var levels = ['DEBUG', 'INFO ', 'WARN ', 'ERROR', 'FATAL'];
     var stats = {'WARN ': 0, 'ERROR': 0, 'FATAL': 0};
     var buffer = [];
@@ -132,80 +129,43 @@ Logger = (function() {
      * @private
      */
     var initFSHandler = function() {
-        var commonPath = null;
-        var result = false;
-        var fileDir = null;
-        var logPath = '';
+        var devLocation = (/\\build\\output\\$/).test(Host.CurPath);
+        var logDir      = devLocation ? 'logs' : Script.name + '_logs';
+        var logPath     = devLocation ? '..\\..\\' : '';
+        var result      = false;
 
-        try {
-            if ((/\\build\\output\\$/).test(Host.CurPath)) {
-                logPath = '..\\..\\';
+        var fileHandlerOptions = {
+            filedir: [Host.CurPath, logPath],
+            filename: Script.name + '-last-log.txt',
+            backupDir: [Host.CurPath, logPath, logDir],
+            backupName: function(FSObject, filePath) {
+                var backTimeStr = FSObject.GetFile(filePath).DateLastModified;
+                var backname = new Date(Date.parse(backTimeStr));
+
+                backname =
+                    backname.getFullYear() + '.' +
+                    (backname.getMonth() + 1).toString().lpad('0', 2) + '.' +
+                    backname.getDate().toString().lpad('0', 2) + '_' +
+                    backname.getHours().toString().lpad('0', 2) + '-' +
+                    backname.getMinutes().toString().lpad('0', 2) + '-' +
+                    backname.getSeconds().toString().lpad('0', 2);
+
+                return filePath.replace(/last/, backname);
             }
+        };
 
-            var logDir = logPath === '' ? Script.name + '_logs' : 'logs';
-            var fileName = Script.name + '-last-log.txt';
-
-            FSObject = new ActiveXObject('Scripting.FileSystemObject');
-            commonPath = FSObject.BuildPath(Host.CurPath, logPath);
-            commonPath = FSObject.GetAbsolutePathName(commonPath);
-
-            filePath   = FSObject.BuildPath(commonPath, fileName);
-            logDirPath = FSObject.BuildPath(commonPath, logDir);
-
-            backupPrevFile(filePath, logDirPath);
-
-            if (useUTF16) {
-                fileHandler = FSObject.CreateTextFile(filePath, true, true);
-            } else {
-                // http://goo.gl/J8OH5J
-                fileHandler = new ActiveXObject("ADODB.Stream");
-                fileHandler.Charset = "utf-8";
-                fileHandler.Open();
-            }
-
-            _rp('File: \'' + filePath + '\' will be used for external logging');
+        if ((fileHandler = IO.createFile(fileHandlerOptions)) !== null) {
+            var message = '';
+            message += 'File: \'' + fileHandler.getFilePath();
+            message += '\' will be used for external logging';
+            _rp(message);
             result = true;
             _i('');
-        } catch(e) {
-            _rl('Failed to create external log file due to next message');
-            _rp(e.message);
+        } else {
             module.close();
         }
 
         return result;
-    };
-
-    /**
-     * function that ...
-     *
-     * @member Logger
-     * @method backupPrevFile
-     * @private
-     */
-    var backupPrevFile = function(filePath, logDirPath) {
-        if (FSObject.FileExists(filePath) === false) {
-            return;
-        }
-
-        if (FSObject.FolderExists(logDirPath) === false) {
-            FSObject.CreateFolder(logDirPath);
-        }
-
-        var backTimeStr = FSObject.GetFile(filePath).DateLastModified;
-        var backname = new Date(Date.parse(backTimeStr));
-
-        backname =
-            backname.getFullYear() + '.' +
-            (backname.getMonth() + 1).toString().lpad('0', 2) + '.' +
-            backname.getDate().toString().lpad('0', 2) + '_' +
-            backname.getHours().toString().lpad('0', 2) + '-' +
-            backname.getMinutes().toString().lpad('0', 2) + '-' +
-            backname.getSeconds().toString().lpad('0', 2);
-
-        backname = filePath.replace(/last/, backname);
-
-        FSObject.MoveFile(filePath, backname);
-        FSObject.MoveFile(backname, logDirPath + '\\');
     };
 
     /**
@@ -231,16 +191,8 @@ Logger = (function() {
             return;
         }
 
-        try {
-            if (useUTF16) {
-                fileHandler.Write(outputStr);
-            } else {
-                fileHandler.WriteText(outputStr);
-            }
-        } catch (e) {
+        if (fileHandler.writeln(outputStr) === false) {
             module.close();
-            _rl('Logger faced with next runtime IO error');
-            _rp(e.message);
         }
     };
 
@@ -268,8 +220,7 @@ Logger = (function() {
             result = levels[level] + ' ' + result;
         }
 
-        // TODO platform specific code
-        return result.replace(/(\n)$/gm, '\r$1');
+        return result.replace(/\n$/, '');
     };
 
     /**
@@ -279,24 +230,10 @@ Logger = (function() {
      * @method close
      */
     module.close = function() {
-        try {
-            printLogStats();
-
-            if (fileHandler !== null) {
-                if (useUTF16) {
-                    fileHandler.Close();
-                } else {
-                    fileHandler.SaveToFile(filePath, 2);
-                }
-            }
-
-            fileHandler = null;
-            FSObject = null;
-            buffer = null;
-        } catch(e) {
-            _rl('Failed to save logger file due to next error');
-            _rp(e.message);
-        }
+        buffer = null;
+        printLogStats();
+        fileHandler.close();
+        fileHandler = null;
     };
 
     /**
