@@ -260,6 +260,34 @@ Input = (function() {
     };
 
     /**
+     * Returns value for input
+     *
+     * @param {String} inputName Internal name of the input
+     * @param {String} preferedMethod name of the method that should be used 
+     *  to retrieve value
+     * @return {String|Number|null} default value for input name we passed
+     *
+     * @member Input
+     * @private
+     */
+    var getValueByMethod = function(inputName, preferedMethod) {
+        var inputValue = inputFields[inputName].value;
+        var inputType = inputFields[inputName].type;
+        var method = null;
+
+        if (DATATYPE[inputType].hasOwnProperty(preferedMethod)) {
+            method = preferedMethod;
+        } else {
+            method = Object.keys(DATATYPE[inputType])
+                .filter(function(i) { return i !== 'parse'; })
+                .filter(function(i) { return i !== preferedMethod; })
+                [0];
+        }
+
+        return DATATYPE[inputType][method](inputValue);
+    };
+
+    /**
      * Returns initial value for input
      *
      * @param {String} name Internal name of the input
@@ -269,10 +297,7 @@ Input = (function() {
      * @private
      */
     var getInitialValue = function(name) {
-        var inputType = inputFields[name].type;
-        var inputValue = inputFields[name].value;
-
-        return DATATYPE[inputType]['initialValue'](inputValue);
+        return getValueByMethod(name, 'initialValue');
     };
 
     /**
@@ -285,17 +310,7 @@ Input = (function() {
      * @private
      */
     var getDefaultValue = function(name) {
-        var method = null;
-        var inputType = inputFields[name].type;
-        var inputValue = inputFields[name].value;
-
-        if (DATATYPE[inputType].hasOwnProperty('defaultValue'))  {
-            method = 'defaultValue';
-        } else {
-            method = 'initialValue';
-        }
-
-        return DATATYPE[inputType][method](inputValue);
+        return getValueByMethod(name, 'defaultValue');
     };
 
     /**
