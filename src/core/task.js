@@ -491,7 +491,9 @@ Task.prototype.checkDataSource = function() {
         var dataSource = Input.getValue(this.dataSource);
 
         if (dataSource === null) {
-            _e('dataSource is not valid')
+            //DEBUG_START
+            _e(this.dataSource, 'dataSource is not valid');
+            //DEBUG_STOP
             result = false;
         } else {
             result = true;
