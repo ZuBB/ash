@@ -1823,51 +1823,59 @@ Task.prototype.isSavingRequired = function() {
  * @static
  */
 Task.getTaskData = function(depObj, dataLink) {
-    // quit if task has not been found
+    //DEBUG_START
     if ((depObj instanceof Task) === false) {
-        //DEBUG_START
         _e('Passed depObj params is not a Task instance object');
-        //DEBUG_STOP
         return null;
     }
 
     if (typeof dataLink !== 'string' || dataLink.length === 0) {
-        //DEBUG_START
         _e('Passed dataLink params is not a non empty string');
-        //DEBUG_STOP
         return null;
     }
+    //DEBUG_STOP
 
     var depSpec = dataLink.split(':');
-
-    // get dataSetIndex
-    var dsIndex = parseInt((depSpec[1] || '0'), 10);
-
-    // quit if dataSet has not been found
-    if (depObj.isDataSetExist(dsIndex) === false) {
-        return null;
-    }
 
     // process request of all datasets
     if (depSpec[1] === '*') {
         return depObj.getDataSets();
     }
 
+    // get dataset index
+    var dsIndex = parseInt((depSpec[1] || '0'), 10);
+
+    //DEBUG_START
+    if (Utils.isNumberInvalid(dsIndex) === true) {
+        _e(dsIndex, 'index is not a valid number');
+        return null;
+    }
+
+    if (depObj.isDataSetExist(dsIndex) === false) {
+        _e(dsIndex, 'can\'t find dataset with specified index');
+        return null;
+    }
+    //DEBUG_STOP
+
     // get dataSet
     var dataSet = depObj.getDataSet(dsIndex);
-    var dataKey = depSpec[2];
+
+    //DEBUG_START
+    if (depSpec[2] && dataSet.hasOwnProperty(depSpec[2]) === false) {
+        _e(depSpec[2], 'can\'t find key within specified dataset');
+        return null;
+    }
+    //DEBUG_STOP
+
+    if (depSpec.length > 3) {
+        var ii = Math.abs(parseInt(depSpec[3], 10)) || 0;
+        return dataSet[depSpec[2]][ii];
+    }
 
     // if dataKey is valid and dataSet has that dataKey
-    if (dataKey && dataSet.hasOwnProperty(dataKey)) {
-        // if index exists
-        if (depSpec[3] !== undefined) {
-            // parse it and return that item
-            var ii = Math.abs(parseInt(depSpec[3], 10)) || 0;
-            return dataSet[dataKey][ii];
-        }
-
-        // if index does not exist, return data that is behind dataKey
-        return dataSet[dataKey];
+    if (depSpec.length > 2 && depSpec[2]) {
+        // return data that is behind dataKey
+        return dataSet[depSpec[2]];
     }
 
     // in default case return dataSet by specified index
