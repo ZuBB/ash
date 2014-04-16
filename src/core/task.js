@@ -942,7 +942,7 @@ Task.prototype.readGraphicsData = function(filename) {
  */
 Task.prototype.calc_data = function() {
     //DEBUG_START
-    _d('you missed to redefine \'calc_data\' function');
+    _d('you did not redefine \'calc_data\' function');
     //DEBUG_STOP
     return true;
 };
@@ -1203,7 +1203,7 @@ Task.prototype.joinViewsProps = function() {
  */
 Task.prototype.make_props = function() {
     //DEBUG_START
-    _d('you missed to redefine \'make_props\' function');
+    _d('you did not redefine \'make_props\' function');
     //DEBUG_STOP
     return true;
 };
