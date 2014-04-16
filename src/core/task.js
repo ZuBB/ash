@@ -1434,14 +1434,25 @@ Task.prototype.getGraphicVisibility = function(index) {
  * @private
  */
 Task.prototype.draw2DGraphic = function(specObj, params) {
+    //DEBUG_START
     var _1axis = this.defaultKeys[0];
     var _2axis = this.defaultKeys[1];
 
-    if (!specObj[_1axis].length || !specObj[_2axis].length) {
+    if (!specObj.hasOwnProperty(_1axis) || !specObj.hasOwnProperty(_2axis)) {
+        _e('specObj does not contain declared keys');
         return null;
     }
 
-    //DEBUG_START
+    if (!Array.isArray(specObj[_1axis]) || !Array.isArray(specObj[_2axis])) {
+        _e('specObj\'s keys are not arrays');
+        return null;
+    }
+
+    if (!specObj[_1axis].length || !specObj[_2axis].length) {
+        _e('specObj\'s keys are empty arrays');
+        return null;
+    }
+
     if (specObj[_1axis].length !== specObj[_2axis].length) {
         _e('data length mismatch!');
     }
