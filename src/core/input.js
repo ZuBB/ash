@@ -309,7 +309,7 @@ Input = (function() {
      * @member Input
      * @private
      */
-    var getDefaultValue = function(name) {
+    var _getDefaultValue = function(name) {
         return getValueByMethod(name, 'defaultValue');
     };
 
@@ -464,7 +464,7 @@ Input = (function() {
             //DEBUG_START
             _i(name, 'getting value of input that was not inited');
             //DEBUG_STOP
-            return getDefaultValue(name);
+            return _getDefaultValue(name);
         }
 
         var rawValue = dialogs[index].GetValue(getInputI18Name(name));
@@ -499,7 +499,7 @@ Input = (function() {
      * @member Input
      */
     module.getDefaultValue = function(name) {
-        return getDefaultValue(name);
+        return _getDefaultValue(name);
     };
 
     return module;
