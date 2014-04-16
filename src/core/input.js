@@ -60,21 +60,23 @@
  *
  * For inputs you can specify one of 4 available data types:
  *
- * - `int` - integer numbers
- * - `float` - number with floating poing
- * - `string` - string
- * - `combobox` - means this input will have form of dropdown with items that
+ * - `int`
+ * - `float`
+ * - `string`
+ * - `combobox` this type of input will have form of dropdown with items that
  *   **must** be specified as `value` property
+ * - `channel` also will look like dropdown. Content of it is created
+ *   automatically. passed `value` property of this input will be ignored
  *
  * As for values here you have even more freedom:
  *
- * - `Number` - any of integer of floaft numbers
+ * - `Number` - any of integer of float numbers
  * - `String` - any string
- * - `Array` - as we alread said its for combobox
- * - `Function` - allows define default value that will be dynamically
+ * - `Array` - as we already said this is for combobox
+ * - `Function` - allows to define default value) that will be dynamically
  *   calculated
  * - **CONSTANT**s. You can even set default value to previously defined
- *   constant from `src/app/constants.js` file (that's a user defined constants)
+ *   constant from `src/app/constants.js` file
  *
  *
  * Content of dialogs may be (re)defined as value of `Script.dialogsContent`
