@@ -490,6 +490,18 @@ Input = (function() {
         return Object.keys(input2dialogMap);
     };
 
+    /**
+     * Returns default value for input. Wrapper for private API call
+     *
+     * @param {String} name Internal name of the input
+     * @return {String|Number|null} default value for input name we passed
+     *
+     * @member Input
+     */
+    module.getDefaultValue = function(name) {
+        return getDefaultValue(name);
+    };
+
     return module;
 })();
 
