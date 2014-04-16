@@ -480,10 +480,9 @@ Input = (function() {
     };
 
     /**
-     * Returns localized name of the input by its internal name
+     * Returns names of inputs that were shown to user
      *
-     * @param {String} name Internal name of the input
-     * @return {String} localized name
+     * @return {Array} set of internal names of inputs
      *
      * @member Input
      */
