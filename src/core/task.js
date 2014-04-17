@@ -1183,6 +1183,13 @@ Task.prototype.joinViewsProps = function() {
         }
     }
 
+    //DEBUG_START
+    if (typeof JSON !== 'undefined') {
+        var msg = 'we prepared next props';
+        _d(JSON.stringify(this.viewsProps, null, 4), msg);
+    }
+    //DEBUG_STOP
+
     return this.updateStatus(result);
 };
 
