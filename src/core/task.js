@@ -1088,7 +1088,6 @@ Task.prototype.joinViewsProps = function() {
     var view            = null;
     var prop            = null;
     var params          = null;
-    var result          = true;
     var indexes         = [];
     var graphics        = this.drawGraphics();
     var viewIndexes     = this.parseViewIndex();
@@ -1098,9 +1097,8 @@ Task.prototype.joinViewsProps = function() {
         Object.keys(this.viewsProps).empty()
     ];
 
-    result &= !sourcesStates.every(function(b) { return b === true; });
-    result &= this.getTaskStatus();
-    result =  Boolean(result);
+    var result = Boolean(!sourcesStates.reduce(
+                function(s, b) { return s && b; }, true));
 
     if (result === false) {
         //DEBUG_START
