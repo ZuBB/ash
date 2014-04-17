@@ -1390,7 +1390,7 @@ Task.prototype.getGraphicColor = function(index) {
 
     if (Array.isArray(this.graphicColor)) {
         graphicColor = this.graphicColor[index];
-    } else if (this.graphicColor) {
+    } else if (this.graphicColor !== null) {
         graphicColor = this.graphicColor;
     } else {
         graphicColor = Utils.createRandomColor();
