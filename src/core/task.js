@@ -236,7 +236,7 @@
  * @param {String} [params.graphicType = '']
  * Specs of graphics that should be applied during drawing
  *
- * Commont format if this string is following
+ * Commont format of this string is following
  *
  * ```
  * graphic_type:line_type
@@ -1283,7 +1283,7 @@ Task.prototype.adjustGraphicTypeValue = function() {
     case 'dots':
         this.lineType = 1;
         break;
-    case undefined:
+    case void(0):
         this.lineType = this.defaultLineType;
         break;
     default:
@@ -1462,7 +1462,7 @@ Task.prototype.draw2DGraphic = function(specObj, params) {
         graphic = Host.CreateGraphic(params.name, params.axis, 0x000000);
     }
 
-    if (!this.setGraphicPoints(specObj, graphic)) {
+    if (this.setGraphicPoints(specObj, graphic) === false) {
         return null;
     }
 
