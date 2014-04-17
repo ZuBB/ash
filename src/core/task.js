@@ -1088,7 +1088,6 @@ Task.prototype.joinViewsProps = function() {
     var view            = null;
     var prop            = null;
     var params          = null;
-    var indexes         = [];
     var graphics        = this.drawGraphics();
     var viewIndexes     = this.parseViewIndex();
     var sourcesStates   = [
@@ -1107,16 +1106,10 @@ Task.prototype.joinViewsProps = function() {
         return result;
     }
 
-    // lets add real graphics objects into target array
-    // TODO make this just after graphic creation
-    graphics.forEach(function(graphicHash) {
-        indexes.push(Dispatcher.storeGraphicObject(graphicHash.graphic) - 1);
-    });
-
     //DEBUG_START
     if (typeof JSON !== 'undefined') {
-        var msg = 'we prepared graphics with next indexes';
-        _d(JSON.stringify(viewIndexes, null, 4), msg);
+        var msg = 'we prepared graphics with next specs';
+        _d(JSON.stringify(graphics, null, 4), msg);
     }
     //DEBUG_STOP
 
@@ -1150,12 +1143,12 @@ Task.prototype.joinViewsProps = function() {
             this.viewsProps[view][prop] = [];
         }
 
-        for (var jj = 0; jj < indexes.length; jj++) {
+        for (var jj = 0; jj < graphics.length; jj++) {
             params = [
                 // index of the graphic in view
                 viewIndexes[ii].index,
                 // index of the graphic obj in global array
-                indexes[jj]
+                graphics[jj].graphic
             ];
 
             if (this.graphicIsBackground) {
@@ -1328,8 +1321,12 @@ Task.prototype.drawGraphics = function() {
 
         var graphic = this.draw2DGraphic(dataSet, graphicParams);
 
+        if (graphic === null) {
+            return;
+        }
+
         graphics.push({
-            'graphic' : graphic,
+            'graphic' : Dispatcher.storeGraphicObject(graphic) - 1,
             'visible' : this.getGraphicVisibility(ii),
             'color'   : graphicParams.color,
             'name'    : graphicParams.name
@@ -1512,7 +1509,7 @@ Task.prototype.setGraphicPoints = function(specObj, graphic) {
             _e(jj, 'got a NaN insead of number at');
             _i(x, '`' + _1axis + '` equals to');
             _i(y, '`' + _2axis + '` equals to');
-            return this.updateStatus(false);
+            return false;
             //DEBUG_STOP
 
             Dispatcher.addBug('core.error1');
