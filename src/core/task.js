@@ -1091,6 +1091,7 @@ Task.prototype.joinViewsProps = function() {
     var graphics        = this.drawGraphics();
     var viewIndexes     = this.parseViewIndex();
     var sourcesStates   = [
+        this.getTaskStatus(),
         graphics.empty(),
         viewIndexes.empty(),
         Object.keys(this.viewsProps).empty()
