@@ -1260,9 +1260,12 @@ Task.prototype.adjustGraphicTypeValue = function() {
         return this.updateStatus(true);
     }
 
+    //DEBUG_START
     if (typeof this.graphicType !== 'string') {
+        _e(this.graphicType, 'incorrect graphic type');
         return this.updateStatus(false);
     }
+    //DEBUG_STOP
 
     var graphicSpecs = this.graphicType.split(':');
 
