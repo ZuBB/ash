@@ -1316,12 +1316,10 @@ Task.prototype.adjustGraphicTypeValue = function() {
  * @private
  */
 Task.prototype.drawGraphics = function() {
-    if (!this.viewIndex) {
+    if (!this.viewIndex || !this.adjustGraphicTypeValue()) {
         return [];
     }
 
-    // do magic with graphic types
-    this.adjustGraphicTypeValue();
     var graphics = [];
 
     // process every graphic
