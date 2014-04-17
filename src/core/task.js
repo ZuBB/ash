@@ -1248,6 +1248,11 @@ Task.prototype.parseViewIndex = function() {
  * @private
  */
 Task.prototype.adjustGraphicTypeValue = function() {
+    if (this.graphicType === null) {
+        this.lineType = this.defaultLineType;
+        return this.updateStatus(true);
+    }
+
     if (typeof this.graphicType !== 'string') {
         return this.updateStatus(false);
     }
