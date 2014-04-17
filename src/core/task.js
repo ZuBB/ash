@@ -1178,7 +1178,8 @@ Task.prototype.joinViewsProps = function() {
                 graphics[jj].name,
                 this.lineType,
                 graphics[jj].color,
-                graphics[jj].visible
+                // to set graphic initially invisible we need to pass 1 here
+                graphics[jj].visible === 1 ? 0 : 1
             ]);
         }
     }
@@ -1408,27 +1409,27 @@ Task.prototype.getGraphicColor = function(index) {
  * @private
  */
 Task.prototype.getGraphicVisibility = function(index) {
-    // to set graphic initially invisible we need to return 1
-    var result = 0;
+    // initially graphic is visible
+    var result = 1;
 
     switch (true) {
     case this.hiddenGraphics === '*':
-        result = 1;
+        result = 0;
         break;
     case Array.isArray(this.hiddenGraphics):
-        result = Number(Boolean(this.hiddenGraphics[index]));
+        result = this.hiddenGraphics[index] === 0 ? 1 : 0;
         break;
     case typeof this.hiddenGraphics === 'boolean':
-        result = Number(this.hiddenGraphics[index]);
+        result = this.hiddenGraphics[index] ? 0 : 1;
         break;
     case this.hiddenGraphics === null:
-        result = 0;
+        result = 1;
         break;
     default:
         //DEBUG_START
         _e('invalid visibility token. graphic will be visible');
         //DEBUG_STOP
-        result = 0;
+        result = 1;
     }
 
     return result;
