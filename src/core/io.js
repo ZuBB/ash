@@ -167,7 +167,7 @@ IO = (function() {
                 }
             };
 
-            safeExecute({
+            return safeExecute({
                 failureMessage: 'Failed to write data due to next error',
                 tryFunc: writeToFileFunction,
                 catchFunc: this.close
