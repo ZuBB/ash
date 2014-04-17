@@ -681,7 +681,7 @@ Task.prototype.isForbiddenDependenciesResolved = function() {
         depName = depName.slice(1);
         if (Dispatcher.getValidTaskObject(depName)) {
             //DEBUG_START
-            _w(depName, 'Next dependency should not be resolved');
+            _e(depName, 'Next dependency should not be resolved');
             //DEBUG_STOP
             return false;
         }
@@ -709,7 +709,7 @@ Task.prototype.isSoftDependenciesResolved = function() {
     }
 
     //DEBUG_START
-    _w('None soft dependency was resolved');
+    _e('None soft dependency was resolved');
     //DEBUG_STOP
     return false;
 };
