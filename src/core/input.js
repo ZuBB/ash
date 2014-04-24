@@ -216,6 +216,33 @@ Input = (function() {
                     return DATATYPE.channel.runtimeValue(item);
                 });
             }
+        },
+        'filescombo': {
+            'initialValue': function(dataDir) {
+                var items = IO.getDirFiles(dataDir);
+                var stripText = '.json.txt';
+
+                if (items.empty()) {
+                    return '\n';
+                }
+
+                var mapFunction = function(item) {
+                    if (item.indexOf(stripText) > 0) {
+                        return item.replace(stripText, '');
+                    } else {
+                        return item;
+                    }
+                };
+
+                return items.map(mapFunction).join('\n');
+            },
+            'defaultValue': function() {
+                return null;
+            },
+            'runtimeValue': function(udv, inputSpec) {
+                var path = IO.getSafeDirPath(inputSpec.value);
+                return IO.buildPath(path, IO.getDirFiles(path)[udv]);
+            }
         }
     };
 

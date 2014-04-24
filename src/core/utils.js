@@ -100,36 +100,6 @@ Utils.prepareParams = function() {
 };
 
 /**
- * function that ...
- *
- * @method getDataFolderListing
- * @member Utils
- * @ignore
- */
-Utils.getDataFolderListing = function(dataFolder) {
-    var temp = null;
-    var result = [''];
-    dataFolder = dataFolder || 'data';
-    dataFolder = Host.CurPath + dataFolder;
-    var FSObject = new ActiveXObject('Scripting.FileSystemObject');
-
-    if (!FSObject.FolderExists(dataFolder)) {
-        FSObject.CreateFolder(dataFolder);
-    }
-
-    var objFolder = FSObject.GetFolder(dataFolder);
-    var filesCollection = new Enumerator(objFolder.files);
-    for (; !filesCollection.atEnd(); filesCollection.moveNext()) {
-        temp = filesCollection.item().name;
-        if (temp.indexOf('.json.txt') > 0) {
-            result.push(temp.replace(/\.json\.txt$/, ''));
-        }
-    }
-
-    return result;
-};
-
-/**
  * Recursively merge properties of two objects
  *
  * @method mergeRecursive
