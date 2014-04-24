@@ -88,11 +88,13 @@ Utils.configureObj = function(_this, params) {
  * @member Utils
  * @ignore
  */
-Utils.prepareParams = function(orig_params, param1, param2) {
-    var params = [].slice.call(orig_params, 0);
+Utils.prepareParams = function() {
+    var _arguments = [].slice.call(arguments, 0);
+    var params = [].slice.call(_arguments[0], 0);
 
-    params.unshift(param1);
-    params.unshift(Boolean(param2));
+    params.unshift(Boolean(_arguments[1]));
+    params.unshift(Boolean(_arguments[2]));
+    params.push(Boolean(_arguments[3]));
 
     return params;
 };
