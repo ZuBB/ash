@@ -354,7 +354,6 @@
 Task = function(params) {
     this.statusCodes = [];
     this.graphics = [];
-    this.sourceType = null;
     this.viewsProps = {};
 
     this.drawGraphicsAsShelf = false;
@@ -472,6 +471,7 @@ Task.prototype.process = function() {
     // contact with Dispatcher
     this.sendViewsProps();
     this.sendConfirmedView();
+    this.addTask2Save4Compare();
 
     return this.getTaskStatus();
 };
@@ -732,37 +732,29 @@ Task.prototype.getUnsureTaskData = function(dataLink) {
  * @private
  */
 Task.prototype.processCalcs = function() {
-    var result = false;
+    var result = null;
 
     if (this.getTaskStatus() === false) {
         return false;
     }
 
-    if (this.sourceType === 'file' || this.loadData4Compare) {
-        result = this.loadGraphicsData();
+    if (this.loadData4Compare) {
+        result = this.getTaskData();
+    } else {
+        result = this.calc_data();
+    }
+
+    if (this.graphics.length > 0) {
+        result = typeof result === 'undefined' ? true : result;
     } else {
         //DEBUG_START
-        _d('processing calcs...');
+        _d('this spec does not have data');
         //DEBUG_STOP
-        result = this.calc_data();
-
-        if (this.graphics.length > 0) {
-            result = typeof result === 'undefined' ? true : result;
-        } else {
-            //DEBUG_START
-            _d('this spec does not have data');
-            //DEBUG_STOP
-            if (typeof result === 'undefined') {
-                result = false;
-            }
-        }
-
-        //DEBUG_START
-        _d(result, 'calcs complete');
-        //DEBUG_STOP
+        result = !!result;
     }
 
     //DEBUG_START
+    _d(result, 'calcs complete');
     this.logDataStats();
     //DEBUG_STOP
     return this.updateStatus(result);
@@ -774,88 +766,19 @@ Task.prototype.processCalcs = function() {
  * @return {Boolean} status/result of the action
  * @private
  */
-Task.prototype.loadGraphicsData = function() {
-    //DEBUG_START
-    _d('loading data...');
-    //DEBUG_STOP
-    if (this.loadData4Compare === false && this.sourceType === 'channel') {
+Task.prototype.getTaskData = function() {
+    var taskName = this.getTaskName();
+    var filename = Input.getValue(this.dataSource);
+
+    if (filename === null || filename === void(0)) {
         return false;
     }
 
-    var filename = null;
+    var data = Dispatcher.requestData4Compare(taskName, filename);
 
-    if (this.sourceType === 'file') {
-        filename = Input.getValue(this.dataSource);
-        if (filename) {
-            filename = 'C:\\' + filename + '.json.txt';
-        } else {
-            filename = null;
-        }
-    } else {
-        filename = Input.getValue('loadfile');
-        // this will not work if number of files in data folder
-        // has been changed during run
-        filename = Utils.getDataFolderListing()[filename];
-        if (filename) {
-            filename = Host.CurPath + 'data\\' + filename + '.json.txt';
-        } else {
-            filename = null;
-        }
+    if (data) {
+        this.graphics = data;
     }
-
-    return this.readGraphicsData(filename);
-};
-
-/**
- * Reads data for this task from file
- *
- * @param {String} filename variable with filename to read data from
- * @return {Boolean} status/result of the action
- * @private
- * @ignore
- */
-Task.prototype.readGraphicsData = function(filename) {
-    var FSObject = new ActiveXObject('Scripting.FileSystemObject');
-    var dataKey = this.getFullName();
-    var fileHandler = null;
-    var result = null;
-    var data = null;
-
-    if (!filename || !FSObject.FileExists(filename)) {
-        //DEBUG_START
-        _d(filename, 'Can not find next file');
-        //DEBUG_STOP
-        return false;
-    }
-
-    //DEBUG_START
-    _d(filename, 'Next file will be used to read external data');
-    //DEBUG_STOP
-
-    try {
-        fileHandler = FSObject.OpenTextFile(filename, 1);
-        data = JSON.parse(fileHandler.ReadAll());
-        if (typeof data.specs2compare[dataKey] !== 'undefined') {
-            this.graphics = data.specs2compare[dataKey];
-            result = true;
-        } else {
-            //DEBUG_START
-            _d('No data found for this spec');
-            //DEBUG_STOP
-            result = false;
-        }
-        fileHandler.Close();
-    } catch(e) {
-        //DEBUG_START
-        _d('Failed to read data file due to next error');
-        _d(e.message);
-        //DEBUG_STOP
-        result = false;
-    }
-
-    fileHandler = null;
-    FSObject = null;
-    return result;
 };
 
 /**
@@ -1747,6 +1670,15 @@ Task.prototype.createGetSetPropMethods = function() {
  */
 Task.prototype.isSavingRequired = function() {
     return this.isSavingAllowed;
+};
+
+/**
+ * Sschedules current task for save to use in compare feature
+ */
+Task.prototype.addTask2Save4Compare = function() {
+    if (this.getTaskStatus() && this.saveData4Compare) {
+        Dispatcher.addSpec4Saving(this.getTaskName());
+    }
 };
 
 /**

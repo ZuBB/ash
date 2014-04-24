@@ -30,9 +30,7 @@ Dispatcher = (function() {
      *
      * Holds time when script started to execute
      */
-    //DEBUG_START
     var runTimestamp = new Date();
-    //DEBUG_STOP
 
     /**
      * @property {Array} drownGraphics = []
@@ -95,7 +93,24 @@ Dispatcher = (function() {
     var tasksHash = {};
 
     /**
-     * @property {Object} module = {}
+     * @property {Array} specs2Save4Compare = []
+     * @private
+     *
+     * An array that holds names of tasks that should be save for future
+     * compare feature
+     */
+    var specs2Save4Compare = [];
+
+    /**
+     * @property {{name: Array}} data4Compare = null
+     * @private
+     *
+     * An hash/dict that holds key/value pairs of task names and theirs data
+     * for compare feature
+     */
+    var data4Compare = null;
+
+    /**
      * @ignore
      */
     var module = {};
@@ -202,6 +217,7 @@ Dispatcher = (function() {
             createGraphicViews();
             sortGraphicsByIndexes();
             applyPropsToGraphicViews();
+            saveTasks4Compare();
         }
 
         printMessages();
@@ -733,6 +749,129 @@ Dispatcher = (function() {
             // TODO what is best value here?
             return null;
         }
+    };
+
+    /**
+     * Returns data for task
+     *
+     * @param {String} specName name of the task
+     * @param {String} filename name of the file that contains data
+     * @return {Object} data for the specified task
+     */
+    module.requestData4Compare = function(specName, fileName) {
+        if (data4Compare === null) {
+            loadData4Compare(fileName);
+        }
+
+        if (data4Compare) {
+            return data4Compare.specs2compare[specName];
+        }
+
+        return null;
+    };
+
+    /**
+     * Reads data for this task from file
+     *
+     * @param {String} filename variable with filename to read data from
+     * @private
+     */
+    var loadData4Compare = function(filename) {
+        if (IO.isFileExist(filename)) {
+            //DEBUG_START
+            _d('loading data...');
+            _d(filename, 'External data will be look up in next file');
+            //DEBUG_STOP
+
+            try {
+                data4Compare = JSON.parse(IO.readFileContent(filename));
+            } catch(e) {
+                data4Compare = null;
+            }
+            //DEBUG_START
+        } else {
+            _d(filename, 'Can not find next file');
+            //DEBUG_STOP
+        }
+    };
+
+    /**
+     * Remebers task name for future store and compare
+     * property
+     *
+     * **NOTE**: Usually you do not need to use this method directly.
+     * Its utilization is being done automatically. However if you do,
+     * there should be strong reason for that.
+     *
+     * @param {String} specName name of the task
+     */
+    module.addSpec4Saving = function(specName) {
+        if (specName) {
+            return specs2Save4Compare.push(specName);
+        }
+    };
+
+    /**
+     * Dumps data of the tasks to the disk for future compare feature
+     *
+     * @private
+     */
+    var saveTasks4Compare = function() {
+        return;
+        //DEBUG_START
+        _p('in `saveTasks4Compare`');
+        _d('');
+        //DEBUG_STOP
+
+        // lets check if number of specs for saving is bigger than 0
+        if (specs2Save4Compare.empty()) {
+            //DEBUG_START
+            _d('did not find specs to save');
+            //DEBUG_STOP
+            return true;
+        }
+
+        //DEBUG_START
+        _d(specs2Save4Compare, 'list of specs for saving');
+        //DEBUG_STOP
+
+        var fileHandler = null;
+        var fileOptopns = {
+            filedir: [Host.CurPath, IO.getSafeNeighbourPath(), 'data'],
+            filename: Host.CurFileName.replace(/\.mwf$/, '') + '.json.txt'
+        };
+
+        if ((fileHandler = IO.createFile(fileOptopns)) === null) {
+            return false;
+        }
+
+        //DEBUG_START
+        _p(fileHandler.getFilePath(), 'Next file will be used for writing data');
+        //DEBUG_STOP
+
+        var data2Save = {
+            'specs2compare': {},
+            'write_date':    runTimestamp.toUTCString(),
+            'format':        Script.dumpFormat
+        };
+
+        specs2Save4Compare.forEach(function(item) {
+            data2Save.specs2compare[item + '_external'] =
+                module.getTaskObject(item).getDataSets();
+        });
+
+        //DEBUG_START
+        if (/VERSION/.test(Script.version)) {
+            var data2write = JSON.stringify(data2Save);
+            _i(fileHandler.writeln(data2write), 'write successful');
+            _i(fileHandler.close(), 'close successful');
+        } else {
+        //DEBUG_STOP
+            fileHandler.writeln(JSON.stringify(data2Save, null, 4));
+            fileHandler.close();
+        //DEBUG_START
+        }
+        //DEBUG_STOP
     };
 
     //DEBUG_START
