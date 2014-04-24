@@ -1,5 +1,5 @@
 /**
- * **IO** library. Inspired from Ruby's one
+ * **IO** library
  *
  * @class
  * @ignore
@@ -63,7 +63,6 @@ IO = (function() {
             } else {
                 filename = params.filename;
             }
-
 
             if (Array.isArray(params.filedir)) {
                 filepath = param2Path(params.filedir);
