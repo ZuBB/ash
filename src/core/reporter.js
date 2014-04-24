@@ -57,7 +57,7 @@ Reporter = (function() {
      * @param {Object} [controlChars] Dictionary with control chars.
      * See detailed description in Class annotation
      */
-    module.report = function(b_lf, a_lf, value, controlChars) {
+    module.report = function(b_lf, a_lf, value, controlChars, onlyReporting) {
         var rawString = null;
         var string = null;
 
@@ -72,7 +72,7 @@ Reporter = (function() {
         string = insertLink2Notation(string, controlChars.notation);
         string = insertLink2OSCGRM(string, controlChars.oscillogram);
 
-        if (typeof rawString === 'string') {
+        if (!onlyReporting || typeof rawString === 'string') {
             Host.ReportOut(string);
             //DEBUG_START
             // no need to log status of specs
@@ -224,5 +224,18 @@ _rl = function() {
 _rp = function() {
     Reporter.report.apply(null,
         Utils.prepareParams(arguments, true, true));
+};
+
+/**
+ * Prints message to report tab. To the end of message newline symbol will be
+ * appended. Also newline symbol will be inserted before message
+ * Does not forward messages to log
+ *
+ * @member Reporter
+ * @method _ro
+ */
+_ro = function() {
+    Reporter.report.apply(null,
+        Utils.prepareParams(arguments, true, false, true));
 };
 
