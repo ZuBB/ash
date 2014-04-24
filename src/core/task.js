@@ -487,7 +487,6 @@ Task.prototype.checkDataSource = function() {
     var result = true;
 
     if (this.dataSource) {
-        //var rawDataSource = Input.getRawValue(this.dataSource);
         var dataSource = Input.getValue(this.dataSource);
 
         if (dataSource === null) {
@@ -497,84 +496,10 @@ Task.prototype.checkDataSource = function() {
             result = false;
         } else {
             result = true;
-            /*if (dataSource === rawDataSource) {
-                result |= this.checkSingleChannel(dataSource);
-            }
-
-            if (!result && typeof dataSource === 'string') {
-                result |= this.checkChannelsList(dataSource);
-            }
-
-            if (!result) {
-                result |= this.checkDataSourceFile(rawDataSource);
-            }*/
         }
     }
 
     return this.updateStatus(result);
-};
-
-/**
- * Checks if user's input is a valid single channel number. Indeed code of
- * this function should not be here. Will be moved to {@link Input}
- *
- * @param {String} dataSource contains channel number
- * @return {Boolean} result of the check
- * @private
- * @ignore
- */
-Task.prototype.checkSingleChannel = function(dataSource) {
-    var result = Utils.checkChannel(dataSource);
-    this.sourceType = result === true ? 'channel' : null;
-    return result;
-};
-
-/**
- * Checks if user's input is a list of valid channel numbers. Indeed code of
- * this function should not be here. Will be moved to {@link Input}
- *
- * @param {String} dataSource represents list of channel numbers
- * @return {Boolean} result of the check
- * @private
- * @ignore
- */
-Task.prototype.checkChannelsList = function(dataSource) {
-    var result = Utils.checkChannelsList(dataSource);
-    this.sourceType = result === true ? 'channel' : null;
-    return result;
-};
-
-/**
- * Checks if user's input is a valid filename that exists
- *
- * @param {String} rawDataSource represents file name to look for
- * @return {Boolean} result of the check
- * @private
- * @ignore
- */
-Task.prototype.checkDataSourceFile = function(rawDataSource) {
-    var result = null;
-
-    try {
-        var filename = 'C:\\' + rawDataSource + '.json.txt';
-        var FSObject = new ActiveXObject('Scripting.FileSystemObject');
-        result = FSObject.FileExists(filename);
-
-        if (result) {
-            // we count that minimal file size is 70 bytes
-            result = FSObject.GetFile(filename).Size > 70;
-        }
-
-        this.sourceType = result === true ? 'file' : null;
-    } catch(e) {
-        //DEBUG_START
-        _e('Failed to check source data file due to next error');
-        _d(e.message);
-        //DEBUG_STOP
-        result = false;
-    }
-
-    return result;
 };
 
 /**
