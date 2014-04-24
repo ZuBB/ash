@@ -129,16 +129,13 @@ Logger = (function() {
      * @private
      */
     var initFSHandler = function() {
-        var devLocation = (/\\build\\output\\$/).test(Host.CurPath);
-        var logDir      = devLocation ? 'logs' : Script.name + '_logs';
-        var logPath     = devLocation ? '..\\..\\' : '';
+        var logPath     = IO.getSafeNeighbourPath();
         var result      = false;
 
         var fileHandlerOptions = {
-            safe: true,
             filedir: [Host.CurPath, logPath],
             filename: Script.name + '-last-log.txt',
-            backupDir: [Host.CurPath, logPath, logDir],
+            backupDir: [Host.CurPath, logPath, 'logs'],
             backupName: function(FSObject, filePath) {
                 var backTimeStr = FSObject.GetFile(filePath).DateLastModified;
                 var backname = new Date(Date.parse(backTimeStr));
