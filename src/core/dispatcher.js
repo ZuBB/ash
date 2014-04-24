@@ -817,7 +817,6 @@ Dispatcher = (function() {
      * @private
      */
     var saveTasks4Compare = function() {
-        return;
         //DEBUG_START
         _p('in `saveTasks4Compare`');
         _d('');
