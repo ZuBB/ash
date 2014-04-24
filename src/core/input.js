@@ -457,7 +457,7 @@ Input = (function() {
             //DEBUG_START
             _e(name, 'Input: attempt to access value with nonexistent name');
             //DEBUG_STOP
-            return []._undefined;
+            return void(0);
         }
 
         var index = input2dialogMap[name];
