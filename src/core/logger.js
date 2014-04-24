@@ -115,7 +115,7 @@ Logger = (function() {
      */
     module.init = function() {
         if (initFSHandler()) {
-            while (buffer.length) {
+            while (Array.isArray(buffer) && buffer.length) {
                 module.log(buffer.shift());
             }
         }
@@ -231,10 +231,13 @@ Logger = (function() {
      * @method close
      */
     module.close = function() {
+        if (fileHandler !== null) {
+            fileHandler.close();
+            fileHandler = null;
+        }
+
         buffer = null;
         printLogStats();
-        fileHandler.close();
-        fileHandler = null;
     };
 
     /**
