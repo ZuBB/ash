@@ -72,11 +72,12 @@ Reporter = (function() {
         string = insertLink2Notation(string, controlChars.notation);
         string = insertLink2OSCGRM(string, controlChars.oscillogram);
 
-        if (!onlyReporting || typeof rawString === 'string') {
+        if (typeof rawString === 'string') {
             Host.ReportOut(string);
             //DEBUG_START
             // no need to log status of specs
-            if ((/^(\+|-)\n$/).test(rawString) === false) {
+            // no need to log report only messages
+            if (!onlyReporting || (/^(\+|-)\n$/).test(rawString) === false) {
                 rawString = rawString.replace(/^\n/, '');
                 rawString = rawString.replace(/\n$/, '');
                 _i(rawString);
