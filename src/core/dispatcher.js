@@ -20,15 +20,15 @@ Dispatcher = (function() {
      * @property {Array} sortableProps = ['area', 'graphic', 'graphicex']
      * @private
      *
-     * List of props that need to handled in special way
+     * List of props that need to be handled in special way
      */
     var sortableProps = ['area', 'graphic', 'graphicex'];
 
     /**
-     * @property {Array} runTimestamp = new Date()
+     * @property {Date} runTimestamp = new Date()
      * @private
      *
-     * Holds time when script started to run. Is used in development mode only
+     * Holds time when script started to execute
      */
     //DEBUG_START
     var runTimestamp = new Date();
