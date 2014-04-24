@@ -145,7 +145,7 @@ Input = (function() {
             'defaultValue': function(udv) {
                 return udv || -1;
             },
-            'parse': function(rawValue) {
+            'runtimeValue': function(rawValue) {
                 var parsedValue = parseInt(rawValue, 10);
                 return isNaN(parsedValue) ? rawValue : parsedValue;
             }
@@ -156,7 +156,7 @@ Input = (function() {
             'defaultValue': function(udv) {
                 return udv || -1.1;
             },
-            'parse': function(rawValue) {
+            'runtimeValue': function(rawValue) {
                 var parsedValue = parseFloat(rawValue);
                 return isNaN(parsedValue) ? rawValue : parsedValue;
             }
@@ -166,7 +166,7 @@ Input = (function() {
             'defaultValue': function(udv) {
                 return udv || '';
             },
-            'parse': function(rawValue) {
+            'runtimeValue': function(rawValue) {
                 return rawValue;
             }
         },
@@ -181,7 +181,7 @@ Input = (function() {
             'defaultValue': function() {
                 return 0;
             },
-            'parse': function(rawValue) {
+            'runtimeValue': function(rawValue) {
                 return parseInt(rawValue, 10);
             }
         },
@@ -193,7 +193,7 @@ Input = (function() {
             'defaultValue': function() {
                 return 0;
             },
-            'parse': function(rawValue) {
+            'runtimeValue': function(rawValue) {
                 var channel = parseInt(rawValue, 10);
                 var result = null;
                 var checks = [
@@ -211,9 +211,9 @@ Input = (function() {
             'defaultValue': function(udv) {
                 return udv || '1,2';
             },
-            'parse': function(rawValue) {
+            'runtimeValue': function(rawValue) {
                 return rawValue.split(/\s?,\s?/).map(function(item) {
-                    return DATATYPE.channel.parse(item);
+                    return DATATYPE.channel.runtimeValue(item);
                 });
             }
         }
@@ -281,7 +281,7 @@ Input = (function() {
             method = preferedMethod;
         } else {
             method = Object.keys(DATATYPE[inputType])
-                .filter(function(i) { return i !== 'parse'; })
+                .filter(function(i) { return i !== 'runtimeValue'; })
                 .filter(function(i) { return i !== preferedMethod; })
                 [0];
         }
@@ -472,7 +472,9 @@ Input = (function() {
         var rawValue = dialogs[index].GetValue(getInputI18Name(name));
 
         if (inputFields[name].type) {
-            return DATATYPE[inputFields[name].type].parse(rawValue);
+            return DATATYPE[inputFields[name].type].runtimeValue(
+                rawValue, inputFields[name]
+            );
         } else {
             //DEBUG_START
             _i(name, 'getting value of input that was not inited');
