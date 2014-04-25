@@ -92,7 +92,7 @@ Utils.prepareParams = function() {
     var _arguments = [].slice.call(arguments, 0);
     var params = [].slice.call(_arguments[0], 0);
 
-    params.unshift(Boolean(_arguments[1]));
+    params.unshift(_arguments[1]);
     params.unshift(Boolean(_arguments[2]));
     params.push(Boolean(_arguments[3]));
 
