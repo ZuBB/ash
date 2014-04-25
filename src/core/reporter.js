@@ -57,7 +57,12 @@ Reporter = (function() {
      * @param {Object} [controlChars] Dictionary with control chars.
      * See detailed description in Class annotation
      */
-    module.report = function(b_lf, a_lf, value, controlChars, onlyReporting) {
+    module.report = function(b_lf, a_lf, value, controlChars
+        //DEBUG_START
+        , onlyReporting
+        //DEBUG_STOP
+        ) {
+
         var rawString = null;
         var string = null;
 
