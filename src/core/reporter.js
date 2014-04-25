@@ -82,7 +82,7 @@ Reporter = (function() {
             //DEBUG_START
             // no need to log status of specs
             // no need to log report only messages
-            if (!onlyReporting || (/^(\+|-)\n$/).test(rawString) === false) {
+            if (!onlyReporting && (/^(\+|-)\n$/).test(rawString) === false) {
                 rawString = rawString.replace(/^\n/, '');
                 rawString = rawString.replace(/\n$/, '');
                 _i(rawString);
