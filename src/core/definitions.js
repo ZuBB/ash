@@ -27,6 +27,7 @@ var _f = null;
 var _rw = null;
 var _rl = null;
 var _rp = null;
+var _ro = null;
 
 // Namespace for constants.
 var CONSTS = {};
