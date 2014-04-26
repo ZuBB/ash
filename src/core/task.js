@@ -1467,7 +1467,7 @@ Task.prototype.sendConfirmedView = function() {
  */
 Task.prototype.isDataSetExist = function(index) {
     index = Math.abs(parseInt(index, 10)) || 0;
-    return this.graphics[index].constructor === Object;
+    return this.graphics[index] && this.graphics[index].constructor === Object;
 };
 
 /**
