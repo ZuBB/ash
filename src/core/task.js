@@ -1185,6 +1185,9 @@ Task.prototype.drawGraphics = function() {
         var graphic = this.draw2DGraphic(dataSet, graphicParams);
 
         if (graphic === null) {
+            //DEBUG_START
+            _e(ii, 'graphic with next index failed to draw');
+            //DEBUG_STOP
             return;
         }
 
