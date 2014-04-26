@@ -255,9 +255,6 @@ Input = (function() {
     var input2dialogMap = {};
     var dialogs = [];
 
-    // out
-    var module = {};
-
     /**
      * Returns dialog/configuration object
      *
@@ -400,7 +397,7 @@ Input = (function() {
      *
      * @member Input
      */
-    module.createConfiguration = function() {
+    var createConfiguration = function() {
         //DEBUG_START
         _p('');
         //DEBUG_STOP
@@ -480,7 +477,7 @@ Input = (function() {
      *
      * @member Input
      */
-    module.getValue = function(name) {
+    var getValue = function(name) {
         if (!isInputNameKnown(name)) {
             //DEBUG_START
             _e(name, 'Input: attempt to access value with nonexistent name');
@@ -518,7 +515,7 @@ Input = (function() {
      *
      * @member Input
      */
-    module.getFilledInputs = function() {
+    var getFilledInputs = function() {
         return Object.keys(input2dialogMap);
     };
 
@@ -530,10 +527,16 @@ Input = (function() {
      *
      * @member Input
      */
-    module.getDefaultValue = function(name) {
+    var getDefaultValue = function(name) {
         return _getDefaultValue(name);
     };
 
-    return module;
+    return {
+        'createConfiguration': createConfiguration,
+        'getDefaultValue':     getDefaultValue,
+        'getFilledInputs':     getFilledInputs,
+        'getValue':            getValue
+    };
+
 })();
 
