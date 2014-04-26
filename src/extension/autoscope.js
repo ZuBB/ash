@@ -27,7 +27,7 @@ AHF.aveValueAt = function(channel, params) {
 
     if (length1 === 0 && length2 === 0 && length3 === 0) {
         //DEBUG_START
-        _d('AHF.aveValueAt: all of params are invalid (casted to 0)');
+        _e('AHF.aveValueAt: all of params are invalid (casted to 0)');
         //DEBUG_STOP
         return result;
     }
