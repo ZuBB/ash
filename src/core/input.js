@@ -51,14 +51,14 @@
  *
  * While specifying inputs you need to follow 2 simple rules:
  *
- * - internal name (key of dictionary) of input should be unique
- * - dictionary which defines attributes of input should have at least of next
- *   keys:
+ * - internal name (key of dictionary) of the input should be unique
+ * - dictionary which defines attributes of input should have at least one
+ *   of the next keys:
  *
  *      - `value` - default value
  *      - `type` - default type
  *
- * For inputs you can specify one of 4 available data types:
+ * For inputs you can specify one of these data types:
  *
  * - `int`
  * - `float`
@@ -67,8 +67,11 @@
  *   **must** be specified as `value` property
  * - `channel` also will look like dropdown. Content of it is created
  *   automatically. passed `value` property of this input will be ignored
+ * - `channels` same as *channel*. Channel numbers should be separated with
+ *   comma (`,`)
+ * - `filescombo` produces combo with files from specified directory as items
  *
- * As for values here you have even more freedom:
+ * As for values here you have next options:
  *
  * - `Number` - any of integer of float numbers
  * - `String` - any string
@@ -274,7 +277,7 @@ Input = (function() {
      * Returns content ready to be set as combo items
      *
      * @param {Array} items List of combo items
-     * @return {String} stringified comto items
+     * @return {String} stringified combo content
      *
      * @member Input
      * @private
