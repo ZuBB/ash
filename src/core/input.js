@@ -222,13 +222,7 @@ Input = (function() {
         },
         'filescombo': {
             'initialValue': function(dataDir) {
-                var items = IO.getDirFiles(dataDir);
                 var stripText = '.json.txt';
-
-                if (items.empty()) {
-                    return '\n';
-                }
-
                 var mapFunction = function(item) {
                     if (item.indexOf(stripText) > 0) {
                         return item.replace(stripText, '');
@@ -237,14 +231,18 @@ Input = (function() {
                     }
                 };
 
-                return items.map(mapFunction).join('\n');
+                return getComboContent(
+                    [''].concat(IO.getDirFiles(dataDir)).map(mapFunction)
+                );
             },
             'defaultValue': function() {
                 return null;
             },
             'runtimeValue': function(udv, inputSpec) {
                 var path = IO.getSafeDirPath(inputSpec.value);
-                return IO.buildPath(path, IO.getDirFiles(path)[udv]);
+                // we need '-1' here because by default filescombo gets blank
+                // item as 1st item of combo so indexed are shifted a bit
+                return IO.buildPath(path, IO.getDirFiles(path)[udv - 1]);
             }
         }
     };
