@@ -1313,6 +1313,7 @@ Task.prototype.draw2DGraphic = function(specObj, params) {
 
     if (specObj[_1axis].length !== specObj[_2axis].length) {
         _e('data length mismatch!');
+        return null;
     }
     //DEBUG_STOP
 
