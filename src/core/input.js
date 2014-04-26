@@ -283,7 +283,7 @@ Input = (function() {
      * @private
      */
     var getComboContent = function(items) {
-        if (items && Array.isArray(items)) {
+        if (items && Array.isArray(items) && items.length > 1) {
             var func = function(item) { return _t(item.toString()); };
             return items.map(func).join('\n');
         } else {
