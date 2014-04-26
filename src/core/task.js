@@ -1310,7 +1310,7 @@ Task.prototype.draw2DGraphic = function(specObj, params) {
     }
 
     if (!specObj[_1axis].length || !specObj[_2axis].length) {
-        _e('specObj\'s keys are empty arrays');
+        _e('some of specObj\'s keys point to empty arrays');
         return null;
     }
 
