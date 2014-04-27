@@ -726,23 +726,18 @@ Task.prototype.getUnsureTaskData = function(dataLink) {
 };
 
 /**
- * Produces data/numbers for this task
+ * Runs method that produces/gets data/numbers for this task
  *
  * @return {Boolean} status/result of the action
  * @private
  */
 Task.prototype.processCalcs = function() {
-    var result = null;
-
     if (this.getTaskStatus() === false) {
         return false;
     }
 
-    if (this.loadData4Compare) {
-        result = this.getTaskData();
-    } else {
-        result = this.calc_data();
-    }
+    var result = this.loadData4Compare ?
+        this.pullTaskData() : this.calc_data();
 
     if (this.graphics.length > 0) {
         result = typeof result === 'undefined' ? true : result;
@@ -761,19 +756,14 @@ Task.prototype.processCalcs = function() {
 };
 
 /**
- * Creates filename where data for task might be
+ * Gets data of the task (if exist) from Dispatcher
  *
  * @return {Boolean} status/result of the action
  * @private
  */
-Task.prototype.getTaskData = function() {
+Task.prototype.pullTaskData = function() {
     var taskName = this.getTaskName();
-    var filename = Input.getValue(this.dataSource);
-
-    if (filename === null || filename === void(0)) {
-        return false;
-    }
-
+    var filename = this.dataSource ? Input.getValue(this.dataSource) : null;
     var data = Dispatcher.requestData4Compare(taskName, filename);
 
     if (data) {

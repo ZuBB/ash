@@ -758,9 +758,9 @@ Dispatcher = (function() {
      * @param {String} filename name of the file that contains data
      * @return {Object} data for the specified task
      */
-    module.requestData4Compare = function(specName, fileName) {
-        if (data4Compare === null) {
-            loadData4Compare(fileName);
+    module.requestData4Compare = function(specName, filename) {
+        if (data4Compare === null && filename !== null) {
+            loadData4Compare(filename);
         }
 
         if (data4Compare) {
