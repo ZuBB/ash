@@ -53,7 +53,7 @@
             encoding="${current.cp}" outputencoding="${current.cp}">
             <header>${JSHINT.HEADER}${line.separator}${line.separator}</header>
 
-            <fileset dir="src/core/src/core" includes="*js" excludes="main.js"/>
+            <fileset dir="src/core/src/core" includes="*js"/>
             <fileset dir="src/core/src/vendor/json">
                 <selector if="${3PARTY.JSON}">
                     <filename name="json2.js"/>
@@ -82,7 +82,7 @@
                 </and>
             </fileset>
             <fileset dir="src/app" includes="*.js"/>
-            <fileset file="src/core/src/core/main.js"/>
+            <fileset file="src/core/src/runner/main.js"/>
         </concat>
     </target>
 
