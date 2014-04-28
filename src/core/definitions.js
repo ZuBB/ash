@@ -161,7 +161,7 @@ Script.defaultKeys = ['x', 'y'];
  * is through build system. However we cant stop you to change it via plain
  * redefine in any of "user's file"
  */
-Script.demoMode = $DEMO_MODE$;
+Script.demoMode = typeof $DEMO_MODE$ === 'undefined' ? false : $DEMO_MODE$;
 
 
 /**
@@ -212,7 +212,7 @@ Script.name = '$SCRIPT$';
  * Flag that indicates if dispatcher should dump tasks data. Usefull only for
  * tests
  */
-Script.dumpTasksData = $DUMP_TASKS_DATA$;
+Script.dumpTasksData = typeof $DUMP_TASKS_DATA$ === 'undefined' ? false : $DUMP_TASKS_DATA$;
 
 /**
  * @property {Object} messagePrintProps = {}

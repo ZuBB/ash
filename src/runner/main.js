@@ -1,7 +1,4 @@
-if (Host.DataType === '$DATATYPE$') {
-    // init dispatcher with options
-    //Dispatcher.init(Script.dispatcherOpts);
-
+if (Host.DataType === (typeof $DATATYPE$ === 'undefined' ? 'ANA' : $DATATYPE$)) {
     // function that does all the magic
     Dispatcher.process();
 } else {

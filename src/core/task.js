@@ -360,7 +360,7 @@ Task = function(params) {
     this.graphicName = null;
     this.graphicType = '';
     this.lineType = null;
-    this.defaultLineType = $GRAPHIC_TYPE$;
+    this.defaultLineType = typeof $GRAPHIC_TYPE$ === 'undefined' ? 2 : $GRAPHIC_TYPE$;
     this.graphicColor = null;
     this.hiddenGraphics = null;
 
