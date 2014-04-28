@@ -5,5 +5,5 @@ if (Host.DataType === '$DATATYPE$') {
     // function that does all the magic
     Dispatcher.process();
 } else {
-    _rp('make sure you selected correct "DIG/ANA" signal type');
+    _rp(_t('core.error0'));
 }
