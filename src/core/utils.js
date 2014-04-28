@@ -20,7 +20,7 @@ Utils.createDataSetStub = function(keys) {
 };
 
 /**
- * helper function that creates random color
+ * helper function that simulates wait
  * http://devcheater.com/
  *
  * @method sleep
