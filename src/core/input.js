@@ -194,7 +194,9 @@ Input = (function() {
                 return getComboContent(Utils.range(Host.Channels + 1));
             },
             'defaultValue': function() {
-                return 0;
+                // if input with type channel was not inited,
+                // than we need to do a direct reply with most strict answer
+                return null;
             },
             'runtimeValue': function(rawValue) {
                 var channel = parseInt(rawValue, 10);
