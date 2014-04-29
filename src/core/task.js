@@ -1362,7 +1362,7 @@ Task.prototype.setGraphicPoints = function(specObj, graphic) {
 
         // TODO temporary disable this markers
         // untill we figure out how to proceed them
-        if (false && this.drawMarkers) {
+        if (this.drawMarkers) {
             this.drawMarker(specObj.x[jj] * Host.Frequency, specObj.name);
         }
     }
