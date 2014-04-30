@@ -422,7 +422,11 @@
         <property name="DEFAULT_GRAPHIC_TYPE" value="${LINE.TYPE.REL}"/>
     </target>
 
-    <selector id="excludes.list"></selector>
+    <selector id="excludes.list">
+        <or>
+            <filename name="99_null_99_nonexistent_task.js"/>
+        </or>
+    </selector>
 
     <path id="antcontrib.path">
         <fileset dir="${user.home}/.ant/lib/">
