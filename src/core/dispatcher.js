@@ -105,11 +105,6 @@ Dispatcher = (function() {
     var data4Compare = null;
 
     /**
-     * @ignore
-     */
-    var module = {};
-
-    /**
      * Registers new task with dictionary of options passed as parameter
      *
      * @param {Object} taskOpts A dictionary with options for new Task instance
@@ -150,7 +145,7 @@ Dispatcher = (function() {
      *
      * Sometimes we call *task* as *spec*.
      */
-    module.registerNewTask = function(taskOpts) {
+    var registerNewTask = function(taskOpts) {
         if (!taskOpts) {
             //DEBUG_START
             _e('can not register empty graphic specs object!');
@@ -191,7 +186,7 @@ Dispatcher = (function() {
      *
      * @private
      */
-    module.process = function() {
+    var process = function() {
         //DEBUG_START
         Logger.init();
         //DEBUG_STOP
@@ -335,7 +330,7 @@ Dispatcher = (function() {
      *
      * @return {Array} known and verified message types
      */
-    module.listMessageTypes = function() {
+    var listMessageTypes = function() {
         return Object.keys(messageTypes);
     };
 
@@ -351,7 +346,7 @@ Dispatcher = (function() {
      *
      * @return {Boolean} result of the action execution
      */
-    module.addMessage = function(messageType, message) {
+    var addMessage = function(messageType, message) {
         if (typeof messageType !== 'string' || messageType.length === 0) {
             //DEBUG_START
             _e('[Dispatcher::addMessage]: invalid message type');
@@ -646,7 +641,7 @@ Dispatcher = (function() {
      * @param {String} name A task name
      * @return {Task|null} result
      */
-    module.getTaskObject = function(name) {
+    var getTaskObject = function(name) {
         if (name && tasksHash.hasOwnProperty(name)) {
             return tasksHash[name];
         }
@@ -667,8 +662,8 @@ Dispatcher = (function() {
      * @param {String} name A task name
      * @return {Task|null} result
      */
-    module.getValidTaskObject = function(name) {
-        var taskObj = module.getTaskObject(name);
+    var getValidTaskObject = function(name) {
+        var taskObj = getTaskObject(name);
 
         if (taskObj && taskObj.getTaskStatus()) {
             return taskObj;
@@ -688,7 +683,7 @@ Dispatcher = (function() {
      * @param {Object} viewsProps A dictionary with views and theirs
      * properties
      */
-    module.storeViewsProps = function(newViewsProps) {
+    var storeViewsProps = function(newViewsProps) {
         viewsProps = Utils.mergeRecursive(viewsProps, newViewsProps);
     };
 
@@ -703,7 +698,7 @@ Dispatcher = (function() {
      * @param {String} view Name of view
      *
      */
-    module.storeConfirmedView = function(view) {
+    var storeConfirmedView = function(view) {
         if (view) {
             confirmedViews.push(view);
         }
@@ -719,7 +714,7 @@ Dispatcher = (function() {
      *
      * @param {Object} graphicObj Real graphic object
      */
-    module.storeGraphicObject = function(graphicObj) {
+    var storeGraphicObject = function(graphicObj) {
         if (graphicObj) {
             return drownGraphics.push(graphicObj);
         } else {
@@ -735,7 +730,7 @@ Dispatcher = (function() {
      * @param {String} filename name of the file that contains data
      * @return {Object} data for the specified task
      */
-    module.requestData4Compare = function(specName, filename) {
+    var requestData4Compare = function(specName, filename) {
         if (data4Compare === null && filename !== null) {
             loadData4Compare(filename);
         }
@@ -782,7 +777,7 @@ Dispatcher = (function() {
      *
      * @param {String} specName name of the task
      */
-    module.addSpec4Saving = function(specName) {
+    var addSpec4Saving = function(specName) {
         if (specName) {
             return specs2Save4Compare.push(specName);
         }
@@ -833,7 +828,7 @@ Dispatcher = (function() {
 
         specs2Save4Compare.forEach(function(item) {
             data2Save.specs2compare[item + '_external'] =
-                module.getTaskObject(item).getDataSets();
+                getTaskObject(item).getDataSets();
         });
 
         //DEBUG_START
@@ -871,7 +866,7 @@ Dispatcher = (function() {
         }
 
         Object.keys(tasksHash).forEach(function(item) {
-            var taskObj = module.getTaskObject(item);
+            var taskObj = getTaskObject(item);
 
             if (taskObj.isSavingRequired() === false) {
                 return false;
@@ -887,6 +882,17 @@ Dispatcher = (function() {
     };
     //DEBUG_STOP
 
-    return module;
-
+    return {
+        'addMessage':          addMessage,
+        'addSpec4Saving':      addSpec4Saving,
+        'getTaskObject':       getTaskObject,
+        'getValidTaskObject':  getValidTaskObject,
+        'listMessageTypes':    listMessageTypes,
+        'process':             process,
+        'requestData4Compare': requestData4Compare,
+        'registerNewTask':     registerNewTask,
+        'storeConfirmedView':  storeConfirmedView,
+        'storeGraphicObject':  storeGraphicObject,
+        'storeViewsProps':     storeViewsProps
+    };
 })();
