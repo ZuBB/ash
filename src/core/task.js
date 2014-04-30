@@ -1220,7 +1220,7 @@ Task.prototype.getGraphicColor = function(index) {
             //DEBUG_START
             _w('random color was used for graphic');
             //DEBUG_STOP
-            graphicColor = createRandomColor();
+            graphicColor = Utils.createRandomColor();
     }
 
     return graphicColor;
