@@ -277,6 +277,10 @@ Dispatcher = (function() {
      */
     var runRegisteredTasks = function() {
         //DEBUG_START
+        if (Object.keys(tasksHash).length === 0) {
+            return;
+        }
+
         var specs  = Object.keys(tasksHash);
         var sortFn = function(a, b) { return a.length - b.length; };
         var padLen = Math.ceil(specs.sort(sortFn).last().length * 1.4);
