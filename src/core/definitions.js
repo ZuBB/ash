@@ -217,7 +217,7 @@ Script.dumpTasksData = typeof $DUMP_TASKS_DATA$ === 'undefined' ? false : $DUMP_
 /**
  * @property {Object} messagePrintProps = {}
  *
- * Contains dictionary of key/pair values that define message types and
+ * Contains dictionary of key/pair values that define message types and theirs
  * attributes for printing message headers and messages itself
  *
  * Each key is an internal name of the message type.
