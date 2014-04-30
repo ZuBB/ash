@@ -3,15 +3,9 @@
  *
  * Manages process of script run
  *
- * All methods except `registerNewTask` of this class are called
- * automatically.
- *
- * Below are two things that you really should be aware of their existance:
- *
- * - {@link Dispatcher#registerNewTask} method. Tracks tasks that should
- *   be processed
- * - {@link Dispatcher#createAddMessageMethods} dynamically creates
- *   methods that can be used for collecting messages that need to be printed.
+ * All methods except {@link Dispatcher#registerNewTask} of this class
+ * are called automatically. Its single method which really require
+ * your attention at start.
  *
  * @class
  */
@@ -77,7 +71,7 @@ Dispatcher = (function() {
      *
      * A dictionary for all type of messages will be collected during
      * script execution. For details see
-     * {@Dispatcher#createAddMessageMethods} method
+     * {@Dispatcher#createMessageStorage} method
      */
     var messageTypes = null;
 
@@ -204,7 +198,7 @@ Dispatcher = (function() {
 
         announce();
         Profiler.start('main');
-        createAddMessageMethods();
+        createMessageStorage();
         startProgressBar();
 
         if (isScriptAllowedToRun()) {
@@ -321,93 +315,74 @@ Dispatcher = (function() {
     };
 
     /**
-     * Creates infractructure for adding different kind of messages
-     *
-     * We create 'add' methods for message types that are defined in
-     * {@link Script#messagePrintProps property}. Lets show how this magic
-     * works with help of example
-     *
-     * Lets assume `Script.messagePrintProps` property set to next value
-     *
-     * ```
-     * Script.messagePrintProps = {
-     *     'message': {
-     *         'headerControlChars': {
-     *             'colors': [0xFFFFFF, 0xFF0000]
-     *         }
-     *     }
-     * };
-     * ```
-     *
-     * With that definition this new method (shown below) will be
-     * **dynamically addded** to Dispatcher class.
-     *
-     * ```
-     * Dispatcher.addMessage = function(message) {
-     *     if (typeof message === 'string') {
-     *         message = [message];
-     *     }
-     *
-     *     if (Array.isArray(message)) {
-     *         message = {'message': message};
-     *     }
-     *
-     *     if (!message || message.constructor !== Object) {
-     *         return null;
-     *     } else {
-     *         messageTypes[item].messages.push(message);
-     *     }
-     * };
-     * ```
-     *
-     * With this newly added method (that will publicibly accessible) you
-     * will be able to add messages that should be printed at the end of
-     * script run to special storage. When script is near its finish
-     * {@link Dispatcher#printMessages} method will print all of them
-     * with attributes you defined (colors, links, etc).
-     *
-     * All this magic is happened for all type of messages that are present
-     * in * `Script#messagePrintProps` property
+     * Creates storage different kind of messages listed in
+     * {@link Script#messagePrintProps} property.
      *
      * @private
      */
-    var createAddMessageMethods = function() {
+    var createMessageStorage = function() {
         messageTypes = JSON.parse(JSON.stringify(Script.messagePrintProps));
 
-        var addMessageFunc = function(item) {
-            return function(message) {
-                if (typeof message === 'string') {
-                    message = [message];
-                }
-
-                if (Array.isArray(message)) {
-                    message = {'message': message};
-                }
-
-                if (!message || message.constructor !== Object) {
-                    //DEBUG_START
-                    _e(message, 'addMessageFunc got invalid value');
-                    //DEBUG_STOP
-                    return null;
-                } else {
-                    messageTypes[item].messages.push(message);
-                }
-            };
-        };
-
-        //DEBUG_START
-        _p('');
-        //DEBUG_STOP
         for (var item in messageTypes) {
             if (messageTypes.hasOwnProperty(item)) {
                 messageTypes[item].messages = [];
-                var addMethodName = 'add' + item.capitalize();
-                //DEBUG_START
-                _d(addMethodName, 'Next method is going to be added');
-                //DEBUG_STOP
-                module[addMethodName] = addMessageFunc(item);
             }
         }
+    };
+
+    /**
+     * Lists verified message types
+     *
+     * @return {Array} known and verified message types
+     */
+    module.listMessageTypes = function() {
+        return Object.keys(messageTypes);
+    };
+
+    /**
+     * Method that stores all type of messages that are being produced
+     * by tasks
+     *
+     * Message types are defined in {@link Script#messagePrintProps property}.
+     *
+     * @param {String} [messageType] name of the message type
+     * @param {String|Array|Object} [message] message that should be printed.
+     * Can be passed in 3 acceptable types
+     *
+     * @return {Boolean} result of the action execution
+     */
+    module.addMessage = function(messageType, message) {
+        if (typeof messageType !== 'string' || messageType.length === 0) {
+            //DEBUG_START
+            _e('[Dispatcher::addMessage]: invalid message type');
+            //DEBUG_STOP
+            return false;
+        }
+
+        if (messageTypes.hasOwnProperty(messageType) === false) {
+            //DEBUG_START
+            _e('[Dispatcher::addMessage]: unknown message type');
+            //DEBUG_STOP
+            return false;
+        }
+
+        if (typeof message === 'string') {
+            message = [message];
+        }
+
+        if (Array.isArray(message)) {
+            message = {'message': message};
+        }
+
+        if (!message || message.constructor !== Object) {
+            //DEBUG_START
+            _e('[Dispatcher::addMessage]: message is invalid object');
+            //DEBUG_STOP
+            return false;
+        }
+
+        messageTypes[messageType].messages.push(message);
+        return true;
     };
 
     /**
@@ -426,13 +401,15 @@ Dispatcher = (function() {
      * ```
      *
      * Each message can be also automatically translated by this function.
-     * To get this working you need to have line with key you passed in 'add'
-     * method (added by {@link Dispatcher#createAddMessageMethods} method)
-     * in your localization resource file. See next example
+     * To get this working you need to have line with key you passed
+     * as 2nd param in * {@link Dispatcher#addMessage} method in your
+     * localization resource file. See next example
      *
      * ```
-     * // here we add message
-     * Dispatcher.addMessage('my.super.key');
+     * ...
+     * // somewhere in your task
+     * this.addSuccess('my.super.key');
+     * ...
      * ```
      *
      * To get it automatically translated before printing you need to add next

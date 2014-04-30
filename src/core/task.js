@@ -437,6 +437,7 @@ Task.prototype.updateStatus = function(taskStatus) {
  * @private
  */
 Task.prototype.process = function() {
+    this.createAddMessageMethods();
     this.createGetSetPropMethods();
     this.checkDataSource();
   //this.checkForbiddenChannel();
@@ -1639,6 +1640,54 @@ Task.prototype.createGetSetPropMethods = function() {
     this.defaultKeys.forEach(function(prop) {
         this['add' + prop.capitalize()] = addValueFunc(this, prop);
         this['get' + prop.capitalize()] = getValueFunc(this, prop);
+    }, this);
+};
+
+/**
+ * This method creates infractructure for adding different kind of messages.
+ *
+ * Message types are defined in {@link Script#messagePrintProps} property.
+ * Lets show how this magic works with help of next example
+ *
+ * Lets assume `Script.messagePrintProps` property set to next value
+ *
+ * ```
+ * Script.messagePrintProps = {
+ *     'warning': {
+ *         'headerControlChars': {
+ *             'colors': [0xFFFFFF, 0xFF0000]
+ *         }
+ *     }
+ * };
+ * ```
+ *
+ * With that definition this new method (shown below) will be
+ * **dynamically addded** to the inside of Task class.
+ *
+ * ```
+ * var task = new Task();
+ * task.addWarning = function(message) {
+ *     Dispatcher.addMessage('warning', message);
+ * };
+ * ```
+ *
+ * With this newly added method you will be able to add messages
+ * (that will be printed at the end of script run) to special storage.
+ * When script is near its finish {@link Dispatcher#printMessages} method
+ * will print all of them with attributes you defined (colors, links, etc).
+ *
+ * All this magic is happened for all type of messages that are present
+ * in * `Script#messagePrintProps` property
+ */
+Task.prototype.createAddMessageMethods = function() {
+    var addMessageFunc = function(item) {
+        return function(message) {
+            Dispatcher.addMessage(item, message);
+        };
+    };
+
+    Dispatcher.listMessageTypes().forEach(function(item) {
+        this['add' + item.capitalize()] = addMessageFunc(item);
     }, this);
 };
 
