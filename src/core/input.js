@@ -145,53 +145,60 @@ Input = (function() {
         'int': {
             // we use any negative value for sending signal that
             // current option should not be used at all
-            'defaultValue': function(udv) {
-                return udv || -1;
+            'initialValue': function(value) {
+                return value || DATATYPE.int.defaultValue();
+            },
+            'defaultValue': function() {
+                return -1;
             },
             'runtimeValue': function(rawValue) {
                 var parsedValue = parseInt(rawValue, 10);
-                return isNaN(parsedValue) ? rawValue : parsedValue;
+                return Utils.isNumberInvalid(parsedValue) ?
+                    DATATYPE.int.defaultValue() : parsedValue;
             }
         },
         'float': {
-            // we forced to append a fractional part to have possibility
-            // to pass fractional values into graph scripts
-            'defaultValue': function(udv) {
-                return udv || -1.1;
+            'initialValue': function(value) {
+                return value || DATATYPE.float.defaultValue();
+            },
+            'defaultValue': function() {
+                // we forced to append a fractional part to have possibility
+                // to pass fractional values into graph scripts
+                return  -1.1;
             },
             'runtimeValue': function(rawValue) {
                 var parsedValue = parseFloat(rawValue);
-                return isNaN(parsedValue) ? rawValue : parsedValue;
+                return Utils.isNumberInvalid(parsedValue) ?
+                    DATATYPE.float.defaultValue() : parsedValue;
             }
         },
         'string': {
-            // string
-            'defaultValue': function(udv) {
-                return udv || '';
+            'initialValue': function(value) {
+                return value || DATATYPE.string.defaultValue();
+            },
+            'defaultValue': function() {
+                return '';
             },
             'runtimeValue': function(rawValue) {
-                return rawValue;
+                return rawValue.toString();
             }
         },
         'combobox': {
-            'initialValue': function(items) {
-                if (Array.isArray(items)) {
-                    return getComboContent(items);
-                } else {
-                    return '\n';
-                }
+            'initialValue': function(index, name) {
+                return getComboContent(inputFields[name].items, index);
             },
             'defaultValue': function() {
                 return 0;
             },
-            'runtimeValue': function(rawValue) {
-                return parseInt(rawValue, 10);
+            'runtimeValue': function(value) {
+                return value;
             }
         },
         'channel': {
-            'initialValue': function(/* udv */) {
-                // TODO take into account previously selected item
-                return getComboContent(Utils.range(Host.Channels + 1));
+            'initialValue': function(index) {
+                var items = Utils.range(Host.Channels + 1);
+                items.splice(0, 1, '---');
+                return getComboContent(items, index);
             },
             'defaultValue': function() {
                 // if input with type channel was not inited,
@@ -213,38 +220,72 @@ Input = (function() {
             }
         },
         'channels': {
-            'defaultValue': function(udv) {
-                return udv || '1,2';
+            'initialValue': function(value) {
+                return value || DATATYPE.channel.defaultValue();
+            },
+            'defaultValue': function() {
+                return '1, ';
             },
             'runtimeValue': function(rawValue) {
-                return rawValue.split(/\s?,\s?/).map(function(item) {
-                    return DATATYPE.channel.runtimeValue(item);
-                });
+                return rawValue.split(/\s?,\s?/)
+                    .map(function(item) {
+                        return DATATYPE.channel.runtimeValue(item);
+                    })
+                    .filter(function(item) { return item !== null; });
             }
         },
         'filescombo': {
-            'initialValue': function(dataDir) {
-                var stripText = '.json.txt';
-                var mapFunction = function(item) {
-                    if (item.indexOf(stripText) > 0) {
-                        return item.replace(stripText, '');
-                    } else {
-                        return item;
-                    }
-                };
+            'initialValue': function(index, name) {
+                var items = IO.getDirFiles(inputFields[name].path).unshift('');
 
-                return getComboContent(
-                    [''].concat(IO.getDirFiles(dataDir)).map(mapFunction)
-                );
+                if (inputFields[name].stripText) {
+                    items = items.map(function(item) {
+                        return item.replace(inputFields[name].stripText, '');
+                    });
+                }
+
+                return getComboContent(items, index);
             },
             'defaultValue': function() {
                 return null;
             },
-            'runtimeValue': function(udv, inputSpec) {
-                var path = IO.getSafeDirPath(inputSpec.value);
+            'runtimeValue': function(value, name) {
+                var path = IO.getSafeDirPath(inputFields[name].path);
                 // we need '-1' here because by default filescombo gets blank
                 // item as 1st item of combo so indexed are shifted a bit
-                return IO.buildPath(path, IO.getDirFiles(path)[udv - 1]);
+                return IO.buildPath(path, IO.getDirFiles(path)[value - 1]);
+            }
+        },
+        'toggle': {
+            'initialValue': function(index, name) {
+                return getComboContent(inputFields[name].items, index);
+            },
+            'defaultValue': function() {
+                return false;
+            },
+            'runtimeValue': function(value) {
+                return value === 1;
+            }
+        },
+        'front': {
+            'initialValue': function(index) {
+                var items = ['grow', 'down', 'any']
+                    .map(function(item) { return 'inputs.front.' + item; });
+
+                return getComboContent(items, index);
+            },
+            'defaultValue': function() {
+                return 0;
+            },
+            'runtimeValue': function(value) {
+                var result = null;
+
+                switch (value) {
+                    case 0:  result =  1; break;
+                    case 1:  result = -1; break;
+                    default: result =  0;
+                }
+                return result;
             }
         }
     };
@@ -254,6 +295,7 @@ Input = (function() {
     var dialogsContent = null;
 
     // internal
+    var fileDescriptor = Host.GetFileVD();
     var input2dialogMap = {};
     var dialogs = [];
 
@@ -263,7 +305,6 @@ Input = (function() {
      * @param {Number} index internal index of configuration
      * @return {Object} real configuration object
      *
-     * @member Input
      * @private
      */
     var createDialog = function(index) {
@@ -276,10 +317,10 @@ Input = (function() {
      * @param {Array} items List of combo items
      * @return {String} stringified combo content
      *
-     * @member Input
      * @private
      */
-    var getComboContent = function(items) {
+    var getComboContent = function(items/*, selectedIndex*/) {
+        // TODO take into account previously selected item
         if (items && Array.isArray(items) && items.length > 1) {
             var func = function(item) { return _t(item.toString()); };
             return items.map(func).join('\n');
@@ -291,16 +332,15 @@ Input = (function() {
     /**
      * Returns value for input
      *
-     * @param {String} inputName Internal name of the input
-     * @param {String} preferedMethod name of the method that should be used 
+     * @param {String} [inputName] Internal name of the input
+     * @param {String} [preferedMethod] name of the method that should be used 
+     * @param {String} [inputValue] value that was entered by user in prev session
      *  to retrieve value
      * @return {String|Number|null} default value for input name we passed
      *
-     * @member Input
      * @private
      */
-    var getValueByMethod = function(inputName, preferedMethod) {
-        var inputValue = inputFields[inputName].value;
+    var getValueByMethod = function(inputName, preferedMethod, inputValue) {
         var inputType = inputFields[inputName].type;
         var method = null;
 
@@ -313,33 +353,47 @@ Input = (function() {
                 [0];
         }
 
-        return DATATYPE[inputType][method](inputValue);
+        return DATATYPE[inputType][method](inputValue, inputName);
     };
 
     /**
      * Returns initial value for input
      *
-     * @param {String} name Internal name of the input
-     * @return {String|Number|null} default value for input name we passed
+     * @param {String} [name] Internal name of the input
+     * @return {String|Number|null} initial value for input name we passed
      *
-     * @member Input
      * @private
      */
     var getInitialValue = function(name) {
-        return getValueByMethod(name, 'initialValue');
+        var value = fileDescriptor.GetVariable(name, null);
+        return getValueByMethod(name, 'initialValue', value);
     };
 
     /**
      * Returns default value for input
      *
-     * @param {String} name Internal name of the input
+     * @param {String} [name] Internal name of the input
      * @return {String|Number|null} default value for input name we passed
      *
-     * @member Input
      * @private
      */
     var _getDefaultValue = function(name) {
-        return getValueByMethod(name, 'defaultValue');
+        var value = inputFields[name].value;
+        return getValueByMethod(name, 'defaultValue', value || null);
+    };
+
+    /**
+     * Returns runtime value for input
+     *
+     * @param {String} [name] Internal name of the input
+     * @param {String|Number} [value] raw value of the input
+     * @return {String|Number|Boolean} runtime value for input name we passed
+     *
+     * @private
+     */
+    var getRuntimeValue = function(name, value) {
+        fileDescriptor.SetVariable(name, value);
+        return getValueByMethod(name, 'runtimeValue', value);
     };
 
     /**
@@ -348,11 +402,10 @@ Input = (function() {
      * @param {String} name Internal name of the input
      * @return {Boolean} localized name
      *
-     * @member Input
      * @private
      */
     var isInputNameKnown = function(name) {
-        if (!name) {
+        if (typeof name !== 'string' || name.length === 0) {
             return false;
         }
 
@@ -377,7 +430,6 @@ Input = (function() {
      * @param {String} name Internal name of the input
      * @return {String} localized name
      *
-     * @member Input
      * @private
      */
     var getInputI18Name = function(name) {
@@ -396,8 +448,6 @@ Input = (function() {
      * Content of the dialogs is based on content of
      * {@link Script#dialogsContent} property. Specs of input fields are
      * taken from {@link Script#inputFields} property
-     *
-     * @member Input
      */
     var createConfiguration = function() {
         //DEBUG_START
@@ -476,8 +526,6 @@ Input = (function() {
      *
      * @param {String} name Internal name of the input
      * @return {Object} result
-     *
-     * @member Input
      */
     var getValue = function(name) {
         if (!isInputNameKnown(name)) {
@@ -499,9 +547,7 @@ Input = (function() {
         var rawValue = dialogs[index].GetValue(getInputI18Name(name));
 
         if (inputFields[name].type) {
-            return DATATYPE[inputFields[name].type].runtimeValue(
-                rawValue, inputFields[name]
-            );
+            return getRuntimeValue(name, rawValue);
         } else {
             //DEBUG_START
             _i(name, 'getting value of input that was not inited');
@@ -514,8 +560,6 @@ Input = (function() {
      * Returns names of inputs that were shown to user
      *
      * @return {Array} set of internal names of inputs
-     *
-     * @member Input
      */
     var getFilledInputs = function() {
         return Object.keys(input2dialogMap);
@@ -524,10 +568,8 @@ Input = (function() {
     /**
      * Returns default value for input. Wrapper for private API call
      *
-     * @param {String} name Internal name of the input
+     * @param {String} [name] Internal name of the input
      * @return {String|Number|null} default value for input name we passed
-     *
-     * @member Input
      */
     var getDefaultValue = function(name) {
         return _getDefaultValue(name);
