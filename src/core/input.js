@@ -330,33 +330,6 @@ Input = (function() {
     };
 
     /**
-     * Returns value for input
-     *
-     * @param {String} [inputName] Internal name of the input
-     * @param {String} [preferedMethod] name of the method that should be used 
-     * @param {String} [inputValue] value that was entered by user in prev session
-     *  to retrieve value
-     * @return {String|Number|null} default value for input name we passed
-     *
-     * @private
-     */
-    var getValueByMethod = function(inputName, preferedMethod, inputValue) {
-        var inputType = inputFields[inputName].type;
-        var method = null;
-
-        if (DATATYPE[inputType].hasOwnProperty(preferedMethod)) {
-            method = preferedMethod;
-        } else {
-            method = Object.keys(DATATYPE[inputType])
-                .filter(function(i) { return i !== 'runtimeValue'; })
-                .filter(function(i) { return i !== preferedMethod; })
-                [0];
-        }
-
-        return DATATYPE[inputType][method](inputValue, inputName);
-    };
-
-    /**
      * Returns initial value for input
      *
      * @param {String} [name] Internal name of the input
@@ -366,7 +339,8 @@ Input = (function() {
      */
     var getInitialValue = function(name) {
         var value = fileDescriptor.GetVariable(name, null);
-        return getValueByMethod(name, 'initialValue', value);
+        var inputType = inputFields[name].type;
+        return DATATYPE[inputType].initialValue(value, name);
     };
 
     /**
@@ -379,7 +353,8 @@ Input = (function() {
      */
     var _getDefaultValue = function(name) {
         var value = inputFields[name].value;
-        return getValueByMethod(name, 'defaultValue', value || null);
+        var inputType = inputFields[name].type;
+        return DATATYPE[inputType].defaultValue(value, name);
     };
 
     /**
@@ -393,7 +368,8 @@ Input = (function() {
      */
     var getRuntimeValue = function(name, value) {
         fileDescriptor.SetVariable(name, value);
-        return getValueByMethod(name, 'runtimeValue', value);
+        var inputType = inputFields[name].type;
+        return DATATYPE[inputType].runtimeValue(value, name);
     };
 
     /**
