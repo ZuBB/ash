@@ -203,7 +203,8 @@ Script.version = '$VERSION$';
  *
  * In other case you can always redefine it manually in "user's file"
  */
-Script.name = '$SCRIPT$';
+Script.name = '$SCRIPT$'.indexOf('SCRIPT') > 0 ?
+    Host.CurPath.match(/([^\\]+)\\?$/)[1] : '$SCRIPT$';
 
 
 /**
