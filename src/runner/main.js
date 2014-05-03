@@ -1,4 +1,4 @@
-if (Host.DataType === ('$DATATYPE$'.indexOf('$') > -1 ? '$DATATYPE$' : 'ANA')) {
+if (Host.DataType === ('$DATATYPE$'.indexOf('$') > -1 ? 'ANA' : '$DATATYPE$')) {
     // function that does all the magic
     Dispatcher.process();
 } else {
