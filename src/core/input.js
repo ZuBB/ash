@@ -338,9 +338,10 @@ Input = (function() {
      * @private
      */
     var getInitialValue = function(name) {
-        var value = fileDescriptor.GetVariable(name, null);
+        var value1 = fileDescriptor.GetVariable(name, null);
+        var value2 = inputFields[name].value;
         var inputType = inputFields[name].type;
-        return DATATYPE[inputType].initialValue(value, name);
+        return DATATYPE[inputType].initialValue(value1 || value2 || null, name);
     };
 
     /**
