@@ -295,7 +295,8 @@ Input = (function() {
     var dialogsContent = null;
 
     // internal
-    var fileDescriptor = Host.GetFileVD();
+    // TODO variables temporary commented
+    //var fileDescriptor = Host.GetFileVD();
     var input2dialogMap = {};
     var dialogs = [];
 
@@ -338,10 +339,11 @@ Input = (function() {
      * @private
      */
     var getInitialValue = function(name) {
-        var value1 = fileDescriptor.GetVariable(name, null);
-        var value2 = inputFields[name].value;
         var inputType = inputFields[name].type;
-        return DATATYPE[inputType].initialValue(value1 || value2 || null, name);
+        // TODO variables temporary commented
+        var value = /*fileDescriptor.GetVariable(name, null) || */
+            inputFields[name].value || null;
+        return DATATYPE[inputType].initialValue(value, name);
     };
 
     /**
@@ -368,7 +370,8 @@ Input = (function() {
      * @private
      */
     var getRuntimeValue = function(name, value) {
-        fileDescriptor.SetVariable(name, value);
+        // TODO variables temporary commented
+        //fileDescriptor.SetVariable(name, value);
         var inputType = inputFields[name].type;
         return DATATYPE[inputType].runtimeValue(value, name);
     };
