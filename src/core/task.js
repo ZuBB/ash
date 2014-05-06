@@ -1471,7 +1471,7 @@ Task.prototype.createDataSet = function(forcedKeys) {
  */
 Task.prototype.addDataSet = function(dataSet) {
     // check if dataSet is hash
-    if (dataSet.constructor === Object) {
+    if (dataSet && dataSet.constructor === Object) {
         // check if dataSet is not empty (has at least 1 key)
         if (Object.keys(dataSet).empty() === false) {
             this.graphics.push(dataSet);
