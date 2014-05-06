@@ -146,7 +146,7 @@ Input = (function() {
             // we use any negative value for sending signal that
             // current option should not be used at all
             'initialValue': function(value) {
-                return value || DATATYPE.int.defaultValue();
+                return value || DATATYPE['int'].defaultValue();
             },
             'defaultValue': function(value) {
                 return value || -1;
@@ -154,12 +154,12 @@ Input = (function() {
             'runtimeValue': function(rawValue) {
                 var parsedValue = parseInt(rawValue, 10);
                 return Utils.isNumberInvalid(parsedValue) ?
-                    DATATYPE.int.defaultValue() : parsedValue;
+                    DATATYPE['int'].defaultValue() : parsedValue;
             }
         },
         'float': {
             'initialValue': function(value) {
-                return value || DATATYPE.float.defaultValue();
+                return value || DATATYPE['float'].defaultValue();
             },
             'defaultValue': function(value) {
                 // we forced to append a fractional part to have possibility
@@ -169,7 +169,7 @@ Input = (function() {
             'runtimeValue': function(rawValue) {
                 var parsedValue = parseFloat(rawValue);
                 return Utils.isNumberInvalid(parsedValue) ?
-                    DATATYPE.float.defaultValue() : parsedValue;
+                    DATATYPE['float'].defaultValue() : parsedValue;
             }
         },
         'string': {
