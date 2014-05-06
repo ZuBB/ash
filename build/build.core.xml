@@ -94,7 +94,7 @@
             <fileset dir="src/resources" includes="lang-*.properties"/>
             <sequential>
                 <propertyregex override="yes" input="@{file}"
-                    regexp="-([a-z]{2})." property="LANG" select="\1"/>
+                    regexp="lang-([a-z]{2})." property="LANG" select="\1"/>
 
                 <propertyregex override="yes" input="@{file}"
                     regexp="\.(\d+)\." property="LANG_CODE" select="\1"/>
