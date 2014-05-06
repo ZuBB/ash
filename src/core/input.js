@@ -148,8 +148,8 @@ Input = (function() {
             'initialValue': function(value) {
                 return value || DATATYPE.int.defaultValue();
             },
-            'defaultValue': function() {
-                return -1;
+            'defaultValue': function(value) {
+                return value || -1;
             },
             'runtimeValue': function(rawValue) {
                 var parsedValue = parseInt(rawValue, 10);
@@ -161,10 +161,10 @@ Input = (function() {
             'initialValue': function(value) {
                 return value || DATATYPE.float.defaultValue();
             },
-            'defaultValue': function() {
+            'defaultValue': function(value) {
                 // we forced to append a fractional part to have possibility
                 // to pass fractional values into graph scripts
-                return  -1.1;
+                return value || -1.1;
             },
             'runtimeValue': function(rawValue) {
                 var parsedValue = parseFloat(rawValue);
@@ -176,8 +176,8 @@ Input = (function() {
             'initialValue': function(value) {
                 return value || DATATYPE.string.defaultValue();
             },
-            'defaultValue': function() {
-                return '';
+            'defaultValue': function(value) {
+                return value || '';
             },
             'runtimeValue': function(rawValue) {
                 return rawValue.toString();
