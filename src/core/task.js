@@ -1253,11 +1253,11 @@ Task.prototype.getGraphicVisibility = function(index) {
     case this.hiddenGraphics === null:
         result = 1;
         break;
-    default:
         //DEBUG_START
+    default:
         _e('invalid visibility token. graphic will be visible');
-        //DEBUG_STOP
         result = 1;
+        //DEBUG_STOP
     }
 
     return result;
