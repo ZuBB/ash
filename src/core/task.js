@@ -546,7 +546,7 @@ Task.prototype.isDependenciesResolved = function() {
 
         if (!depObj) {
             //DEBUG_START
-            _e(depItem, 'Next dependency was not resolved');
+            _w(depItem, 'Next dependency was not resolved');
             //DEBUG_STOP
             return false;
         }
@@ -584,7 +584,7 @@ Task.prototype.isForbiddenDependenciesResolved = function() {
         depName = depName.slice(1);
         if (Dispatcher.getValidTaskObject(depName)) {
             //DEBUG_START
-            _e(depName, 'Next dependency should not be resolved');
+            _w(depName, 'Next dependency should not be resolved');
             //DEBUG_STOP
             return false;
         }
@@ -612,7 +612,7 @@ Task.prototype.isSoftDependenciesResolved = function() {
     }
 
     //DEBUG_START
-    _e('None soft dependency was resolved');
+    _w('None soft dependency was resolved');
     //DEBUG_STOP
     return false;
 };
