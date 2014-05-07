@@ -24,22 +24,17 @@
  * // in dialog(s) for this script
  * Script.inputFields = {
  *     'input1': {
- *         type: 'int'
+ *         type: 'INT'
  *     },
  *     'input2': {
- *         type: 'float'
+ *         type: 'FLOAT'
  *     },
  *     'input3': {
- *         type: 'string'
+ *         type: 'STRING'
  *     },
  *     'input4': {
- *         type: 'combobox',
- *         value: ['inputs.combo.no', 'inputs.combo.yes']
- *     },
- *     'input5': {
- *         value: function() {
- *             return 'a' + 'b';
- *         }
+ *         type: 'DROPDOWN',
+ *         value: ['inputs.dropdown.no', 'inputs.dropdown.yes']
  *     }
  * };
  * ```
@@ -60,26 +55,22 @@
  *
  * For inputs you can specify one of these data types:
  *
- * - `int`
- * - `float`
- * - `string`
- * - `combobox` this type of input will have form of dropdown with items that
+ * - `INT`
+ * - `FLOAT`
+ * - `STRING`
+ * - `DROPDOWN` this type of input will have form of dropdown with items that
  *   **must** be specified as `value` property
- * - `channel` also will look like dropdown. Content of it is created
+ * - `CHANNEL` also will look like dropdown. Content of it is created
  *   automatically. passed `value` property of this input will be ignored
- * - `channels` same as *channel*. Channel numbers should be separated with
+ * - `CHANNELS` same as *channel*. Channel numbers should be separated with
  *   comma (`,`)
- * - `filescombo` produces combo with files from specified directory as items
+ * - `FILESCOMBO` produces dropdown list with files from specified directory as items
  *
  * As for values here you have next options:
  *
  * - `Number` - any of integer of float numbers
  * - `String` - any string
- * - `Array` - as we already said this is for combobox
- * - `Function` - allows to define default value) that will be dynamically
- *   calculated
- * - **CONSTANT**s. You can even set default value to previously defined
- *   constant from `src/app/constants.js` file
+ * - `Array` - as we already said this is for dropdown
  *
  *
  * Content of dialogs may be (re)defined as value of `Script.dialogsContent`
@@ -142,63 +133,72 @@ Input = (function() {
     var SEPARATOR = 'SEPARATOR';
     // defaults
     var DATATYPE = {
-        'int': {
+        'INT': {
             // we use any negative value for sending signal that
             // current option should not be used at all
             'initialValue': function(value) {
-                return value || DATATYPE['int'].defaultValue();
+                var defaultValue = DATATYPE.INT.defaultValue();
+                return typeof value === 'undefined' ? defaultValue : value;
             },
             'defaultValue': function(value) {
-                return value || -1;
+                return typeof value === 'undefined' ? 0 : value;
             },
             'runtimeValue': function(rawValue) {
                 var parsedValue = parseInt(rawValue, 10);
                 return Utils.isNumberInvalid(parsedValue) ?
-                    DATATYPE['int'].defaultValue() : parsedValue;
+                    DATATYPE.INT.defaultValue() : parsedValue;
             }
         },
-        'float': {
+        'FLOAT': {
             'initialValue': function(value) {
-                return value || DATATYPE['float'].defaultValue();
+                var defaultValue = DATATYPE.FLOAT.defaultValue();
+                return typeof value === 'undefined' ? defaultValue : value;
             },
             'defaultValue': function(value) {
                 // we forced to append a fractional part to have possibility
                 // to pass fractional values into graph scripts
-                return value || -1.1;
+                return typeof value === 'undefined' ? 0 : value;
             },
             'runtimeValue': function(rawValue) {
                 var parsedValue = parseFloat(rawValue);
                 return Utils.isNumberInvalid(parsedValue) ?
-                    DATATYPE['float'].defaultValue() : parsedValue;
+                    DATATYPE.FLOAT.defaultValue() : parsedValue;
             }
         },
-        'string': {
+        'STRING': {
             'initialValue': function(value) {
-                return value || DATATYPE.string.defaultValue();
+                var defaultValue = DATATYPE.STRING.defaultValue();
+                return typeof value === 'undefined' ? defaultValue : value;
             },
             'defaultValue': function(value) {
-                return value || '';
+                return typeof value === 'undefined' ? '' : value;
             },
             'runtimeValue': function(rawValue) {
                 return rawValue.toString();
             }
         },
-        'combobox': {
+        'DROPDOWN': {
             'initialValue': function(index, name) {
-                return getComboContent(inputFields[name].items, index);
+                return getDropDownContent(inputFields[name].items, index);
             },
             'defaultValue': function() {
                 return 0;
             },
-            'runtimeValue': function(value) {
-                return value;
+            'runtimeValue': function(value, name) {
+                if (inputFields[name].hasOwnProperty('values')) {
+                    return inputFields[name].values[value];
+                } else if (inputFields[name].hasOwnProperty('items')) {
+                    return inputFields[name].items[value];
+                } else {
+                    return value;
+                }
             }
         },
-        'channel': {
+        'CHANNEL': {
             'initialValue': function(index) {
                 var items = Utils.range(Host.Channels + 1);
                 items.splice(0, 1, '---');
-                return getComboContent(items, index);
+                return getDropDownContent(items, index);
             },
             'defaultValue': function() {
                 // if input with type channel was not inited,
@@ -219,7 +219,7 @@ Input = (function() {
                 return result ? channel : null;
             }
         },
-        'channels': {
+        'CHANNELS': {
             'initialValue': function(value) {
                 return value || DATATYPE.channel.defaultValue();
             },
@@ -234,7 +234,7 @@ Input = (function() {
                     .filter(function(item) { return item !== null; });
             }
         },
-        'filescombo': {
+        'FILESDROPDOWN': {
             'initialValue': function(index, name) {
                 var items = IO.getDirFiles(inputFields[name].path).unshift('');
 
@@ -244,48 +244,27 @@ Input = (function() {
                     });
                 }
 
-                return getComboContent(items, index);
+                return getDropDownContent(items, index);
             },
             'defaultValue': function() {
                 return null;
             },
             'runtimeValue': function(value, name) {
                 var path = IO.getSafeDirPath(inputFields[name].path);
-                // we need '-1' here because by default filescombo gets blank
-                // item as 1st item of combo so indexed are shifted a bit
+                // we need '-1' here because by default filesdropdown gets blank
+                // item as 1st item of dropdown so indexed are shifted a bit
                 return IO.buildPath(path, IO.getDirFiles(path)[value - 1]);
             }
         },
-        'toggle': {
+        'TOGGLE': {
             'initialValue': function(index, name) {
-                return getComboContent(inputFields[name].items, index);
+                return getDropDownContent(inputFields[name].items, index);
             },
             'defaultValue': function() {
                 return false;
             },
             'runtimeValue': function(value) {
                 return value === 1;
-            }
-        },
-        'front': {
-            'initialValue': function(index) {
-                var items = ['grow', 'down', 'any']
-                    .map(function(item) { return 'inputs.front.' + item; });
-
-                return getComboContent(items, index);
-            },
-            'defaultValue': function() {
-                return 0;
-            },
-            'runtimeValue': function(value) {
-                var result = null;
-
-                switch (value) {
-                    case 0:  result =  1; break;
-                    case 1:  result = -1; break;
-                    default: result =  0;
-                }
-                return result;
             }
         }
     };
@@ -313,14 +292,14 @@ Input = (function() {
     };
 
     /**
-     * Returns content ready to be set as combo items
+     * Returns content ready to be set as dropdown items
      *
-     * @param {Array} items List of combo items
-     * @return {String} stringified combo content
+     * @param {Array} items List of dropdown items
+     * @return {String} stringified dropdown content
      *
      * @private
      */
-    var getComboContent = function(items/*, selectedIndex*/) {
+    var getDropDownContent = function(items/*, selectedIndex*/) {
         // TODO take into account previously selected item
         if (items && Array.isArray(items) && items.length > 1) {
             var func = function(item) { return _t(item.toString()); };
