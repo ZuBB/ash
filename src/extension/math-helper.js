@@ -131,7 +131,7 @@ MathHelper.smoothData = function(srcObj, passCount, returnAll) {
     var dataObj = Utils.mergeRecursive({}, srcObj);
     var timeObj = Utils.createDataSetStub();
     var _1axis = Script.defaultKeys[0];
-    var _2axis = Script.defaultKeys[1];
+    //var _2axis = Script.defaultKeys[1];
     var tmpObj1 = null;
     var results = [];
 
@@ -151,9 +151,11 @@ MathHelper.smoothData = function(srcObj, passCount, returnAll) {
     if (returnAll) {
         return results;
     } else {
-        srcObj[_1axis] = dataObj[_1axis];
-        srcObj[_2axis] = dataObj[_2axis];
-        return srcObj;
+        // TODO find better solution for this
+        //srcObj[_1axis] = dataObj[_1axis];
+        //srcObj[_2axis] = dataObj[_2axis];
+        //return srcObj;
+        return dataObj;
     }
 };
 
