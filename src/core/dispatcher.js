@@ -285,6 +285,11 @@ Dispatcher = (function() {
         var sortFn = function(a, b) { return a.length - b.length; };
         var padLen = Math.ceil(specs.sort(sortFn).last().length * 1.4);
         var length = specs.length.toString();
+        var printStatus = function(taskStatus) {
+            var message = taskStatus ? '+' : '-';
+            var color = taskStatus ? 0x44DD44 : 0xDD4444;
+            _rl(message, {colors: [0, color]});
+        }
         _rl('');
         //DEBUG_STOP
 
@@ -305,7 +310,7 @@ Dispatcher = (function() {
             specObj.process();
 
             //DEBUG_START
-            _rl(specObj.getTaskStatus() ? '+' : '-');
+            printStatus(specObj.getTaskStatus());
             _i('>'.repeat(15) + ' Done! Passed (ms) ' + Profiler.stop(specName));
             //DEBUG_STOP
 
