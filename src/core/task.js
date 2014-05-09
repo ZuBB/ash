@@ -667,9 +667,7 @@ Task.prototype.getDepDataSet = function(index) {
  * @ignore
  */
 Task.prototype.getActiveSoftDependency = function() {
-    var depName = null;
-
-    for (var ii = 0; ii < this.softDependencies.length; ii++) {
+    for (var ii = 0, depName; ii < this.softDependencies.length; ii++) {
         depName = this.softDependencies[ii];
         if (Dispatcher.getValidTaskObject(depName)) {
             return Dispatcher.getValidTaskObject(depName);
