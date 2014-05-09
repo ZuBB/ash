@@ -134,11 +134,8 @@ Input = (function() {
     // defaults
     var DATATYPE = {
         'INT': {
-            // we use any negative value for sending signal that
-            // current option should not be used at all
             'initialValue': function(value) {
-                var defaultValue = DATATYPE.INT.defaultValue();
-                return typeof value === 'undefined' ? defaultValue : value;
+                return value === null ? DATATYPE.INT.defaultValue() : value;
             },
             'defaultValue': function(value) {
                 return typeof value === 'undefined' ? 0 : value;
@@ -151,12 +148,9 @@ Input = (function() {
         },
         'FLOAT': {
             'initialValue': function(value) {
-                var defaultValue = DATATYPE.FLOAT.defaultValue();
-                return typeof value === 'undefined' ? defaultValue : value;
+                return value === null ? DATATYPE.FLOAT.defaultValue() : value;
             },
             'defaultValue': function(value) {
-                // we forced to append a fractional part to have possibility
-                // to pass fractional values into graph scripts
                 return typeof value === 'undefined' ? 0 : value;
             },
             'runtimeValue': function(rawValue) {
@@ -167,8 +161,7 @@ Input = (function() {
         },
         'STRING': {
             'initialValue': function(value) {
-                var defaultValue = DATATYPE.STRING.defaultValue();
-                return typeof value === 'undefined' ? defaultValue : value;
+                return value === null ? DATATYPE.STRING.defaultValue() : value;
             },
             'defaultValue': function(value) {
                 return typeof value === 'undefined' ? '' : value;
