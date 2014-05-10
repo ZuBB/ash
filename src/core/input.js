@@ -504,15 +504,7 @@ Input = (function() {
         }
 
         var rawValue = dialogs[index].GetValue(getInputI18Name(name));
-
-        if (inputFields[name].type) {
-            return getRuntimeValue(name, rawValue);
-        } else {
-            //DEBUG_START
-            _i(name, 'getting value of input that was not inited');
-            //DEBUG_STOP
-            return rawValue;
-        }
+        return getRuntimeValue(name, rawValue);
     };
 
     /**
