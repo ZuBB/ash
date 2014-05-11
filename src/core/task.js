@@ -551,9 +551,8 @@ Task.prototype.isDependenciesResolved = function() {
             return false;
         }
 
-        if (depItem.split(':')[1]) {
-            dsIndex = parseInt(depItem.split(':')[1], 10);
-            if (depObj.isDataSetExist(dsIndex) === false) {
+        if (typeof depItem.split(':')[1] !== 'undefined') {
+            if (depObj.isDataSetExist(depItem.split(':')[1]) === false) {
                 //DEBUG_START
                 _e(depItem, 'cant find dataSet with specified index');
                 //DEBUG_STOP
@@ -1447,8 +1446,25 @@ Task.prototype.sendConfirmedView = function() {
  * @private
  */
 Task.prototype.isDataSetExist = function(index) {
-    index = Math.abs(parseInt(index, 10)) || 0;
-    return this.graphics[index] && this.graphics[index].constructor === Object;
+    index = Math.abs(parseInt(index, 10));
+
+    if (Utils.isNumberInvalid(index) === true) {
+        return false;
+    }
+
+    if (typeof this.graphics[index] === 'undefined') {
+        return false;
+    }
+
+    if (this.graphics[index] === null) {
+        return false;
+    }
+
+    if (this.graphics[index].constructor !== Object) {
+        return false;
+    }
+
+    return true;
 };
 
 /**
