@@ -448,7 +448,7 @@ Input = (function() {
                 var value = getInitialValue(inputName);
 
                 input2dialogMap[inputName] = dialogIndex;
-                currentDialog.AddItem(i18nName, value);
+                currentDialog.AddItemEx(i18nName, inputName, value);
                 dialogItems++;
             } else {
                 //DEBUG_START
