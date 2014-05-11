@@ -533,29 +533,27 @@ Task.prototype.checkDependencies = function() {
  * @private
  */
 Task.prototype.isDependenciesResolved = function() {
-    var depObj, depName, depItem, dsIndex;
 
     for (var ii = 0; ii < this.dependencies.length; ii++) {
-        depItem = this.dependencies[ii];
-        if (depItem.charAt(0) === '!') {
+        if (this.dependencies[ii].charAt(0) === '!') {
             continue;
         }
 
-        depName = depItem.split(':')[0];
-        depObj = Dispatcher.getValidTaskObject(depName);
+        var depNameParts = this.dependencies[ii].split(':');
+        var depName = depNameParts[0];
+        var depObj = Dispatcher.getValidTaskObject(depName);
 
         if (!depObj) {
             //DEBUG_START
-            _w(depItem, 'Next dependency was not resolved');
+            _w(this.dependencies[ii], 'Next dependency was not resolved');
             //DEBUG_STOP
             return false;
         }
 
-        dsIndex = depItem.split(':')[1];
-        if (typeof dsIndex !== 'undefined') {
-            if (depObj.isDataSetExist(dsIndex) === false) {
+        if (depNameParts.length > 1) {
+            if (depObj.isDataSetExist(depNameParts[1]) === false) {
                 //DEBUG_START
-                _e(depItem, 'cant find dataSet with specified index');
+                _e(depNameParts[1], 'cant find dataSet with specified index');
                 //DEBUG_STOP
                 return false;
             }
@@ -1447,7 +1445,7 @@ Task.prototype.sendConfirmedView = function() {
  * @private
  */
 Task.prototype.isDataSetExist = function(index) {
-    index = Math.abs(parseInt(index, 10));
+    index = Math.abs(parseInt((index || '0'), 10));
 
     if (Utils.isNumberInvalid(index) === true) {
         return false;
