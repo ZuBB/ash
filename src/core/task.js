@@ -551,8 +551,9 @@ Task.prototype.isDependenciesResolved = function() {
             return false;
         }
 
-        if (typeof depItem.split(':')[1] !== 'undefined') {
-            if (depObj.isDataSetExist(depItem.split(':')[1]) === false) {
+        dsIndex = depItem.split(':')[1];
+        if (typeof dsIndex !== 'undefined') {
+            if (depObj.isDataSetExist(dsIndex) === false) {
                 //DEBUG_START
                 _e(depItem, 'cant find dataSet with specified index');
                 //DEBUG_STOP
