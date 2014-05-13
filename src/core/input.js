@@ -178,9 +178,19 @@ Input = (function() {
                 return 0;
             },
             'runtimeValue': function(value, name) {
+                var isItemAllowedToReturn = function(name) {
+                    if (inputFields[name].hasOwnProperty('items') === false) {
+                        return false;
+                    }
+
+                    return !inputFields[name].items.every(function(item) {
+                        return typeof item === 'string';
+                    });
+                };
+
                 if (inputFields[name].hasOwnProperty('values')) {
                     return inputFields[name].values[value];
-                } else if (inputFields[name].hasOwnProperty('items')) {
+                } else if (isItemAllowedToReturn(name)) {
                     return inputFields[name].items[value];
                 } else {
                     return value;
