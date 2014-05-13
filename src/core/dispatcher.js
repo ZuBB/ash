@@ -651,7 +651,14 @@ Dispatcher = (function() {
      * @return {Task|null} result
      */
     var getTaskObject = function(name) {
-        if (name && tasksHash.hasOwnProperty(name)) {
+        if (typeof name !== 'string' || name.length === 0) {
+            //DEBUG_START
+            _e(name, 'spec name has wrong type or zero length');
+            //DEBUG_STOP
+            return null;
+        }
+
+        if (tasksHash.hasOwnProperty(name)) {
             return tasksHash[name];
         }
 
