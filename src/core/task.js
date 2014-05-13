@@ -649,7 +649,7 @@ Task.prototype.getDepDataSet = function(index) {
     }
 
     // dependency string
-    var specName = this.dependencies[index].match(/[^:]+(?!:)?/);
+    var specName = this.dependencies[index].split(':')[0];
     // get dependency task
     var depObj = Dispatcher.getValidTaskObject(specName);
 
