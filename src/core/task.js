@@ -469,7 +469,7 @@ Task.prototype.checkDataSource = function() {
 
         if (dataSource === null) {
             //DEBUG_START
-            _e(this.dataSource, 'dataSource is not valid');
+            _w(this.dataSource, 'dataSource is not valid');
             //DEBUG_STOP
             result = false;
         } else {
@@ -533,7 +533,6 @@ Task.prototype.checkDependencies = function() {
  * @private
  */
 Task.prototype.isDependenciesResolved = function() {
-
     for (var ii = 0; ii < this.dependencies.length; ii++) {
         if (this.dependencies[ii].charAt(0) === '!') {
             continue;
