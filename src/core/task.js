@@ -1444,6 +1444,10 @@ Task.prototype.sendConfirmedView = function() {
  * @private
  */
 Task.prototype.isDataSetExist = function(index) {
+    if (index === '*') {
+        return this.getTaskStatus() && this.graphics.length > 0;
+    }
+
     index = Math.abs(parseInt((index || '0'), 10));
 
     if (Utils.isNumberInvalid(index) === true) {
