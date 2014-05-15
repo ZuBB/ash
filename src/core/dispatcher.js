@@ -850,12 +850,12 @@ Dispatcher = (function() {
 
         //DEBUG_START
         if (/VERSION/.test(Script.version)) {
-            var data2write = JSON.stringify(data2Save);
+            var data2write = JSON.stringify(data2Save, null, 4);
             _i(fileHandler.writeln(data2write), 'write successful');
             _i(fileHandler.close(), 'close successful');
         } else {
         //DEBUG_STOP
-            fileHandler.writeln(JSON.stringify(data2Save, null, 4));
+            fileHandler.writeln(JSON.stringify(data2Save));
             fileHandler.close();
         //DEBUG_START
         }
