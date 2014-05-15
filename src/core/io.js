@@ -133,7 +133,8 @@ IO = (function() {
                         return handler;
                     }
 
-                    return FSObject.CreateTextFile(filename, true, true);
+                    var unicode = !(params.noutf === true);
+                    return FSObject.CreateTextFile(filename, true, unicode);
                 }();
             },
             failureResult: null
