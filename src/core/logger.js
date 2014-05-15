@@ -101,11 +101,15 @@
  *   `./NAME_OF_YOUR_SCRIPT-logs` dir
  */
 Logger = (function() {
-    var fileHandler = null;
-    var levels = ['DEBUG', 'INFO ', 'WARN ', 'ERROR', 'FATAL'];
-    var stats = {'WARN ': 0, 'ERROR': 0, 'FATAL': 0};
     var buffer = [];
     var module = {};
+    var fileHandler = null;
+    var levels = ['DEBUG', 'INFO ', 'WARN ', 'ERROR', 'FATAL'];
+    var stats = {
+        'WARN ': {count: 0, symbol: '.', color: 0xFF9100},
+        'ERROR': {count: 0, symbol: '*', color: 0xFF0000},
+        'FATAL': {count: 0, symbol: '@', color: 0xD900FF}
+    };
 
     /**
      * function that ...
@@ -207,7 +211,9 @@ Logger = (function() {
         }
 
         // increase number of logged messages of current log level
-        stats[levels[level]]++;
+        if (stats.hasOwnProperty([levels[level]])) {
+            stats[levels[level]].count++;
+        }
 
         var result =  Utils.createOutputStr(lfBefore, true, value, desc);
 
@@ -243,11 +249,19 @@ Logger = (function() {
      * @private
      */
     var printLogStats = function() {
-        if (stats[levels[2]] || stats[levels[3]] || stats[levels[4]]) {
-            _rl('');
-            _rl('WARN : ' + stats[levels[2]]);
-            _rl('ERROR: ' + stats[levels[3]]);
-            _rl('FATAL: ' + stats[levels[4]]);
+        _rl('');
+
+        for (var level in stats) {
+            var count = stats[level].count.toString().lpad(' ', 3);
+            _rw(level + ': ' + count + ' ');
+            var bar = ''.rpad(stats[level].symbol, stats[level].count);
+            if (bar.length > 0) {
+                _rw(bar, {colors: [0, stats[level].color]});
+            } else {
+                _rw('');
+            }
+
+            _rl('', {colors: [0, 0xFFFFFF]});
         }
     };
 
