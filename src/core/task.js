@@ -735,9 +735,8 @@ Task.prototype.processCalcs = function() {
  * @private
  */
 Task.prototype.pullTaskData = function() {
-    var taskName = this.getTaskName();
     var filename = this.dataSource ? Input.getValue(this.dataSource) : null;
-    var data = Dispatcher.requestData4Compare(taskName, filename);
+    var data = Dispatcher.requestData4Compare(this.getTaskName(), filename);
 
     if (data) {
         this.graphics = data;
