@@ -824,7 +824,8 @@ Dispatcher = (function() {
 
         var fileHandler = null;
         var fileOptopns = {
-            filedir: [Host.CurPath, IO.getSafeNeighbourPath(), 'data'],
+            noutf:    true,
+            filedir:  [Host.CurPath, IO.getSafeNeighbourPath(), 'data'],
             filename: Host.CurFileName.replace(/\.mwf$/, '') + '.json.txt'
         };
 
