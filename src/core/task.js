@@ -544,7 +544,7 @@ Task.prototype.isDependenciesResolved = function() {
 
         if (!depObj) {
             //DEBUG_START
-            _w(this.dependencies[ii], 'Next dependency was not resolved');
+            _i(this.dependencies[ii], 'Next dependency was not resolved');
             //DEBUG_STOP
             return false;
         }
@@ -581,7 +581,7 @@ Task.prototype.isForbiddenDependenciesResolved = function() {
         depName = depName.slice(1);
         if (Dispatcher.getValidTaskObject(depName)) {
             //DEBUG_START
-            _w(depName, 'Next dependency should not be resolved');
+            _i(depName, 'Next dependency should not be resolved');
             //DEBUG_STOP
             return false;
         }
@@ -1219,7 +1219,7 @@ Task.prototype.getGraphicColor = function(index) {
             break;
         default:
             //DEBUG_START
-            _w('random color was used for graphic');
+            _d('random color was used for graphic');
             //DEBUG_STOP
             graphicColor = Utils.createRandomColor();
     }
