@@ -239,7 +239,8 @@ Input = (function() {
         },
         'FILESDROPDOWN': {
             'initialValue': function(index, name) {
-                var items = IO.getDirFiles(inputFields[name].path).unshift('');
+                var path = inputFields[name].path;
+                var items = [].concat('', IO.getDirFiles(path));
 
                 if (inputFields[name].stripText) {
                     items = items.map(function(item) {
