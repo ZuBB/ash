@@ -688,7 +688,7 @@ Task.prototype.getActiveSoftDependency = function() {
  * @return {DataSet|Array|Number} value that has been requested
  */
 Task.prototype.getUnsureTaskData = function(dataLink) {
-    var specName = dataLink.match(/[^:]+(?!:)?/);
+    var specName = dataLink.split(':')[0];
     var task = Dispatcher.getValidTaskObject(specName);
 
     if (task !== null) {
