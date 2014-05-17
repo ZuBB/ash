@@ -598,12 +598,18 @@ Task.prototype.isForbiddenDependenciesResolved = function() {
  * @ignore
  */
 Task.prototype.isSoftDependenciesResolved = function() {
-    if (this.softDependencies.length === 0) {
+    if (this.softDependencies.empty()) {
         return true;
     }
 
-    for (var ii = 0; ii < this.softDependencies.length; ii++) {
-        if (Dispatcher.getValidTaskObject(this.softDependencies[ii])) {
+    for (var ii = 0, specName; ii < this.softDependencies.length; ii++) {
+        specName = this.softDependencies[ii];
+
+        if (Array.isArray(specName)) {
+            if (Task.getValidSoftDependency(specName) === null) {
+				return false;
+			}
+        } else if (Dispatcher.getValidTaskObject(specName)) {
             return true;
         }
     }
@@ -659,19 +665,23 @@ Task.prototype.getDepDataSet = function(index) {
 /**
  * Returns first task from soft dependencies that has positive status
  *
+ * @param {Number} [index] zero-based index of the soft dependency
+ * 	that was requested
  * @return {Task} satisfied task
  * @private
  * @ignore
  */
-Task.prototype.getActiveSoftDependency = function() {
-    for (var ii = 0, depName; ii < this.softDependencies.length; ii++) {
-        depName = this.softDependencies[ii];
-        if (Dispatcher.getValidTaskObject(depName)) {
-            return Dispatcher.getValidTaskObject(depName);
-        }
+Task.prototype.getActiveSoftDependency = function(index) {
+    var checkDependencyNameType = function(item) {
+        return typeof item === 'string';
+    };
+
+    if (this.softDependencies.every(checkDependencyNameType)) {
+        return Task.getValidSoftDependency(this.softDependencies);
     }
 
-    return null;
+    index = parseInt(index, 10) || 0;
+    return Task.getValidSoftDependency(this.softDependencies[index]);
 };
 
 /**
@@ -1797,5 +1807,27 @@ Task.getTaskData = function(depObj, dataLink) {
 
     // in default case return dataSet by specified index
     return dataSet;
+};
+
+/**
+ * Returns first task from passed dependencies that has positive status
+ *
+ * @param {Array} [deps] An array with instances of Tasks class
+ * @return {Task|null} satisfied task
+ * @private
+ * @ignore
+ */
+Task.getValidSoftDependency = function(deps) {
+	if (Array.isArray(deps) === false) {
+		return null;
+	}
+
+	for (var ii = 0; ii < deps.length; ii++) {
+		if (Dispatcher.getValidTaskObject(deps[ii])) {
+			return Dispatcher.getValidTaskObject(deps[ii]);
+		}
+	}
+
+	return null;
 };
 
