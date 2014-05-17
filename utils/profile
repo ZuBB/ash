@@ -1,0 +1,4 @@
+#!/bin/sh
+
+grep 'INFO  <<<<< ' ../../../*last-log.txt | cut -d ' ' -f4- | sort -rnk 2,2 > ../../../profile_result.txt
+
