@@ -312,9 +312,9 @@ Dispatcher = (function() {
             //DEBUG_START
             var profilerString = '';
             var profileTime = Profiler.stop(specName);
-            profilerString += '<'.repeat(5) + '`';
+            profilerString += '<'.repeat(5) + ' ';
             profilerString += specName.rpad(' ', padLen);
-            profilerString += '`: ' + profileTime.toString();
+            profilerString += ' ' + profileTime.toString();
             profilerString += ' ms passed';
             printStatus(specObj.getTaskStatus());
             _i(profilerString);
