@@ -1379,13 +1379,13 @@ Task.prototype.setGraphicPoints = function(specObj, graphic) {
  * @private
  */
 Task.prototype.getLimitPoints = function(dataSet) {
-    var minVal = dataSet[this.defaultKeys[1]].min();
-    var maxVal = dataSet[this.defaultKeys[1]].max();
+    var min = dataSet[this.defaultKeys[1]].min();
+    var max = dataSet[this.defaultKeys[1]].max();
     var minFunc = typeof this.minLimit === 'function';
     var maxFunc = typeof this.maxLimit === 'function';
     var filterFunc = function(n) { return n !== null; };
-    var minValues = [minFunc ? this.minLimit(minVal) : this.minLimit, minVal];
-    var maxValues = [maxFunc ? this.maxLimit(maxVal) : this.maxLimit, maxVal];
+    var minValues = [minFunc ? this.minLimit(min, max) : this.minLimit, min];
+    var maxValues = [maxFunc ? this.maxLimit(max, min) : this.maxLimit, max];
 
     return [minValues.filter(filterFunc)[0], maxValues.filter(filterFunc)[0]];
 };
