@@ -1711,8 +1711,13 @@ Task.prototype.createGetSetPropMethods = function() {
  * in * `Script#messagePrintProps` property
  */
 Task.prototype.createAddMessageMethods = function() {
+    var _this = this;
     var addMessageFunc = function(item) {
         return function(message) {
+            if (message.indexOf('.') === 0) {
+                message = 'specs.' + _this.getTaskName() + message;
+            }
+
             Dispatcher.addMessage(item, message);
         };
     };
