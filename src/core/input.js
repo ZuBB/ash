@@ -135,6 +135,7 @@ Input = (function() {
     var DATATYPE = {
         'INT': {
             'initialValue': function(value) {
+                // maybe check for 'undefined' will be better here
                 return value === null ? DATATYPE.INT.defaultValue() : value;
             },
             'defaultValue': function(value) {
@@ -148,6 +149,7 @@ Input = (function() {
         },
         'FLOAT': {
             'initialValue': function(value) {
+                // maybe check for 'undefined' will be better here
                 return value === null ? DATATYPE.FLOAT.defaultValue() : value;
             },
             'defaultValue': function(value) {
@@ -161,6 +163,7 @@ Input = (function() {
         },
         'STRING': {
             'initialValue': function(value) {
+                // maybe check for 'undefined' will be better here
                 return value === null ? DATATYPE.STRING.defaultValue() : value;
             },
             'defaultValue': function(value) {
@@ -323,7 +326,7 @@ Input = (function() {
         var inputType = inputFields[name].type;
         var value = inputFields[name].value;
 
-        value = DATATYPE[inputType].defaultValue(value);
+        //value = DATATYPE[inputType].defaultValue(value);
         //value = fileDescriptor.GetVariable(name, value);
         value = DATATYPE[inputType].initialValue(value, name);
 
