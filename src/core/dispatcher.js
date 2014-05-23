@@ -376,21 +376,6 @@ Dispatcher = (function() {
             return false;
         }
 
-        if (typeof message === 'string') {
-            message = [message];
-        }
-
-        if (Array.isArray(message)) {
-            message = {'message': message};
-        }
-
-        if (!message || message.constructor !== Object) {
-            //DEBUG_START
-            _e('[Dispatcher::addMessage]: message is invalid object');
-            //DEBUG_STOP
-            return false;
-        }
-
         messageTypes[messageType].messages.push(message);
         return true;
     };
