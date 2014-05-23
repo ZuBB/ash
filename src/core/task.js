@@ -540,7 +540,7 @@ Task.prototype.isDependenciesResolved = function() {
             continue;
         }
         //DEBUG_STOP
-        
+
         if (this.dependencies[ii].charAt(0) === '!') {
             continue;
         }
@@ -1164,13 +1164,14 @@ Task.prototype.drawGraphics = function() {
     }
 
     var graphics = [];
+    var graphicsTotal = this.graphics.length;
 
     // process every graphic
     this.graphics.forEach(function(dataSet, ii) {
         var graphicParams = {
             axis: _t('units.' + this.axisName),
             name: this.getGraphicName(ii + 1),
-            color: this.getGraphicColor(ii)
+            color: this.getGraphicColor(ii, graphicsTotal)
         };
 
         var graphic = this.draw2DGraphic(dataSet, graphicParams);
@@ -1227,7 +1228,7 @@ Task.prototype.getGraphicName = function(currentIndex) {
  * @return {Number} graphic color
  * @private
  */
-Task.prototype.getGraphicColor = function(index) {
+Task.prototype.getGraphicColor = function(index, total) {
     var graphicColor = null;
 
     switch (true) {
@@ -1239,6 +1240,10 @@ Task.prototype.getGraphicColor = function(index) {
             break;
         case Array.isArray(this.graphicColor):
             graphicColor = this.graphicColor[index];
+            break;
+        case this.graphicColor && this.graphicColor.constructor === Object:
+            graphicColor = Utils.getColorForPercentage(
+                    this.graphicColor.anchors, ((index + 1) / total));
             break;
         default:
             //DEBUG_START
