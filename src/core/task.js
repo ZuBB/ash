@@ -534,6 +534,13 @@ Task.prototype.checkDependencies = function() {
  */
 Task.prototype.isDependenciesResolved = function() {
     for (var ii = 0; ii < this.dependencies.length; ii++) {
+        //DEBUG_START
+        if (typeof this.dependencies[ii] === 'undefined') {
+            _e('dependency has wrong type')
+            continue;
+        }
+        //DEBUG_STOP
+        
         if (this.dependencies[ii].charAt(0) === '!') {
             continue;
         }
