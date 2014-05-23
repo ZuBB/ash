@@ -264,7 +264,7 @@ Input = (function() {
                 return getDropDownContent(inputFields[name].items, index);
             },
             'defaultValue': function() {
-                return false;
+                return null;
             },
             'runtimeValue': function(value) {
                 return value === 1;
