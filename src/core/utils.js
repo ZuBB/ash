@@ -186,7 +186,7 @@ Utils.createOutputStr = function(b_lf, a_lf, value, description) {
  * @member Utils
  * @ignore
  */
-Utils.getColorForPercentage = function(percentColors, pct) {
+Utils.getColorForPercentage = function(percentColors, pct, html) {
     var lower = percentColors[0];
     var upper = percentColors.slice(-1)[0];
     var getResult = function(color, html) {
