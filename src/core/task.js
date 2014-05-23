@@ -1243,7 +1243,7 @@ Task.prototype.getGraphicColor = function(index, total) {
             break;
         case this.graphicColor && this.graphicColor.constructor === Object:
             graphicColor = Utils.getColorForPercentage(
-                    this.graphicColor.anchors, ((index + 1) / total));
+                    this.graphicColor.anchors, ((total - index) / total));
             break;
         default:
             //DEBUG_START
