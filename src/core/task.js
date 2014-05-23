@@ -609,22 +609,37 @@ Task.prototype.isSoftDependenciesResolved = function() {
         return true;
     }
 
-    for (var ii = 0, specName; ii < this.softDependencies.length; ii++) {
-        specName = this.softDependencies[ii];
+    var isDepNameAString = function(item) {
+        return typeof item === 'string';
+    };
 
-        if (Array.isArray(specName)) {
-            if (Task.getValidSoftDependency(specName) === null) {
-				return false;
-			}
-        } else if (Dispatcher.getValidTaskObject(specName)) {
-            return true;
+    var isDepNameAaArray = function(item) {
+        return Array.isArray(item);
+    };
+
+    if (this.softDependencies.every(isDepNameAString)) {
+        this.softDependencies = [this.softDependencies];
+    } else if (this.softDependencies.every(isDepNameAaArray)) {
+        // all is OK, nothing to do
+    } else {
+        //DEBUG_START
+        _e('soft dependencies have inconsistent types');
+        //DEBUG_STOP
+        return false;
+    }
+
+    for (var ii = 0; ii < this.softDependencies.length; ii++) {
+        var specName = this.softDependencies[ii];
+
+        if (Task.findValidDependency(specName) === null) {
+            //DEBUG_START
+            _w('None soft dependency was resolved');
+            //DEBUG_STOP
+            return false;
         }
     }
 
-    //DEBUG_START
-    _w('None soft dependency was resolved');
-    //DEBUG_STOP
-    return false;
+    return true;
 };
 
 /**
@@ -673,22 +688,14 @@ Task.prototype.getDepDataSet = function(index) {
  * Returns first task from soft dependencies that has positive status
  *
  * @param {Number} [index] zero-based index of the soft dependency
- * 	that was requested
+ *  that was requested
  * @return {Task} satisfied task
  * @private
  * @ignore
  */
 Task.prototype.getActiveSoftDependency = function(index) {
-    var checkDependencyNameType = function(item) {
-        return typeof item === 'string';
-    };
-
-    if (this.softDependencies.every(checkDependencyNameType)) {
-        return Task.getValidSoftDependency(this.softDependencies);
-    }
-
     index = parseInt(index, 10) || 0;
-    return Task.getValidSoftDependency(this.softDependencies[index]);
+    return Task.findValidDependency(this.softDependencies[index]);
 };
 
 /**
@@ -1844,17 +1851,12 @@ Task.getTaskData = function(depObj, dataLink) {
  * @private
  * @ignore
  */
-Task.getValidSoftDependency = function(deps) {
-	if (Array.isArray(deps) === false) {
-		return null;
-	}
+Task.findValidDependency = function(deps) {
+    for (var ii = 0, dep; ii < deps.length; ii++) {
+        if ((dep = Dispatcher.getValidTaskObject(deps[ii])) !== null) {
+            return dep;
+        }
+    }
 
-	for (var ii = 0; ii < deps.length; ii++) {
-		if (Dispatcher.getValidTaskObject(deps[ii])) {
-			return Dispatcher.getValidTaskObject(deps[ii]);
-		}
-	}
-
-	return null;
+    return null;
 };
-
