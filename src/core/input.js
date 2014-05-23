@@ -210,7 +210,6 @@ Input = (function() {
             },
             'runtimeValue': function(rawValue) {
                 var channel = parseInt(rawValue, 10);
-                var result = null;
                 var checks = [
                     function(channel) { return typeof channel === 'number'; },
                     function(channel) { return channel <= Host.Channels; },
@@ -218,8 +217,8 @@ Input = (function() {
                     function(channel) { return channel > 0; }
                 ];
 
-                result = checks.every(function(chk) { return chk(channel); });
-                return result ? channel : null;
+                var result = checks.every(function(f) { return f(channel); });
+                return result ? channel : null;                
             }
         },
         'CHANNELS': {
