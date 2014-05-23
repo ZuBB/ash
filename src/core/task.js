@@ -1714,8 +1714,23 @@ Task.prototype.createAddMessageMethods = function() {
     var _this = this;
     var addMessageFunc = function(item) {
         return function(message) {
-            if (message.indexOf('.') === 0) {
-                message = 'specs.' + _this.getTaskName() + message;
+            if (typeof message === 'string') {
+                if (message.indexOf('.') === 0) {
+                    message = 'specs.' + _this.getTaskName() + message;
+                }
+
+                message = [message];
+            }
+
+            if (Array.isArray(message)) {
+                message = {'message': message};
+            }
+
+            if (!message || message.constructor !== Object) {
+                //DEBUG_START
+                _e('[Dispatcher::addMessage]: message is invalid object');
+                //DEBUG_STOP
+                return false;
             }
 
             Dispatcher.addMessage(item, message);
