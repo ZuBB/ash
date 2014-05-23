@@ -159,7 +159,7 @@ Reporter = (function() {
             return string;
         }
 
-        string = string.replace(/^(\n)?/, '$1<sg=' + notation.join(','));
+        string = string.replace(/^(\n)?/, '$1<si=' + notation.join(',') + ' ');
         string = string.replace(/(\n)?$/, ' >$1');
         return string;
     };
