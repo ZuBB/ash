@@ -438,7 +438,11 @@ Dispatcher = (function() {
             var controlChars = item.controlChars ||
                 messageTypes[type].messageControlChars;
 
-            _rl(message, controlChars);
+            if (item.phrase === true) {
+                _rw(message, controlChars);
+            } else {
+                _rl(message, controlChars);
+            }
         };
 
         for (var type in messageTypes) {
