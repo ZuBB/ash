@@ -189,18 +189,40 @@ Utils.createOutputStr = function(b_lf, a_lf, value, description) {
 Utils.getColorForPercentage = function(percentColors, pct) {
     var lower = percentColors[0];
     var upper = percentColors.slice(-1)[0];
+    var getResult = function(color, html) {
+        if (html) {
+            return 'rgb(' + [color.r, color.g, color.b].join(', ') + ')';
+        } else {
+            var rgb = 0;
+            rgb = (rgb << 8) + color.r;
+            rgb = (rgb << 8) + color.g;
+            rgb = (rgb << 8) + color.b;
+            return rgb;
+        }
+    };
+
+    for (var ii = 0, color; ii < percentColors.length; ii++) {
+        if (typeof percentColors[ii].color !== 'number') {
+            continue;
+        }
+
+        color = percentColors[ii].color;
+        percentColors[ii].color = {
+            'r': (color >> 16) & 0xFF,
+            'g': (color >>  8) & 0xFF,
+            'b': (color >>  0) & 0xFF
+        };
+    }
 
     if (pct < lower.pct) {
-        return 'rgb(' +
-                [ lower.color.r, lower.color.g, lower.color.b].join(', ') + ')';
+        return getResult(lower.color, html);
     }
 
     if (pct > upper.pct) {
-        return 'rgb(' +
-                [ upper.color.r, upper.color.g, upper.color.b].join(', ') + ')';
+        return getResult(upper.color, html);
     }
 
-    for (var ii = 1; ii < percentColors.length; ii++) {
+    for (ii = 1; ii < percentColors.length; ii++) {
         if (pct > percentColors[ii - 1].pct && pct <= percentColors[ii].pct) {
             lower = percentColors[ii - 1];
             upper = percentColors[ii];
@@ -208,13 +230,13 @@ Utils.getColorForPercentage = function(percentColors, pct) {
             var pctUpper = (pct - lower.pct) / (upper.pct - lower.pct);
             var pctLower = 1 - pctUpper;
 
-            var color = {
+            color = {
                 r: Math.floor(lower.color.r * pctLower + upper.color.r * pctUpper),
                 g: Math.floor(lower.color.g * pctLower + upper.color.g * pctUpper),
                 b: Math.floor(lower.color.b * pctLower + upper.color.b * pctUpper)
             };
 
-            return 'rgb(' + [color.r, color.g, color.b].join(', ') + ')';
+            return getResult(color, html);
         }
     }
 };
