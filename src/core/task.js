@@ -1220,7 +1220,7 @@ Task.prototype.getGraphicName = function(currentIndex) {
 };
 
 /**
- * Generates graphic color
+ * Calculates color for specific graphic
  *
  * @param {Number} index index of the graphic (graphic is based on dataset)
  * of this task that is currently drawing.
@@ -1242,8 +1242,7 @@ Task.prototype.getGraphicColor = function(index, total) {
             graphicColor = this.graphicColor[index];
             break;
         case this.graphicColor && this.graphicColor.constructor === Object:
-            graphicColor = Utils.getColorForPercentage(
-                    this.graphicColor.anchors, ((total - index) / total));
+            graphicColor = this.getGraphicPercentColor(index, total);
             break;
         default:
             //DEBUG_START
@@ -1253,6 +1252,41 @@ Task.prototype.getGraphicColor = function(index, total) {
     }
 
     return graphicColor;
+};
+
+/**
+ * Generates graphic color based on its index from passed color range
+ *
+ * @param {Number} [index] zero-based index of the graphic that is currently drawing.
+ * @param {Number} [total] amount of datasets hold by this task
+ *
+ * @return {Number} graphic color
+ * @private
+ */
+Task.prototype.getGraphicPercentColor = function(index, total) {
+    var percent = null;
+    var percents = [];
+    var colorSpecs = [];
+
+    for (var ii in this.graphicColor) {
+        percent = parseFloat(ii);
+
+        if (isNaN(percent) === false) {
+            percents.push(percent);
+        }
+    }
+
+    percent = (total - index) / total;
+    percents
+        .sort(function(a, b) { return a - b; })
+        .forEach(function(item) {
+            colorSpecs.push({
+                'color': this.graphicColor[item.toString()],
+                'pct': item
+            });
+        }, this);
+
+    return Utils.getColorForPercentage(colorSpecs, percent);
 };
 
 /**
