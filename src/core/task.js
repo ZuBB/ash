@@ -1264,29 +1264,22 @@ Task.prototype.getGraphicColor = function(index, total) {
  * @private
  */
 Task.prototype.getGraphicPercentColor = function(index, total) {
-    var percent = null;
-    var percents = [];
-    var colorSpecs = [];
-
-    for (var ii in this.graphicColor) {
-        percent = parseFloat(ii);
-
-        if (isNaN(percent) === false) {
-            percents.push(percent);
-        }
-    }
-
-    percent = (total - index) / total;
-    percents
+    var colorSpecs = Object
+        .keys(this.graphicColor)
+        .map(function(item) {
+            var percent = parseFloat(item);
+            return isNaN(percent) ? null : percent;
+        })
+        .filter(function(item) { return item !== null; })
         .sort(function(a, b) { return a - b; })
-        .forEach(function(item) {
-            colorSpecs.push({
+        .map(function(item) {
+            return {
                 'color': this.graphicColor[item.toString()],
                 'pct': item
-            });
+            };
         }, this);
 
-    return Utils.getColorForPercentage(colorSpecs, percent);
+    return Utils.getColorForPercentage(colorSpecs, (total - index) / total);
 };
 
 /**
