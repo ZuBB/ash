@@ -160,7 +160,7 @@ Reporter = (function() {
         }
 
         string = string.replace(/^(\n)?/, '$1<si=' + notation.join(',') + ' ');
-        string = string.replace(/(\n)?$/, ' >$1');
+        string = string.replace(/(\n)?$/, '>$1');
         return string;
     };
 
