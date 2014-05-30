@@ -135,8 +135,8 @@ Input = (function() {
     var DATATYPE = {
         'INT': {
             'initialValue': function(value) {
-                // maybe check for 'undefined' will be better here
-                return value === null ? DATATYPE.INT.defaultValue() : value;
+                return typeof value === 'undefined' ?
+                    DATATYPE.INT.defaultValue() : value;
             },
             'defaultValue': function(value) {
                 return typeof value === 'undefined' ? 0 : value;
@@ -149,8 +149,8 @@ Input = (function() {
         },
         'FLOAT': {
             'initialValue': function(value) {
-                // maybe check for 'undefined' will be better here
-                return value === null ? DATATYPE.FLOAT.defaultValue() : value;
+                return typeof value === 'undefined' ?
+                    DATATYPE.FLOAT.defaultValue() : value;
             },
             'defaultValue': function(value) {
                 return typeof value === 'undefined' ? 0 : value;
