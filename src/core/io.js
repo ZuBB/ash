@@ -180,7 +180,7 @@ IO = (function() {
                 return true;
             }
 
-            return safeExecute({
+            var result = safeExecute({
                 failureMessage: 'Failed to (save&)close file due to next error',
                 tryFunc: function() {
                     return function() {
@@ -190,6 +190,41 @@ IO = (function() {
 
                         fileHandler.Close();
                         fileHandler = null;
+                    }();
+                }
+            });
+
+            if (params.convert2utf8 !== true) {
+                return result;
+            }
+
+            return safeExecute({
+                failureMessage: 'Failed to resave in utf8',
+                tryFunc: function() {
+                    return function() {
+                        var objStream1 = null;
+                        var objStream2 = null;
+                        var fileContent = null;
+
+                        objStream1 = new ActiveXObject("ADODB.Stream");
+                        objStream1.Charset = "Unicode";
+                        objStream1.Open();
+                        objStream1.LoadFromFile(filename);
+
+                        fileContent = objStream1.ReadText();
+                        objStream1.Close();
+                        FSObject.DeleteFile(filename);
+
+                        objStream2 = new ActiveXObject("ADODB.Stream");
+                        objStream2.Open();
+                        objStream2.Charset = "utf-8";
+                        objStream2.WriteText(fileContent);
+                        objStream2.SaveToFile(filename, 2);
+                        objStream2.Close();
+
+                        objStream1 = null;
+                        objStream2 = null;
+                        fileContent = null;
                     }();
                 }
             });
