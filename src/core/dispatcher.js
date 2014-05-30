@@ -480,8 +480,14 @@ Dispatcher = (function() {
 
                 viewIndexes.push(view[1]);
                 //DEBUG_STOP
-                var title = _t('views.' + view[0] + '.name');
-                graphicsViews[view[0]] = Host.CreateGraphicView(title);
+
+                // by default Cartesian coordinate system will be used
+                // http://en.wikipedia.org/wiki/Cartesian_coordinate_system
+                var type = view[0].split('@')[1] || 0;
+                var viewName = view[0].split('@')[0];
+                var title = _t('views.' +  viewName + '.name');
+                var viewObj = Host.CreateGraphicViewEx(title, type);
+                graphicsViews[viewName] = viewObj;
             });
 
         return true;
