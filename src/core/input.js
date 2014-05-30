@@ -524,6 +524,24 @@ Input = (function() {
     };
 
     /**
+     * Returns names of inputs that were shown to user and
+     *  match to passed input type
+     *
+     * @param {String} [targetType] type of the input
+     * @return {Array} set of internal names of inputs
+     */
+    var getInputsByType = function(targetType) {
+        if (typeof targetType !== 'string' || targetType.length === 0) {
+            return [];
+        }
+
+        return Object.keys(input2dialogMap)
+            .filter(function(item) {
+                return inputFields[item].type === targetType;
+            });
+    };
+
+    /**
      * Returns default value for input. Wrapper for private API call
      *
      * @param {String} [name] Internal name of the input
@@ -537,6 +555,7 @@ Input = (function() {
         'createConfiguration': createConfiguration,
         'getDefaultValue':     getDefaultValue,
         'getFilledInputs':     getFilledInputs,
+        'getInputsByType':     getInputsByType,
         'getValue':            getValue
     };
 
