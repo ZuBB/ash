@@ -137,6 +137,8 @@ Logger = (function() {
         var result      = false;
 
         var fileHandlerOptions = {
+            convert2utf8: true,
+
             filedir: [Host.CurPath, logPath],
             filename: Script.name + '-last-log.txt',
             backupDir: [Host.CurPath, logPath, 'logs'],
