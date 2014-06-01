@@ -443,6 +443,9 @@ Task.prototype.process = function() {
   //this.checkForbiddenChannel();
     this.checkDependencies();
     this.processCalcs();
+    //DEBUG_START
+    this.logDataStats();
+    //DEBUG_STOP
     this.processViewsProps();
     this.joinViewsProps();
 
@@ -747,7 +750,6 @@ Task.prototype.processCalcs = function() {
 
     //DEBUG_START
     _d(result, 'calcs complete');
-    this.logDataStats();
     //DEBUG_STOP
     return this.updateStatus(result);
 };
@@ -1167,25 +1169,25 @@ Task.prototype.drawGraphics = function() {
     var graphicsTotal = this.graphics.length;
 
     // process every graphic
-    this.graphics.forEach(function(dataSet, ii) {
+    this.graphics.forEach(function(dataSet, index) {
         var graphicParams = {
             axis: _t('units.' + this.axisName),
-            name: this.getGraphicName(ii + 1),
-            color: this.getGraphicColor(ii, graphicsTotal)
+            name: this.getGraphicName(index + 1),
+            color: this.getGraphicColor(index, graphicsTotal)
         };
 
         var graphic = this.draw2DGraphic(dataSet, graphicParams);
 
         if (graphic === null) {
             //DEBUG_START
-            _e(ii, 'graphic with next index failed to draw');
+            _e(index, 'graphic with next index failed to draw');
             //DEBUG_STOP
             return;
         }
 
         graphics.push({
             'graphic' : Dispatcher.storeGraphicObject(graphic) - 1,
-            'visible' : this.getGraphicVisibility(ii),
+            'visible' : this.getGraphicVisibility(index),
             'color'   : graphicParams.color,
             'name'    : graphicParams.name
         });
@@ -1357,7 +1359,7 @@ Task.prototype.draw2DGraphic = function(specObj, params) {
     if (this.multicolorGraphic === true) {
         graphic = Host.CreateColoredGraphic(params.name, params.axis, params.color);
     } else {
-        // NOTE color issue: no matter what color to pass here
+        // FIXME color issue: no matter what color to pass here
         graphic = Host.CreateGraphic(params.name, params.axis, 0x000000);
     }
 
