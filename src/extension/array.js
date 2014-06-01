@@ -87,7 +87,28 @@ if (!Array.prototype.avg) {
  */
 if (!Array.prototype.max) {
     Array.prototype.max = function() {
-        return Math.max.apply(null, this);
+        return this.maxWithIndex()[0];
+    };
+
+    // most fast way to search for a min/max values
+    // is to do an old plain loop
+    // http://blogs.msdn.com/b/oldnewthing/archive/2014/05/26/10528351.aspx
+    Array.prototype.maxWithIndex = function() {
+        var index = 0;
+        var max = this[index];
+
+        for (var ii = 1; ii < this.length; ii++) {
+            if (this[ii] > max) {
+                max = this[ii];
+                index = ii;
+            }
+        }
+
+        return [max, ii];
+    };
+
+    Array.prototype.maxIndex = function() {
+        return this.maxWithIndex()[1];
     };
 }
 
@@ -99,7 +120,28 @@ if (!Array.prototype.max) {
  */
 if (!Array.prototype.min) {
     Array.prototype.min = function() {
-        return Math.min.apply(null, this);
+        return this.minWithIndex()[0];
+    };
+
+    // most fast way to search for a min/max values
+    // is to do an old plain loop
+    // http://blogs.msdn.com/b/oldnewthing/archive/2014/05/26/10528351.aspx
+    Array.prototype.minWithIndex = function() {
+        var index = 0;
+        var min = this[index];
+
+        for (var ii = 1; ii < this.length; ii++) {
+            if (this[ii] < min) {
+                min = this[ii];
+                index = ii;
+            }
+        }
+
+        return [min, ii];
+    };
+
+    Array.prototype.minIndex = function() {
+        return this.minWithIndex()[1];
     };
 }
 
