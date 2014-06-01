@@ -332,6 +332,7 @@ Task = function(params) {
     this.statusCodes = [];
     this.graphics = [];
     this.viewsProps = {};
+    this.minMaxValues = null;
 
     this.drawGraphicsAsShelf = false;
     this.graphicIsBackground = false;
@@ -1167,6 +1168,7 @@ Task.prototype.drawGraphics = function() {
 
     var graphics = [];
     var graphicsTotal = this.graphics.length;
+    this.findMinMaxValues();
 
     // process every graphic
     this.graphics.forEach(function(dataSet, index) {
@@ -1176,7 +1178,7 @@ Task.prototype.drawGraphics = function() {
             color: this.getGraphicColor(index, graphicsTotal)
         };
 
-        var graphic = this.draw2DGraphic(dataSet, graphicParams);
+        var graphic = this.draw2DGraphic(dataSet, graphicParams, index);
 
         if (graphic === null) {
             //DEBUG_START
@@ -1325,10 +1327,11 @@ Task.prototype.getGraphicVisibility = function(index) {
  *
  * @param {DataSet} specObj hash with data for graphic (dataset)
  * @param {Object} params hash/dics with additional params for graphic
+ * @param {Number} [index] zero-base number of the dataset that is processed
  * @return {Object} graphic object that represents real graphic
  * @private
  */
-Task.prototype.draw2DGraphic = function(specObj, params) {
+Task.prototype.draw2DGraphic = function(specObj, params, index) {
     //DEBUG_START
     var _1axis = this.defaultKeys[0];
     var _2axis = this.defaultKeys[1];
@@ -1368,7 +1371,7 @@ Task.prototype.draw2DGraphic = function(specObj, params) {
     }
 
     if (this.setLimits) {
-        var edge_values = this.getLimitPoints(specObj);
+        var edge_values = this.getLimitPoints(index);
         graphic.SetLimits(edge_values[0], edge_values[1]);
     }
 
@@ -1430,22 +1433,88 @@ Task.prototype.setGraphicPoints = function(specObj, graphic) {
 };
 
 /**
+ * Calculates min and max values for all dataSets
+ *
+ * @private
+ */
+Task.prototype.findMinMaxValues = function() {
+    this.minMaxValues = {'global': {}, 'local': []};
+
+    this.graphics.forEach(function (dataSet) {
+        var lMinMax = {};
+
+        Object.keys(dataSet).forEach(function (key) {
+            lMinMax[key] = [
+                dataSet[key].min(),
+                dataSet[key].max()
+            ];
+        });
+
+        this.minMaxValues.local.push(lMinMax);
+    }, this);
+
+    this.defaultKeys.forEach(function(key) {
+        var minValues = [];
+        var maxValues = [];
+
+        this.minMaxValues.local.forEach(function(dataSet) {
+            minValues.push(dataSet[key][0]);
+            maxValues.push(dataSet[key][1]);
+        });
+
+        this.minMaxValues.global[key] = [
+            minValues.min(),
+            maxValues.max()
+        ];
+    }, this);
+};
+
+/**
+ * Returns min and max values among all dataSets
+ *
+ * @param {String} [key] name of the key which max and min values
+ *  should be retrieved
+ * @return {Array} array with minimum and maximum values
+ * @private
+ */
+Task.prototype.getGlobalMinMaxValues = function(key) {
+    return this.minMaxValues.global[key];
+};
+
+/**
+ * Returns min and max values for specified dataSet
+ *
+ * @param {Number} [index] zero-based index of dataSet
+ * @param {String} [key] name of the key
+ * @return {Array} result array with minimum and maximum values
+ * @private
+ */
+Task.prototype.getLocalMinMaxValues = function(index, key) {
+    return this.minMaxValues.local[index][key];
+};
+
+/**
  * Calculates limits for the graphic based on passed dataset
  *
  * @param {DataSet} dataSet hash with keys and corresponding arrays of values
  * @return {Array} result array with minimum and maximum values
  * @private
  */
-Task.prototype.getLimitPoints = function(dataSet) {
-    var min = dataSet[this.defaultKeys[1]].min();
-    var max = dataSet[this.defaultKeys[1]].max();
-    var minFunc = typeof this.minLimit === 'function';
-    var maxFunc = typeof this.maxLimit === 'function';
+Task.prototype.getLimitPoints = function(index) {
+    var lMinMax = this.getLocalMinMaxValues(index, this.defaultKeys[1]);
+    var gMinMax = this.getGlobalMinMaxValues(this.defaultKeys[1]);
     var filterFunc = function(n) { return n !== null; };
-    var minValues = [minFunc ? this.minLimit(min, max) : this.minLimit, min];
-    var maxValues = [maxFunc ? this.maxLimit(max, min) : this.maxLimit, max];
 
-    return [minValues.filter(filterFunc)[0], maxValues.filter(filterFunc)[0]];
+    var userMin = typeof this.minLimit !== 'function' ? this.minLimit :
+        this.minLimit(lMinMax[0], lMinMax[1], gMinMax[0], gMinMax[1]);
+
+    var userMax = typeof this.maxLimit !== 'function' ? this.maxLimit :
+        this.maxLimit(lMinMax[1], lMinMax[0], gMinMax[1], gMinMax[0]);
+
+    return [
+        [userMin, lMinMax[0]].filter(filterFunc)[0],
+        [userMax, lMinMax[1]].filter(filterFunc)[0]
+    ];
 };
 
 /**
