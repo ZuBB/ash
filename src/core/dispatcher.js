@@ -276,52 +276,76 @@ Dispatcher = (function() {
      * @private
      */
     var runRegisteredTasks = function() {
+        var specNames = Object.keys(tasksHash);
+        var length = specNames.length;
+
         //DEBUG_START
-        if (Object.keys(tasksHash).length === 0) {
+        if (length === 0) {
             return;
         }
 
         var specs  = Object.keys(tasksHash);
         var sortFn = function(a, b) { return a.length - b.length; };
         var padLen = Math.ceil(specs.sort(sortFn).last().length * 1.4);
-        var length = specs.length.toString();
-        var printStatus = function(taskStatus) {
+        var count  = length.toString();
+
+        var preProcess = function(specObj, ii) {
+            var specName = specObj.getTaskName();
+            var outputStr = [];
+
+            Profiler.start(specName);
+
+            outputStr.push('>'.repeat(15), ' Processing next (');
+                    outputStr.push((ii + 1).toString().lpad(' ', count.length));
+                    outputStr.push('/' + count + ') spec: ');
+            outputStr.push(specName.rpad(' ', padLen));
+
+            _d('\n'.repeat(4));
+            _rw(outputStr.join(''));
+        };
+
+        var postProcess = function(specObj) {
+            var taskStatus = specObj.getTaskStatus();
+            var specName = specObj.getTaskName();
+
             var message = taskStatus ? '+' : '-';
             var color = taskStatus ? 0x44DD44 : 0xDD4444;
-            _rl(message, {colors: [0, color]});
-        }
-        _rl('');
-        //DEBUG_STOP
 
-        Object.keys(tasksHash).forEach(function(specName, ii) {
-            Host.SetStatusText(_t('core.status.message', ii));
-
-            var specObj = tasksHash[specName];
-            //DEBUG_START
-            _d('\n'.repeat(4));
-            Profiler.start(specName);
-            var outputStr = ['>'.repeat(15), ' Processing next ('];
-            outputStr.push((ii + 1).toString().lpad(' ', length.length));
-            outputStr.push('/' + length + ') spec: ');
-            outputStr.push(specName.rpad(' ', padLen));
-            _rw(outputStr.join(''));
-            //DEBUG_STOP
-
-            specObj.process();
-
-            //DEBUG_START
             var profilerString = '';
             var profileTime = Profiler.stop(specName);
             profilerString += '<'.repeat(5) + ' ';
             profilerString += specName.rpad(' ', padLen);
             profilerString += ' ' + profileTime.toString();
             profilerString += ' ms passed';
-            printStatus(specObj.getTaskStatus());
+
+            _rl(message, {colors: [0, color]});
             _i(profilerString);
+
+        };
+
+        _rl('');
+        //DEBUG_STOP
+
+        for (var ii = 0, specObj; ii < length && Host.CanContinue(); ii++) {
+            Host.SetStatusText(_t('core.status.message', ii));
+            specObj = tasksHash[specNames[ii]];
+
+            //DEBUG_START
+            preProcess(specObj, ii);
             //DEBUG_STOP
 
+            specObj.process();
             Host.SetProgress(ii);
-        });
+
+            //DEBUG_START
+            postProcess(specObj);
+
+            if (Script.stopAfterTask === specNames[ii]) {
+                _e('terminated');
+                break;
+            }
+            //DEBUG_STOP
+        }
     };
 
     /**
