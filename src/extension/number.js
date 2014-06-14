@@ -3,8 +3,8 @@
  *  in oscillogram to timeline measured in seconds
  *
  */
-if (!Number.prototype.toSeconds) {
-    Number.prototype.toSeconds = function() {
+if (!Number.prototype.posToSec) {
+    Number.prototype.posToSec = function() {
         //DEBUG_START
         if (this % 1 !== 0) {
             _w('Number.prototype.toSeconds: float value was rounded to int');
