@@ -341,7 +341,7 @@ Dispatcher = (function() {
             postProcess(specObj);
 
             if (Script.stopAfterTask === specNames[ii]) {
-                _w('tasks queue terminated');
+                _rl('tasks queue terminated', {colors: [0, 0xFFAD00]});
                 break;
             }
             //DEBUG_STOP
