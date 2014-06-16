@@ -430,6 +430,7 @@ Input = (function() {
         inputFields = JSON.parse(JSON.stringify(Script.inputFields));
         dialogsContent = Script.dialogsContent.slice(0);
 
+        var result = true;
         var dialogIndex = 0;
         var dialogItems = 0;
         var inputName = null;
@@ -472,18 +473,23 @@ Input = (function() {
 
             if (dialogItems === 7) {
                 dialogItems = 0;
-                currentDialog.Configure();
+
+                if (currentDialog.Configure() === false) {
+                    break;
+                }
+
                 dialogs.push(currentDialog);
                 currentDialog = createDialog(++dialogIndex);
             }
         }
 
         if (dialogItems > 0) {
-            currentDialog.Configure();
+            result = currentDialog.Configure();
             dialogs.push(currentDialog);
         }
 
         currentDialog = null;
+        return result;
     };
 
     /**
