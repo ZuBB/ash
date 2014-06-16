@@ -197,16 +197,17 @@ Dispatcher = (function() {
         startProgressBar();
 
         if (isScriptAllowedToRun()) {
-            Input.createConfiguration();
-            //DEBUG_START
-            logIncomingParams();
-            //DEBUG_STOP
-            Profiler.start('main');
-            runRegisteredTasks();
-            createGraphicViews();
-            sortGraphicsByIndexes();
-            applyPropsToGraphicViews();
-            saveTasks4Compare();
+            if (Input.createConfiguration()) {
+                //DEBUG_START
+                logIncomingParams();
+                //DEBUG_STOP
+                Profiler.start('main');
+                runRegisteredTasks();
+                createGraphicViews();
+                sortGraphicsByIndexes();
+                applyPropsToGraphicViews();
+                saveTasks4Compare();
+            }
         }
 
         printMessages();
