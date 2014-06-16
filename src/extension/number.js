@@ -16,3 +16,12 @@ if (!Number.prototype.posToSec) {
     };
 }
 
+/**
+ * Converts number that represents milliseconds to amount of position
+ */
+if (!Number.prototype.msToPos) {
+    Number.prototype.msToPos = function() {
+        return Math.round(this / 1000 * Host.Frequency);
+    };
+}
+
