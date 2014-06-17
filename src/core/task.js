@@ -1175,7 +1175,7 @@ Task.prototype.drawGraphics = function() {
         var graphicParams = {
             axis: _t('units.' + this.axisName),
             name: this.getGraphicName(index + 1),
-            color: this.getGraphicColor(index, graphicsTotal)
+            color: Colorer.getGraphicColor(this.graphicColor, index, graphicsTotal)
         };
 
         var graphic = this.draw2DGraphic(dataSet, graphicParams, index);
@@ -1221,69 +1221,6 @@ Task.prototype.getGraphicName = function(currentIndex) {
     }
 
     return _t(result, currentIndex);
-};
-
-/**
- * Calculates color for specific graphic
- *
- * @param {Number} index index of the graphic (graphic is based on dataset)
- * of this task that is currently drawing.
- *
- * @return {Number} graphic color
- * @private
- */
-Task.prototype.getGraphicColor = function(index, total) {
-    var graphicColor = null;
-
-    switch (true) {
-        case typeof this.graphicColor === 'number':
-            graphicColor = this.graphicColor;
-            break;
-        case typeof this.graphicColor === 'function':
-            graphicColor = this.graphicColor(index);
-            break;
-        case Array.isArray(this.graphicColor):
-            graphicColor = this.graphicColor[index];
-            break;
-        case this.graphicColor && this.graphicColor.constructor === Object:
-            graphicColor = this.getGraphicPercentColor(index, total);
-            break;
-        default:
-            //DEBUG_START
-            _d('random color was used for graphic');
-            //DEBUG_STOP
-            graphicColor = Utils.createRandomColor();
-    }
-
-    return graphicColor;
-};
-
-/**
- * Generates graphic color based on its index from passed color range
- *
- * @param {Number} [index] zero-based index of the graphic that is currently drawing.
- * @param {Number} [total] amount of datasets hold by this task
- *
- * @return {Number} graphic color
- * @private
- */
-Task.prototype.getGraphicPercentColor = function(index, total) {
-    var colorSpecs = Object
-        .keys(this.graphicColor)
-        .map(function(item) {
-            var percent = parseFloat(item);
-            return isNaN(percent) ? null : percent;
-        })
-        .filter(function(item) { return item !== null; })
-        .sort(function(a, b) { return a - b; })
-        .map(function(item) {
-            return {
-                'color': this.graphicColor[item.toString()],
-                'pct': item
-            };
-        }, this);
-
-    return Utils.getColorForPercentage(colorSpecs, (total - index) / total);
 };
 
 /**

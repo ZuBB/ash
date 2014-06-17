@@ -5,6 +5,7 @@ var Input      = null;
 var IO         = null;
 var Reporter   = null;
 var Profiler   = null;
+var Colorer    = null;
 var Utils      = {};
 var MathHelper = {};
 var AHF = {};

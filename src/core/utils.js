@@ -1,4 +1,29 @@
 /**
+ * helper function that simulates wait
+ * http://devcheater.com/
+ *
+ * @method sleep
+ * @member Utils
+ * @ignore
+ */
+Utils.sleep = function(milliSeconds) {
+    // get the current time
+    var startTime = new Date().getTime();
+    // hog cpu
+    while (new Date().getTime() < startTime + milliSeconds) {}
+};
+
+/**
+ * helper function that ...
+ *
+ * @member Utils
+ * @ignore
+ */
+Utils.isNumberInvalid = function(number) {
+    return isNaN(parseFloat(number)) || !isFinite(number);
+};
+
+/**
  * helper function that creates data set stub
  *
  * @method createDataSetStub
@@ -17,42 +42,6 @@ Utils.createDataSetStub = function(keys) {
     });
 
     return result;
-};
-
-/**
- * helper function that simulates wait
- * http://devcheater.com/
- *
- * @method sleep
- * @member Utils
- * @ignore
- */
-Utils.sleep = function(milliSeconds) {
-    // get the current time
-    var startTime = new Date().getTime();
-    // hog cpu
-    while (new Date().getTime() < startTime + milliSeconds) {}
-};
-
-/**
- * helper function that creates random color
- *
- * @method createRandomColor
- * @member Utils
- * @ignore
- */
-Utils.createRandomColor = function() {
-    return parseInt(Math.floor(Math.random()*16777215).toString(16), 16);
-};
-
-/**
- * helper function that ...
- *
- * @member Utils
- * @ignore
- */
-Utils.isNumberInvalid = function(number) {
-    return isNaN(parseFloat(number)) || !isFinite(number);
 };
 
 /**
@@ -180,68 +169,6 @@ Utils.createOutputStr = function(b_lf, a_lf, value, description) {
 };
 
 /**
- * function that ... http://bit.ly/17CTRQX
- *
- * @method getColorForPercentage
- * @member Utils
- * @ignore
- */
-Utils.getColorForPercentage = function(percentColors, pct, html) {
-    var lower = percentColors[0];
-    var upper = percentColors.slice(-1)[0];
-    var getResult = function(color, html) {
-        if (html) {
-            return 'rgb(' + [color.r, color.g, color.b].join(', ') + ')';
-        } else {
-            var rgb = 0;
-            rgb = (rgb << 8) + color.r;
-            rgb = (rgb << 8) + color.g;
-            rgb = (rgb << 8) + color.b;
-            return rgb;
-        }
-    };
-
-    for (var ii = 0, color; ii < percentColors.length; ii++) {
-        if (typeof percentColors[ii].color !== 'number') {
-            continue;
-        }
-
-        color = percentColors[ii].color;
-        percentColors[ii].color = {
-            'r': (color >> 16) & 0xFF,
-            'g': (color >>  8) & 0xFF,
-            'b': (color >>  0) & 0xFF
-        };
-    }
-
-    if (pct < lower.pct) {
-        return getResult(lower.color, html);
-    }
-
-    if (pct > upper.pct) {
-        return getResult(upper.color, html);
-    }
-
-    for (ii = 1; ii < percentColors.length; ii++) {
-        if (pct > percentColors[ii - 1].pct && pct <= percentColors[ii].pct) {
-            lower = percentColors[ii - 1];
-            upper = percentColors[ii];
-
-            var pctUpper = (pct - lower.pct) / (upper.pct - lower.pct);
-            var pctLower = 1 - pctUpper;
-
-            color = {
-                r: Math.floor(lower.color.r * pctLower + upper.color.r * pctUpper),
-                g: Math.floor(lower.color.g * pctLower + upper.color.g * pctUpper),
-                b: Math.floor(lower.color.b * pctLower + upper.color.b * pctUpper)
-            };
-
-            return getResult(color, html);
-        }
-    }
-};
-
-/**
  * function that ...
  * https://github.com/jashkenas/underscore/blob/master/underscore.js#L570
  *
@@ -267,3 +194,4 @@ Utils.range = function(start, stop, step) {
 
     return range;
 };
+
