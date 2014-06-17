@@ -87,7 +87,8 @@ if (!Array.prototype.avg) {
  */
 if (!Array.prototype.max) {
     Array.prototype.max = function() {
-        return this.maxWithIndex()[0];
+        return Math.max.apply(null, this);
+        //turn this.maxWithIndex()[0];
     };
 
     // most fast way to search for a min/max values
@@ -120,7 +121,8 @@ if (!Array.prototype.max) {
  */
 if (!Array.prototype.min) {
     Array.prototype.min = function() {
-        return this.minWithIndex()[0];
+        return Math.min.apply(null, this);
+        //turn this.minWithIndex()[0];
     };
 
     // most fast way to search for a min/max values
