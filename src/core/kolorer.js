@@ -1,9 +1,13 @@
+/**
+ * Color helper class
+ *
+ * @class
+ */
 Colorer = (function() {
 
     /**
      * Function that creates random color
      *
-     * @method createRandomColor
      * @return {Number} 10-based number representing color
      */
     var createRandomColor = function() {
@@ -14,7 +18,6 @@ Colorer = (function() {
     /**
      * Function that creates random color
      *
-     * @method createRandomColor
      * @return {Number} 10-based number representing color
      * @ignore
      */
@@ -29,7 +32,6 @@ Colorer = (function() {
     /**
      * Function that creates random color
      *
-     * @method createRandomColor
      * @return {Number} 10-based number representing color
      * @ignore
      */
@@ -205,9 +207,10 @@ Colorer = (function() {
                 graphicColor = colorDef(index, total);
                 break;
             case colorDef.constructor === Object:
-                graphicColor = getGraphicPercentColor(index, total);
+                graphicColor = getGraphicPercentColor(colorDef, index, total);
                 break;
             default:
+                // TODO
                 //DEBUG_START
                 _d('random color was used for graphic');
                 //DEBUG_STOP
