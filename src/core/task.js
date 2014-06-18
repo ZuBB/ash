@@ -1213,7 +1213,6 @@ Task.prototype.getGraphicName = function(currentIndex) {
     var result = null;
 
     if (typeof this.graphicName === 'function') {
-        // TODO: no need to send total index in instance method
         result = this.graphicName(currentIndex, this.graphics.length);
     } else if (typeof this.graphicName === 'string') {
         result = 'specs.' + this.graphicName + '.name';
@@ -1808,7 +1807,8 @@ Task.prototype.isSavingRequired = function() {
 };
 
 /**
- * Sschedules current task for save to use in compare feature
+ * Schedules current task for save to use in compare feature
+ * @ignore
  */
 Task.prototype.addTask2Save4Compare = function() {
     if (this.getTaskStatus() && this.saveData4Compare) {
