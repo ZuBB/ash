@@ -384,7 +384,7 @@ Task = function(params) {
  */
 Task.prototype.getFullName = function() {
     //DEBUG_START
-    _w('Usage of `getDependencyObject` method is deprecated');
+    _w('Usage of `getFullName` method is deprecated');
     //DEBUG_STOP
     return this.getTaskName();
 };
