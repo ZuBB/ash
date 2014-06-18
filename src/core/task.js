@@ -333,6 +333,7 @@ Task = function(params) {
     this.graphics = [];
     this.viewsProps = {};
     this.minMaxValues = null;
+    this.dataSetsCount = 0;
 
     this.drawGraphicsAsShelf = false;
     this.graphicIsBackground = false;
@@ -737,6 +738,8 @@ Task.prototype.processCalcs = function() {
 
     var result = this.loadData4Compare ?
         this.pullTaskData() : this.calc_data();
+
+    this.dataSetsCount = this.graphics.length;
 
     if (this.graphics.length > 0) {
         result = typeof result === 'undefined' ? true : result;
@@ -1811,6 +1814,14 @@ Task.prototype.addTask2Save4Compare = function() {
     if (this.getTaskStatus() && this.saveData4Compare) {
         Dispatcher.addSpec4Saving(this.getTaskName());
     }
+};
+
+/**
+ * Returns number of datasets in current task
+ * @ignore
+ */
+Task.prototype.getDataSetsCount = function() {
+    return this.dataSetsCount;
 };
 
 /**
