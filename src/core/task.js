@@ -741,7 +741,7 @@ Task.prototype.processCalcs = function() {
 
     this.dataSetsCount = this.graphics.length;
 
-    if (this.graphics.length > 0) {
+    if (this.dataSetsCount > 0) {
         result = typeof result === 'undefined' ? true : result;
     } else {
         //DEBUG_START
@@ -1168,7 +1168,6 @@ Task.prototype.drawGraphics = function() {
     }
 
     var graphics = [];
-    var graphicsTotal = this.graphics.length;
     this.findMinMaxValues();
 
     // process every graphic
@@ -1176,7 +1175,7 @@ Task.prototype.drawGraphics = function() {
         var graphicParams = {
             axis: _t('units.' + this.axisName),
             name: this.getGraphicName(index + 1),
-            color: Colorer.getGraphicColor(this.graphicColor, index, graphicsTotal)
+            color: Colorer.getGraphicColor(this.graphicColor, index, this.dataSetsCount)
         };
 
         var graphic = this.draw2DGraphic(dataSet, graphicParams, index);
@@ -1213,7 +1212,7 @@ Task.prototype.getGraphicName = function(currentIndex) {
     var result = null;
 
     if (typeof this.graphicName === 'function') {
-        result = this.graphicName(currentIndex, this.graphics.length);
+        result = this.graphicName(currentIndex, this.dataSetsCount);
     } else if (typeof this.graphicName === 'string') {
         result = 'specs.' + this.graphicName + '.name';
     } else {
@@ -1508,7 +1507,7 @@ Task.prototype.sendConfirmedView = function() {
  */
 Task.prototype.isDataSetExist = function(index) {
     if (index === '*') {
-        return this.getTaskStatus() && this.graphics.length > 0;
+        return this.getTaskStatus() && this.dataSetsCount > 0;
     }
 
     index = Math.abs(parseInt((index || '0'), 10));
