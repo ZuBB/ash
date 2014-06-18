@@ -651,16 +651,14 @@ Task.prototype.isSoftDependenciesResolved = function() {
  *
  * @param {Number} index zero based index of the dependency
  *  in 'dependencies' prop
- * @return {Task} task object
- * @experimental
- * @private
+ * @return {Task|NULL} task object
  */
 Task.prototype.getDependencyObject = function(index) {
-    //DEBUG_START
-    _w('Usage of this method (`getDependencyObject`) is highly unwanted');
-    //DEBUG_STOP
+    index = Math.abs(parseInt(index, 10)) || 0;
+
     if (index < this.dependencies.length) {
-        return Dispatcher.getTaskObject(this.dependencies[index]);
+        var specName = this.dependencies[index].split(':')[0];
+        return Dispatcher.getTaskObject(specName);
     }
 
     return null;
