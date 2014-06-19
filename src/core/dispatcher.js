@@ -263,7 +263,9 @@ Dispatcher = (function() {
         _d(Host.CurFileName, 'current file');
         _d(Host.Frequency, 'frequency');
         _d(Host.NumberOfSamples, 'samples');
-        _d(Host.NumberOfSamples / Host.Frequency, 'duration');
+        _d(Host.NumberOfSamples.posToSec(), 'duration');
+        _d(Host.SelBegin.posToSec(), 'Selection Begin');
+        _d(Host.SelEnd.posToSec(), 'Selection End');
 
         Input.getFilledInputs().forEach(function(input) {
             _d(Input.getValue(input), input);
