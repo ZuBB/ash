@@ -768,13 +768,13 @@ Dispatcher = (function() {
     /**
      * Returns data for task
      *
-     * @param {String} specName name of the task
-     * @param {String} filename name of the file that contains data
+     * @param {String} [specName] name of the task
+     * @param {String} [filename] name of the file that contains data
      * @return {Object} data for the specified task
      */
-    var requestData4Compare = function(specName, filename) {
+    var requestTaskData = function(specName, filename) {
         if (data4Compare === null && filename !== null) {
-            loadData4Compare(filename);
+            loadExternalData(filename);
         }
 
         if (data4Compare) {
@@ -787,10 +787,10 @@ Dispatcher = (function() {
     /**
      * Reads data for this task from file
      *
-     * @param {String} filename variable with filename to read data from
-     * @private
+     * @param {String} [filename] variable with filename to read data from
+     * @return {Boolena} result of the load operation
      */
-    var loadData4Compare = function(filename) {
+    var loadExternalData = function(filename) {
         if (IO.isFileExist(filename)) {
             //DEBUG_START
             _d('loading data...');
@@ -807,6 +807,8 @@ Dispatcher = (function() {
             _d(filename, 'Can not find next file');
             //DEBUG_STOP
         }
+
+        return data4Compare !== null;
     };
 
     /**
@@ -931,9 +933,10 @@ Dispatcher = (function() {
         'getTaskObject':       getTaskObject,
         'getValidTaskObject':  getValidTaskObject,
         'listMessageTypes':    listMessageTypes,
+        'loadExternalData':    loadExternalData,
         'process':             process,
-        'requestData4Compare': requestData4Compare,
         'registerNewTask':     registerNewTask,
+        'requestTaskData':     requestTaskData,
         'storeConfirmedView':  storeConfirmedView,
         'storeGraphicObject':  storeGraphicObject,
         'storeViewsProps':     storeViewsProps
