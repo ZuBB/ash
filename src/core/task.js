@@ -348,8 +348,9 @@ Task = function(params) {
   //this.forbiddenChannel = null;
 
     // experimental
-    this.saveData4Compare = false;
-    this.loadData4Compare = false;
+    this.exportData = false;
+    this.importData = false;
+    this.requestDataLoad = false;
     this.isSavingAllowed = true;
     // experimental
     this.drawMarkers = false;
@@ -736,7 +737,12 @@ Task.prototype.processCalcs = function() {
         return false;
     }
 
-    var result = this.loadData4Compare ?
+    if (this.requestDataLoad) {
+        return this.updateStatus(Dispatcher.loadExternalData(
+                    Input.getValue(this.dataSource)));
+    }
+
+    var result = this.importData ?
         this.pullTaskData() : this.calc_data();
 
     this.dataSetsCount = this.graphics.length;
@@ -764,9 +770,9 @@ Task.prototype.processCalcs = function() {
  */
 Task.prototype.pullTaskData = function() {
     var filename = this.dataSource ? Input.getValue(this.dataSource) : null;
-    var data = Dispatcher.requestData4Compare(this.getTaskName(), filename);
+    var data = Dispatcher.requestTaskData(this.getTaskName(), filename);
 
-    if (data) {
+    if (data !== null) {
         this.graphics = data;
     }
 };
@@ -1810,7 +1816,7 @@ Task.prototype.isSavingRequired = function() {
  * @ignore
  */
 Task.prototype.addTask2Save4Compare = function() {
-    if (this.getTaskStatus() && this.saveData4Compare) {
+    if (this.getTaskStatus() && this.exportData) {
         Dispatcher.addSpec4Saving(this.getTaskName());
     }
 };
