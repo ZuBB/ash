@@ -475,6 +475,7 @@ Input = (function() {
                 dialogItems = 0;
 
                 if (currentDialog.Configure() === false) {
+                    result = false;
                     break;
                 }
 
@@ -485,7 +486,10 @@ Input = (function() {
 
         if (dialogItems > 0) {
             result = currentDialog.Configure();
-            dialogs.push(currentDialog);
+
+            if (result) {
+                dialogs.push(currentDialog);
+            }
         }
 
         currentDialog = null;
