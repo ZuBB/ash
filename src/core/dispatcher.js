@@ -538,12 +538,10 @@ Dispatcher = (function() {
 
         Object.keys(viewsProps).forEach(function(ii) {
             sortableProps.forEach(function(key) {
-                if (typeof viewsProps[ii][key] === 'undefined') {
-                    return;
+                if (Array.isArray(viewsProps[ii][key])) {
+                    viewsProps[ii][key] =
+                        viewsProps[ii][key].sort(sortFunc).map(mapFunc);
                 }
-
-                viewsProps[ii][key] =
-                viewsProps[ii][key].sort(sortFunc).map(mapFunc);
             });
         });
 
@@ -616,12 +614,10 @@ Dispatcher = (function() {
             var len  = args.length;
             var arg1 = null;
 
-            if (sortableProps.indexOf(key) < 0) {
-                arg1 = args[0];
-            } else {
-                arg1 = drownGraphics[args[0]];
-            }
+            arg1 = sortableProps.indexOf(key) < 0 ?
+                args[0] : drownGraphics[args[0]];
 
+            // very sad piece of code ... :(
             try {
                 if (len === 1) {
                     viewObject[method](arg1);
