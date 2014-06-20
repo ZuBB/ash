@@ -1726,7 +1726,7 @@ Task.prototype.createGetSetPropMethods = function() {
         this.defaultKeys = Script.defaultKeys;
     }
 
-    // TODO filter keys that are note valid
+    // TODO filter keys that are not valid
     this.defaultKeys.forEach(function(prop) {
         this['add' + prop.capitalize()] = addValueFunc(this, prop);
         this['get' + prop.capitalize()] = getValueFunc(this, prop);
