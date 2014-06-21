@@ -653,7 +653,7 @@ Task.prototype.isSoftDependenciesResolved = function() {
  *
  * @param {Number} index zero based index of the dependency
  *  in 'dependencies' prop
- * @return {Task|NULL} task object
+ * @return {Task|null} task object
  */
 Task.prototype.getDependencyObject = function(index) {
     index = Math.abs(parseInt(index, 10)) || 0;

@@ -11,18 +11,22 @@
  */
 Dispatcher = (function() {
     /**
-     * @property {Array} sortableProps = ['area', 'graphic', 'graphicex']
+     * @property {Array} SORTABLE_PROPS = ['area', 'graphic', 'graphicex']
+     * @readonly
      * @private
      *
      * List of props that need to be handled in special way
+     * Should be constant indeed
      */
-    var sortableProps = ['area', 'graphic', 'graphicex'];
+    var SORTABLE_PROPS = ['area', 'graphic', 'graphicex'];
 
     /**
      * @property {String} DATA_KEY = 'data'
+     * @readonly
      * @private
      *
      * Name of the key that holds data of all tasks
+     * Should be constant indeed
      */
     var DATA_KEY = 'data';
 
@@ -557,7 +561,7 @@ Dispatcher = (function() {
         };
 
         Object.keys(viewsProps).forEach(function(ii) {
-            sortableProps.forEach(function(key) {
+            SORTABLE_PROPS.forEach(function(key) {
                 if (Array.isArray(viewsProps[ii][key])) {
                     viewsProps[ii][key] =
                         viewsProps[ii][key].sort(sortFunc).map(mapFunc);
@@ -634,7 +638,7 @@ Dispatcher = (function() {
             var len  = args.length;
             var arg1 = null;
 
-            arg1 = sortableProps.indexOf(key) < 0 ?
+            arg1 = SORTABLE_PROPS.indexOf(key) < 0 ?
                 args[0] : drownGraphics[args[0]];
 
             // very sad piece of code ... :(
@@ -787,7 +791,7 @@ Dispatcher = (function() {
      * Returns data for task
      *
      * @param {String} [specName] name of the task
-     * @return {Object|Null} data for the specified task
+     * @return {Object|null} data for the specified task
      */
     var requestTaskData = function(specName) {
         if (data4Compare === null) {
@@ -813,7 +817,7 @@ Dispatcher = (function() {
      * Reads data for this task from file
      *
      * @param {String} [filename] variable with filename to read data from
-     * @return {Boolena} result of the load operation
+     * @return {Boolean} result of the load operation
      */
     var loadExternalData = function(filename) {
         var result = 0;
