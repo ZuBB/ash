@@ -364,7 +364,7 @@ Dispatcher = (function() {
     };
 
     /**
-     * Creates storage different kind of messages listed in
+     * Creates storage for different types of messages listed in
      * {@link Script#messagePrintProps} property.
      *
      * @private
