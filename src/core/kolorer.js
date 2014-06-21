@@ -2,6 +2,7 @@
  * Color helper class
  *
  * @class
+ * @ignore
  */
 Colorer = (function() {
 
