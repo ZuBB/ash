@@ -119,7 +119,7 @@ Dispatcher = (function() {
     /**
      * Registers new task with dictionary of options passed as parameter
      *
-     * @param {Object} taskOpts A dictionary with options for new Task instance
+     * @param {Object} [taskOpts] A dictionary with options for new Task instance
      * @return {Boolean} result of the operation
      *
      * See short example below on how to use this method
@@ -143,15 +143,15 @@ Dispatcher = (function() {
      * });
      * ```
      *
-     * All subparams that an be used inside `taskOpts` object is listed in
+     * All subparams that can be used inside `taskOpts` object is listed in
      * {@link Task#constructor annotation of Task class}
      *
      * Each definition like above should reside in separate file in
      * `src/tasks` directory. Build system concatenates all files including
      * files with tasks into single file. This allows `Dispatcher` class
      * automatically register all tasks that were included into result file.
-     * Since tasks may depend on each other order of register **do matters**.
-     * That order is same as order of files with tasks in `src/tasks`
+     * Since tasks may depend on each other, order of register **does
+     * matters**.That order is same as order of files in `src/tasks`
      * directory sorted alphabetically. Make sure you name files with
      * tasks properly.
      *
