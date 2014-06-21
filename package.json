@@ -1,6 +1,6 @@
 {
   "name": "ash",
-  "version": "0.1.8",
+  "version": "0.3.1",
   "description": "autoscope script helper framework",
   "keywords": [
     "USB Oscilloscope",
@@ -26,7 +26,7 @@
   "devDependencies": {
     "grunt-jsduck": "^1.0.1",
     "grunt": "^0.4.2",
-    "grunt-git": "^0.2.5",
+    "grunt-git": "^0.2.12",
     "grunt-shell": "^0.6.4"
   }
 }
