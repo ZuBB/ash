@@ -445,6 +445,7 @@ Dispatcher = (function() {
      * @private
      */
     var printMessages = function() {
+        var uniqueMessages = null;
         var printMessageFunc = function(item) {
             var message = _t.apply(null, item.message);
             var controlChars = item.controlChars ||
@@ -455,6 +456,14 @@ Dispatcher = (function() {
             } else {
                 _rl(message, controlChars);
             }
+        };
+        var filterMessagesFunc = function(item) {
+            if (uniqueMessages.indexOf(item.message[0]) > -1) {
+                return false;
+            }
+
+            uniqueMessages.push(item.message[0]);
+            return true;
         };
 
         for (var type in messageTypes) {
@@ -468,7 +477,10 @@ Dispatcher = (function() {
                             messageTypes[type].headerControlChars);
                 }
 
-                messageTypes[type].messages.forEach(printMessageFunc);
+                uniqueMessages = [];
+                messageTypes[type].messages
+                    .filter(filterMessagesFunc)
+                    .forEach(printMessageFunc);
 
                 _rl('');
             }
