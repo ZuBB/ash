@@ -703,8 +703,8 @@ Task.prototype.getActiveSoftDependency = function(index) {
 };
 
 /**
- * Returns a task's data by datalink Its safe to ask a data from task with
- * unknown status. Thats why it has 'unsafe' word in name. In case task's
+ * Returns a task's data by datalink. Its not safe to get a data from task with
+ * unknown status. Thats why it has 'unsure' word in name. In case task's
  * status is negative, `null` is returned otherwise we try to reach requested
  * data with help of {@link Task#getTaskData}
  *
