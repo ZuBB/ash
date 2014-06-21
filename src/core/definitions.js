@@ -262,6 +262,11 @@ Script.messagePrintProps = {
             'colors': [0xF05025]
         }
     },
+    'warning': {
+        'headerControlChars': {
+            'colors': [0xF0C025]
+        }
+    },
     'hint': {
         'headerControlChars': {
             'colors': [0x0F8052]
