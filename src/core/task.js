@@ -1404,7 +1404,7 @@ Task.prototype.setGraphicPoints = function(specObj, graphic) {
             return false;
             //DEBUG_STOP
 
-            Dispatcher.addBug('core.messages.error1');
+            this.addBug('core.messages.error1');
         }
 
         prevYValue = specObj[_2axis][jj];
