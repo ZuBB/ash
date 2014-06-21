@@ -819,7 +819,7 @@ Dispatcher = (function() {
         }
 
         // if format is not the same
-        if (data4Compare.format !== Script.format) {
+        if (data4Compare && data4Compare.format !== Script.dumpFormat) {
             result = 0.5;
         }
 
