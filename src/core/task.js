@@ -787,8 +787,9 @@ Task.prototype.requestDataLoadMethod = function() {
         this.addWarning('core.messages.warning2');
         this.addHint('core.messages.hint2');
         //DEBUG_START
-    } else {
+    } else if (result !== 1) {
         _e('got unknown return code');
+        _d(result);
         //DEBUG_STOP
     }
 
@@ -814,10 +815,6 @@ Task.prototype.pullTaskData = function() {
     } else if (data === false) {
         this.addWarning('core.messages.warning1');
         this.addHint('core.messages.hint1');
-        //DEBUG_START
-    } else {
-        _e('external data has wrong type');
-        //DEBUG_STOP
     }
 
     return false;
