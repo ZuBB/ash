@@ -545,8 +545,8 @@ Dispatcher = (function() {
     };
 
     /**
-     * Sort all king of graphics to get order they were requested to be
-     * appeard in views they were addressed
+     * Sort all kind of graphics to get order they were requested to be
+     * appeared in views they were addressed
      *
      * @private
      */
