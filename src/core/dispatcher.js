@@ -19,6 +19,14 @@ Dispatcher = (function() {
     var sortableProps = ['area', 'graphic', 'graphicex'];
 
     /**
+     * @property {String} DATA_KEY = 'data'
+     * @private
+     *
+     * Name of the key that holds data of all tasks
+     */
+    var DATA_KEY = 'data';
+
+    /**
      * @property {Date} startTime = new Date()
      * @private
      *
@@ -782,20 +790,23 @@ Dispatcher = (function() {
      * @return {Object|Null} data for the specified task
      */
     var requestTaskData = function(specName) {
-        if (data4Compare) {
-            if (data4Compare['data'].hasOwnProperty(specName)) {
-                return data4Compare['data'][specName];
-            } else {
-                //DEBUG_START
-                var message = 'external file does not contain data for ' +
-                   'specified task. format version mismatch?'
-                _e(specName, message);
-                //DEBUG_STOP
-                return false;
-            }
+        if (data4Compare === null) {
+            return null;
         }
 
-        return null;
+        var check1 = data4Compare.hasOwnProperty(DATA_KEY);
+        var check2 = check1 && data4Compare[DATA_KEY].hasOwnProperty(specName);
+
+        if (check1 === false || check2 === false) {
+            //DEBUG_START
+            var message = 'external file does not contain data for ' +
+                'specified task. format version mismatch?'
+                _e(specName, message);
+            //DEBUG_STOP
+            return false;
+        }
+
+        return data4Compare[DATA_KEY][specName];
     };
 
     /**
@@ -894,12 +905,13 @@ Dispatcher = (function() {
 
         var data2Save = {
             'timestamp': startTime.toUTCString(),
-            'format'   : Script.dumpFormat,
-            'data'     : {},
+            'format':    Script.dumpFormat
         };
 
+        data2Save[DATA_KEY] = {};
+
         specs2Save4Compare.forEach(function(item) {
-            data2Save.specs2compare[item + '_external'] =
+            data2Save[DATA_KEY][item + '_external'] =
                 getTaskObject(item).getDataSets();
         });
 
