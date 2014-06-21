@@ -4,7 +4,7 @@
  * Manages process of script run
  *
  * All methods except {@link Dispatcher#registerNewTask} of this class
- * are called automatically. Its single method which really require
+ * are called automatically. It is single method, which really requires
  * your attention at start.
  *
  * @class
@@ -59,7 +59,7 @@ Dispatcher = (function() {
      * @private
      *
      * A dictionary that holds key/value pairs related to real graphic views
-     * Each `key` is a internam name of view.
+     * Each `key` is a internal name of view.
      * Each `value` paired to corresponding key is real view object
      */
     var graphicsViews = {};
@@ -71,7 +71,7 @@ Dispatcher = (function() {
      * A dictionary that holds key/value pairs related to graphic views names
      * and props that should be applied to them
      *
-     * Each `key` is a internam name of view.
+     * Each `key` is a internal name of view.
      * Each `value` paired to corresponding key is a dictionary with props
      * that should be applied to it
      */
@@ -81,7 +81,7 @@ Dispatcher = (function() {
      * @property {Object} messageTypes = null
      * @private
      *
-     * A dictionary for all type of messages will be collected during
+     * A dictionary for all type of messages that will be collected during
      * script execution. For details see
      * {@Dispatcher#createMessageStorage} method
      */
@@ -93,7 +93,7 @@ Dispatcher = (function() {
      *
      * A dictionary that holds key/value pairs of task name/task instance
      *
-     * Each `key` is a internam name of task.
+     * Each `key` is a internal name of task.
      * Each `value` paired to corresponding key is a task instance
      */
     var tasksHash = {};
