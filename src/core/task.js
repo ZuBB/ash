@@ -445,7 +445,7 @@ Task.prototype.process = function() {
     this.checkDataSource();
   //this.checkForbiddenChannel();
     this.checkDependencies();
-    this.processCalcs();
+    this.processTaskDataMethod();
     //DEBUG_START
     this.logDataStats();
     //DEBUG_STOP
@@ -732,18 +732,23 @@ Task.prototype.getUnsureTaskData = function(dataLink) {
  * @return {Boolean} status/result of the action
  * @private
  */
-Task.prototype.processCalcs = function() {
+Task.prototype.processTaskDataMethod = function() {
     if (this.getTaskStatus() === false) {
         return false;
     }
 
-    if (this.requestDataLoad) {
-        return this.updateStatus(Dispatcher.loadExternalData(
-                    Input.getValue(this.dataSource)));
-    }
+    var result = null;
 
-    var result = this.importData ?
-        this.pullTaskData() : this.calc_data();
+    if (this.requestDataLoad) {
+        result = this.requestDataLoadMethod();
+    } else if (this.importData) {
+        result = this.pullTaskData();
+    } else {
+        //DEBUG_START
+        _d('calculation of task\'s data');
+        //DEBUG_STOP
+        result = this.calc_data();
+    }
 
     this.dataSetsCount = this.graphics.length;
 
@@ -757,9 +762,37 @@ Task.prototype.processCalcs = function() {
     }
 
     //DEBUG_START
-    _d(result, 'calcs complete');
+    _d(result, '`processTaskDataMethod` final result');
     //DEBUG_STOP
     return this.updateStatus(result);
+};
+
+/**
+ * Asks Dispatcher to try to load external data
+ *  that should be used for compare feature
+ *
+ * @return {Boolean} status/result of the action
+ * @private
+ */
+Task.prototype.requestDataLoadMethod = function() {
+    //DEBUG_START
+    _d('load of external data');
+    //DEBUG_STOP
+
+    var result = Dispatcher.loadExternalData(Input.getValue(this.dataSource));
+
+    if (result === 0) {
+        return false;
+    } else if (result === 0.5) {
+        this.addWarning('core.messages.warning2');
+        this.addHint('core.messages.hint2');
+        //DEBUG_START
+    } else {
+        _e('got unknown return code');
+        //DEBUG_STOP
+    }
+
+    return true;
 };
 
 /**
@@ -769,12 +802,25 @@ Task.prototype.processCalcs = function() {
  * @private
  */
 Task.prototype.pullTaskData = function() {
-    var filename = this.dataSource ? Input.getValue(this.dataSource) : null;
-    var data = Dispatcher.requestTaskData(this.getTaskName(), filename);
+    //DEBUG_START
+    _d('pull task\'s data');
+    //DEBUG_STOP
 
-    if (data !== null) {
+    var data = Dispatcher.requestTaskData(this.getTaskName());
+
+    if (Array.isArray(data)) {
         this.graphics = data;
+        return true;
+    } else if (data === false) {
+        this.addWarning('core.messages.warning1');
+        this.addHint('core.messages.hint1');
+        //DEBUG_START
+    } else {
+        _e('external data has wrong type');
+        //DEBUG_STOP
     }
+
+    return false;
 };
 
 /**

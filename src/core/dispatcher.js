@@ -19,12 +19,12 @@ Dispatcher = (function() {
     var sortableProps = ['area', 'graphic', 'graphicex'];
 
     /**
-     * @property {Date} runTimestamp = new Date()
+     * @property {Date} startTime = new Date()
      * @private
      *
      * Holds time when script started to execute
      */
-    var runTimestamp = new Date();
+    var startTime = new Date();
 
     /**
      * @property {Array} drownGraphics = []
@@ -248,7 +248,7 @@ Dispatcher = (function() {
 
         _rp(message);
         //DEBUG_START
-        _rp(_t('report.date', runTimestamp.toLocaleString()));
+        _rp(_t('report.date', startTime.toLocaleString()));
         //DEBUG_STOP
     };
 
@@ -767,16 +767,20 @@ Dispatcher = (function() {
      * Returns data for task
      *
      * @param {String} [specName] name of the task
-     * @param {String} [filename] name of the file that contains data
-     * @return {Object} data for the specified task
+     * @return {Object|Null} data for the specified task
      */
-    var requestTaskData = function(specName, filename) {
-        if (data4Compare === null && filename !== null) {
-            loadExternalData(filename);
-        }
-
+    var requestTaskData = function(specName) {
         if (data4Compare) {
-            return data4Compare.specs2compare[specName];
+            if (data4Compare['data'].hasOwnProperty(specName)) {
+                return data4Compare['data'][specName];
+            } else {
+                //DEBUG_START
+                var message = 'external file does not contain data for ' +
+                   'specified task. format version mismatch?'
+                _e(specName, message);
+                //DEBUG_STOP
+                return false;
+            }
         }
 
         return null;
@@ -789,16 +793,24 @@ Dispatcher = (function() {
      * @return {Boolena} result of the load operation
      */
     var loadExternalData = function(filename) {
+        var result = 0;
+
         if (IO.isFileExist(filename)) {
             //DEBUG_START
-            _d('loading data...');
-            _d(filename, 'External data will be look up in next file');
+            _d(filename, 'will try to load external data in next file');
             //DEBUG_STOP
 
             try {
                 data4Compare = JSON.parse(IO.readFileContent(filename));
+                result = 1;
+                //DEBUG_START
+                _d('all is OK');
+                //DEBUG_STOP
             } catch(e) {
-                data4Compare = null;
+                //DEBUG_START
+                _e('smth went wrong');
+                _d(e.message, 'error message');
+                //DEBUG_STOP
             }
             //DEBUG_START
         } else {
@@ -806,7 +818,12 @@ Dispatcher = (function() {
             //DEBUG_STOP
         }
 
-        return data4Compare !== null;
+        // if format is not the same
+        if (data4Compare.format !== Script.format) {
+            result = 0.5;
+        }
+
+        return result;
     };
 
     /**
@@ -864,9 +881,9 @@ Dispatcher = (function() {
         //DEBUG_STOP
 
         var data2Save = {
-            'specs2compare': {},
-            'write_date':    runTimestamp.toUTCString(),
-            'format':        Script.dumpFormat
+            'timestamp': startTime.toUTCString(),
+            'format'   : Script.dumpFormat,
+            'data'     : {},
         };
 
         specs2Save4Compare.forEach(function(item) {
