@@ -1866,7 +1866,8 @@ Task.prototype.addTask2Save4Compare = function() {
 
 /**
  * Returns number of datasets in current task
- * @ignore
+ *
+ * @return {Number} amount of the datasets, produced by this task
  */
 Task.prototype.getDataSetsCount = function() {
     return this.dataSetsCount;
