@@ -1777,7 +1777,7 @@ Task.prototype.createGetSetPropMethods = function() {
 };
 
 /**
- * This method creates infractructure for adding different kind of messages.
+ * This method creates infractructure for adding different type of messages.
  *
  * Message types are defined in {@link Script#messagePrintProps} property.
  * Lets show how this magic works with help of next example
@@ -1795,7 +1795,7 @@ Task.prototype.createGetSetPropMethods = function() {
  * ```
  *
  * With that definition this new method (shown below) will be
- * **dynamically addded** to the inside of Task class.
+ * **dynamically addded** inside every instance of Task class.
  *
  * ```
  * var task = new Task();
