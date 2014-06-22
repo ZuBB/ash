@@ -1,6 +1,4 @@
 module.exports = function(grunt) {
-    var repoPath = '/home/vv/work/own/zubb.bitbucket.org/ash-jsdoc/';
-
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         jsduck: {
@@ -9,11 +7,11 @@ module.exports = function(grunt) {
             },
             main: {
                 src: ['src/core/*.js'],
-                dest: repoPath
+                dest: '/tmp/ash-jsdoc'
             },
-            test: {
+            deploy: {
                 src: ['src/core/*.js'],
-                dest: '/tmp/docs'
+                dest: grunt.option('repo-path')
             }
         },
         shell: {
@@ -21,7 +19,7 @@ module.exports = function(grunt) {
                 command: 'git ls-files -m | grep -v index.html | wc -l',
                 options: {
                     execOptions: {
-                        cwd: repoPath
+                        cwd: grunt.option('repo-path')
                     },
                     callback: function(err, stdout, stderr, cb) {
                         grunt.config.set('git', {
@@ -36,7 +34,7 @@ module.exports = function(grunt) {
                 command: 'git rm $(git ls-files -d -z)',
                 options: {
                     execOptions: {
-                        cwd: repoPath,
+                        cwd: grunt.option('repo-path'),
                     }
                 }
             },
@@ -44,7 +42,7 @@ module.exports = function(grunt) {
                 command: 'git checkout .',
                 options: {
                     execOptions: {
-                        cwd: repoPath
+                        cwd: grunt.option('repo-path')
                     }
                 }
             }
@@ -53,11 +51,11 @@ module.exports = function(grunt) {
             commit: {
                 options: {
                     message: 'autoupdate of JSDocs',
-                    cwd: repoPath
+                    cwd: grunt.option('repo-path')
                 },
                 files: [{
                     expand: true,
-                    cwd: repoPath,
+                    cwd: grunt.option('repo-path'),
                     src: [
                         'data-*.js',
                         'index.html',
@@ -71,7 +69,7 @@ module.exports = function(grunt) {
             push: {
                 options: {
                     branch: 'master',
-                    cwd: repoPath
+                    cwd: grunt.option('repo-path')
                 }
             }
         }
@@ -93,7 +91,7 @@ module.exports = function(grunt) {
         }
     });
 
-    grunt.registerTask('jsdoc', ['jsduck:main', 'shell:git-count', 'git']);
-    grunt.registerTask('default', ['jsdoc']);
+    grunt.registerTask('jsdoc', ['jsduck:deploy', 'shell:git-count', 'git']);
+    grunt.registerTask('default', ['jsduck:main']);
 };
 
