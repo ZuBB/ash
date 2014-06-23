@@ -727,7 +727,7 @@ Task.prototype.getUnsureTaskData = function(dataLink) {
 };
 
 /**
- * Runs method that produces/gets data/numbers for this task
+ * Runs method that produces/gets data(numbers) for this task
  *
  * @return {Boolean} status/result of the action
  * @private
@@ -752,14 +752,8 @@ Task.prototype.processTaskDataMethod = function() {
 
     this.dataSetsCount = this.graphics.length;
 
-    if (this.dataSetsCount > 0) {
-        result = typeof result === 'undefined' ? true : result;
-    } else {
-        //DEBUG_START
-        _d('this spec does not have data');
-        //DEBUG_STOP
-        result = !!result;
-    }
+    result = this.dataSetsCount > 0 && typeof result === 'undefined' ?
+        true : !!result;
 
     //DEBUG_START
     _d(result, '`processTaskDataMethod` final result');
@@ -841,6 +835,10 @@ Task.prototype.calc_data = function() {
  * @private
  */
 Task.prototype.logDataStats = function() {
+    if (this.dataSetsCount === 0) {
+        _d('this spec does not have data');
+    }
+
     this.graphics.forEach(function (dataSet, index) {
         _d('----- ' + index + ' -----');
         Object.keys(dataSet).forEach(function (key) {
