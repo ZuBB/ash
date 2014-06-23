@@ -470,6 +470,10 @@ Dispatcher = (function() {
             }
         };
         var filterMessagesFunc = function(item) {
+            if (item.message[0] === '') {
+                return true;
+            }
+
             if (uniqueMessages.indexOf(item.message[0]) > -1) {
                 return false;
             }
