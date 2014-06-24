@@ -1222,7 +1222,7 @@ Task.prototype.drawGraphics = function() {
         var graphicParams = {
             axis: _t('units.' + this.axisName),
             name: this.getGraphicName(index + 1),
-            color: Colorer.getGraphicColor(this.graphicColor, index, this.dataSetsCount)
+            color: this.getGraphicColor(index)
         };
 
         var graphic = this.draw2DGraphic(dataSet, graphicParams, index);
@@ -1267,6 +1267,45 @@ Task.prototype.getGraphicName = function(currentIndex) {
     }
 
     return _t(result, currentIndex);
+};
+
+/**
+ * Calculates color for specific graphic
+ *
+ * @param {Number} index index of the graphic (graphic is based on dataset)
+ * of this task that is currently drawing.
+ *
+ * @return {Number} graphic color
+ * @private
+ */
+Task.prototype.getGraphicColor = function(index) {
+    var graphicColor = null;
+
+    switch (true) {
+        case typeof this.graphicColor === 'string':
+            graphicColor = parseInt(this.graphicColor, 16) ||
+                Colorer.createRandomColor();
+            break;
+        case typeof this.graphicColor === 'number':
+            graphicColor = this.graphicColor;
+            break;
+        case typeof this.graphicColor === 'function':
+            graphicColor = this.graphicColor(index, this.dataSetsCount);
+            break;
+        case Array.isArray(this.graphicColor):
+            graphicColor = this.graphicColor[index];
+            break;
+        case this.graphicColor && this.graphicColor.constructor === Object:
+            graphicColor = Colorer.getGraphicPercentColor(index, this.dataSetsCount);
+            break;
+        default:
+            //DEBUG_START
+            _d('random color was used for graphic');
+            //DEBUG_STOP
+            graphicColor = Colorer.createRandomColor();
+    }
+
+    return graphicColor;
 };
 
 /**
