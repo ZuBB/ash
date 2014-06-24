@@ -1853,8 +1853,8 @@ Task.prototype.isSavingRequired = function() {
 };
 
 /**
- * Schedules current task for save to use in compare feature
- * @ignore
+ * Schedules current task for saving to use in compare feature
+ * @private
  */
 Task.prototype.addTask2Save4Compare = function() {
     if (this.getTaskStatus() && this.exportData) {
