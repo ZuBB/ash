@@ -117,6 +117,15 @@ Dispatcher = (function() {
     var data4Compare = null;
 
     /**
+     * @property {Number} padLen = 10
+     * @private
+     *
+     * Amount of spaces that will be added after task name in log
+     * for compare feature
+     */
+    var padLen = 10;
+
+    /**
      * Registers new task with dictionary of options passed as parameter
      *
      * @param {Object} [taskOpts] A dictionary with options for new Task instance
@@ -228,6 +237,8 @@ Dispatcher = (function() {
         _rp(_t('report.done', Profiler.get_HRF_time('main')));
 
         //DEBUG_START
+        _i('<<<<< ' + 'GRAND_TOTAL'.rpad(' ', padLen) +
+                Profiler.get_ms_time('main') + ' ms passed');
         dumpTasks2Disk();
         Logger.close();
         //DEBUG_STOP
@@ -299,10 +310,10 @@ Dispatcher = (function() {
             return;
         }
 
+        var count  = length.toString();
         var specs  = Object.keys(tasksHash);
         var sortFn = function(a, b) { return a.length - b.length; };
-        var padLen = Math.ceil(specs.sort(sortFn).last().length * 1.4);
-        var count  = length.toString();
+        padLen = Math.ceil(specs.sort(sortFn).last().length * 1.4);
 
         var preProcess = function(specObj, ii) {
             var specName = specObj.getTaskName();
