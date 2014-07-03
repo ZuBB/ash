@@ -1918,6 +1918,29 @@ Task.prototype.getDataSetsCount = function() {
 };
 
 /**
+ * Makes task that one which provides a view
+ *
+ * @param {String} viewDef keyword that makes task to provide a view
+ */
+Task.prototype.setProvidedView = function(viewDef) {
+    if (typeof viewDef !== 'string') {
+        return false;
+    }
+
+    if (viewDef.length === 0) {
+        return false;
+    }
+
+    if (viewDef.indexOf(':') < 1) {
+        return false;
+    }
+
+    this.providedView = viewDef;
+
+    return this.providedView !== null;
+};
+
+/**
  * Get a data from task by its 'datalink'
  *
  * @param {Task} task object
