@@ -116,6 +116,7 @@ Dispatcher = (function() {
      */
     var data4Compare = null;
 
+    //DEBUG_START
     /**
      * @property {Number} padLen = 10
      * @private
@@ -124,6 +125,7 @@ Dispatcher = (function() {
      * for compare feature
      */
     var padLen = 10;
+    //DEBUG_STOP
 
     /**
      * Registers new task with dictionary of options passed as parameter
