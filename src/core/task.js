@@ -1303,7 +1303,9 @@ Task.prototype.getGraphicColor = function(index) {
             graphicColor = this.graphicColor[index];
             break;
         case this.graphicColor && this.graphicColor.constructor === Object:
-            graphicColor = Colorer.getGraphicPercentColor(index, this.dataSetsCount);
+            var params = [this.graphicColor, index, this.dataSetsCount];
+            graphicColor = Colorer.getGraphicPercentColor.apply(null, params);
+            graphicColor = parseInt(Colorer.rgb2HEX(graphicColor), 16);
             break;
         default:
             //DEBUG_START

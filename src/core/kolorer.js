@@ -222,6 +222,7 @@ Colorer = (function() {
     };
 
     return {
+        'getGraphicPercentColor': getGraphicPercentColor,
         'getColorByPercent': getColorByPercent,
         'createRandomColor': createRandomColor,
         'getGraphicColor':   getGraphicColor,
