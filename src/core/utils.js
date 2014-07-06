@@ -195,3 +195,46 @@ Utils.range = function(start, stop, step) {
     return range;
 };
 
+/**
+ * Function that creates html markup for table cell accordingly to passed
+ * params
+ *
+ * @param {Object} [params] A hash with set of params
+ * @param {String} [params.className] - classname
+ * @param {Number} [params.level] - indetation level
+ * @param {Number} [params.trim] - number of digits after decimal point
+ * @param {String} [params.units] - name of units to append
+ * @param {String} [params.text] - text
+ *
+ * @member Utils
+ * @method createHTMLTableCell
+ * @ignore
+ */
+Utils.createHTMLTableCell = function(params) {
+    var className = '';
+    var innerText = '';
+    var padding = '';
+
+    if (typeof params.text === 'number') {
+        innerText = params.text.toFixed(params.trim || 2);
+    } else {
+        innerText = (params.text || '&nbsp;').toString();
+    }
+
+    if (params.units) {
+        innerText += ' ' + params.units;
+    }
+
+    if (params.level) {
+        padding = '  '.repeat(params.level);
+    }
+
+    if (params.className) {
+        className = ' class="' + params.className + '"';
+    } else if (params.hasOwnProperty(className) === false) {
+        className = ' class="dataCell"';
+    }
+
+    return [padding, '<td', className, '>', innerText, '<\/td>'].join('');
+};
+
