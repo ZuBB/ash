@@ -133,6 +133,10 @@ Color.prototype = {
    rgbString: function() {
       return string.rgbString(this.values.rgb, this.values.alpha);
    },
+   rgbNumber: function() {
+      return (this.values.rgb[0] << 16) | (this.values.rgb[1] << 8) |
+          this.values.rgb[2];
+   },
    rgbaString: function() {
       return string.rgbaString(this.values.rgb, this.values.alpha);
    },
