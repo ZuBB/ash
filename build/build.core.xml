@@ -57,11 +57,17 @@
 
             <fileset dir="src/core/src/vendor/">
                 <selector if="${3PARTY}">
-                    <and>
-                        <filename name="json/json2.js"/>
-                        <filename name="es5-shim/es5-shim.js"/>
-                        <filename name="color-static/color-0.6.0.js"/>
-                    </and>
+                    <filename name="es5-shim/es5-shim.js"/>
+                </selector>
+            </fileset>
+            <fileset dir="src/core/src/vendor">
+                <selector if="${3PARTY}">
+                    <filename name="json/json2.js"/>
+                </selector>
+            </fileset>
+            <fileset dir="src/core/src/vendor">
+                <selector if="${3PARTY}">
+                    <filename name="color-static/color-0.6.0.js"/>
                 </selector>
             </fileset>
 
