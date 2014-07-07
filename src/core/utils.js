@@ -169,6 +169,17 @@ Utils.createOutputStr = function(b_lf, a_lf, value, description) {
 };
 
 /**
+ * helper function that creates random color
+ *
+ * @method createRandomColor
+ * @member Utils
+ * @ignore
+ */
+Utils.createRandomColor = function() {
+    return parseInt(Math.floor(Math.random()*16777215).toString(16), 16);
+};
+
+/**
  * function that ...
  * https://github.com/jashkenas/underscore/blob/master/underscore.js#L570
  *

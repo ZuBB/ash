@@ -1289,10 +1289,11 @@ Task.prototype.getGraphicColor = function(index) {
     var graphicColor = null;
 
     switch (true) {
-        case typeof this.graphicColor === 'string':
-            graphicColor = parseInt(this.graphicColor, 16) ||
-                Colorer.createRandomColor();
+        /*case colorDef === null:
+        case typeof colorDef === 'undefined':
             break;
+        case typeof this.graphicColor === 'string':
+            // TODO */
         case typeof this.graphicColor === 'number':
             graphicColor = this.graphicColor;
             break;
@@ -1302,16 +1303,13 @@ Task.prototype.getGraphicColor = function(index) {
         case Array.isArray(this.graphicColor):
             graphicColor = this.graphicColor[index];
             break;
-        case this.graphicColor && this.graphicColor.constructor === Object:
-            var params = [this.graphicColor, index, this.dataSetsCount];
-            graphicColor = Colorer.getGraphicPercentColor.apply(null, params);
-            graphicColor = parseInt(Colorer.rgb2HEX(graphicColor), 16);
-            break;
+        /*case this.graphicColor && this.graphicColor.constructor === Object:
+            // TODO */
         default:
             //DEBUG_START
             _d('random color was used for graphic');
             //DEBUG_STOP
-            graphicColor = Colorer.createRandomColor();
+            graphicColor = Utils.createRandomColor();
     }
 
     return graphicColor;
