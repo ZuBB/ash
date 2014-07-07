@@ -54,16 +54,17 @@
             <header>${JSHINT.HEADER}${line.separator}${line.separator}</header>
 
             <fileset dir="src/core/src/core" includes="*js"/>
-            <fileset dir="src/core/src/vendor/json">
-                <selector if="${3PARTY.JSON}">
-                    <filename name="json2.js"/>
+
+            <fileset dir="src/core/src/vendor/">
+                <selector if="${3PARTY}">
+                    <and>
+                        <filename name="json/json2.js"/>
+                        <filename name="es5-shim/es5-shim.js"/>
+                        <filename name="color-static/color-0.6.0.js"/>
+                    </and>
                 </selector>
             </fileset>
-            <fileset dir="src/core/src/vendor/es5-shim">
-                <selector if="${3PARTY.ES5}">
-                    <filename name="es5-shim.js"/>
-                </selector>
-            </fileset>
+
             <fileset dir="src/core/src/extension" includes="*.js"/>
 
             <filelist dir="src/modules" files="${modules.files}"/>
@@ -404,8 +405,7 @@
         <var name="mail.subject" value=""/>
         <var name="mail.message" value=""/>
 
-        <property name="3PARTY.JSON" value="${3PARTY.JSON.dev}"/>
-        <property name="3PARTY.ES5" value="true"/>
+        <property name="3PARTY" value="true"/>
         <property name="DEFAULT_GRAPHIC_TYPE" value="${LINE.TYPE.DEV}"/>
 
         <if>
@@ -418,7 +418,6 @@
 
     <target name="rqbuild-vars">
         <property name="releasing" value="true"/>
-        <property name="3PARTY.JSON" value="${3PARTY.JSON.rqb}"/>
         <property name="DEFAULT_GRAPHIC_TYPE" value="${LINE.TYPE.REL}"/>
     </target>
 
