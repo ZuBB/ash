@@ -626,13 +626,13 @@ Task.prototype.isSoftDependenciesResolved = function() {
         return typeof item === 'string';
     };
 
-    var isDepNameAaArray = function(item) {
+    var isDepNameAnArray = function(item) {
         return Array.isArray(item);
     };
 
     if (this.softDependencies.every(isDepNameAString)) {
         this.softDependencies = [this.softDependencies];
-    } else if (this.softDependencies.every(isDepNameAaArray)) {
+    } else if (this.softDependencies.every(isDepNameAnArray)) {
         // all is OK, nothing to do
     } else {
         //DEBUG_START
@@ -641,8 +641,8 @@ Task.prototype.isSoftDependenciesResolved = function() {
         return false;
     }
 
-    for (var ii = 0; ii < this.softDependencies.length; ii++) {
-        var specName = this.softDependencies[ii];
+    for (var ii = 0, specName; ii < this.softDependencies.length; ii++) {
+        specName = this.softDependencies[ii];
 
         if (Task.findValidDependency(specName) === null) {
             //DEBUG_START
