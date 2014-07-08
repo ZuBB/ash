@@ -681,17 +681,7 @@ Task.prototype.getDependencyObject = function(index) {
  * @return {DataSet|Array|Number} value that has been requested
  */
 Task.prototype.getDepDataSet = function(index) {
-    index = Math.abs(parseInt(index, 10)) || 0;
-    // check if index is not out of array limits
-    if (index >= this.dependencies.length) {
-        return null;
-    }
-
-    // dependency string
-    var specName = this.dependencies[index].split(':')[0];
-    // get dependency task
-    var depObj = Dispatcher.getValidTaskObject(specName);
-
+    var depObj = this.getDependencyObject(index);
     return Task.getTaskData(depObj, this.dependencies[index]);
 };
 
