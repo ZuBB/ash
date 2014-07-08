@@ -695,7 +695,7 @@ Task.prototype.getDepDataSet = function(index) {
  * @ignore
  */
 Task.prototype.getActiveSoftDependency = function(index) {
-    index = parseInt(index, 10) || 0;
+    index = Math.abs(parseInt(index, 10)) || 0;
     return Task.findValidDependency(this.softDependencies[index]);
 };
 
