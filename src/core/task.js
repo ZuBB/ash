@@ -1911,10 +1911,13 @@ Task.prototype.addTask2Save4Compare = function() {
 /**
  * Returns number of datasets in current task
  *
+ * @param {Boolean} [force] flag that indicates
+ *  if we need to get **current** amount of datasets
+ *
  * @return {Number} amount of the datasets, produced by this task
  */
-Task.prototype.getDataSetsCount = function() {
-    return this.dataSetsCount;
+Task.prototype.getDataSetsCount = function(force) {
+    return force !== true ? this.dataSetsCount : this.graphics.length;
 };
 
 /**
