@@ -798,9 +798,6 @@ Dispatcher = (function() {
     var storeGraphicObject = function(graphicObj) {
         if (graphicObj) {
             return drownGraphics.push(graphicObj);
-        } else {
-            // TODO what is best value here?
-            return null;
         }
     };
 
