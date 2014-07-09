@@ -249,3 +249,23 @@ Utils.createHTMLTableCell = function(params) {
     return [padding, '<td', className, '>', innerText, '<\/td>'].join('');
 };
 
+/**
+ * helper function that ...
+ *
+ * @member Utils
+ * @ignore
+ */
+Utils.parseNaturalNumber = function(number) {
+    return parseInt(number, 10) || 0;
+};
+
+/**
+ * helper function that ...
+ *
+ * @member Utils
+ * @ignore
+ */
+Utils.parseIntegerNumber = function(number) {
+    return Math.abs(Utils.parseNaturalNumber(number));
+};
+
