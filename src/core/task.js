@@ -663,7 +663,7 @@ Task.prototype.isSoftDependenciesResolved = function() {
  * @return {Task|null} task object
  */
 Task.prototype.getDependencyObject = function(index) {
-    index = Math.abs(parseInt(index, 10)) || 0;
+    index = Utils.parseIntegerNumber(index);
 
     if (index < this.dependencies.length) {
         var specName = this.dependencies[index].split(':')[0];
@@ -681,6 +681,7 @@ Task.prototype.getDependencyObject = function(index) {
  * @return {DataSet|Array|Number} value that has been requested
  */
 Task.prototype.getDepDataSet = function(index) {
+    index = Utils.parseIntegerNumber(index);
     var depObj = this.getDependencyObject(index);
     return Task.getTaskData(depObj, this.dependencies[index]);
 };
@@ -695,7 +696,7 @@ Task.prototype.getDepDataSet = function(index) {
  * @ignore
  */
 Task.prototype.getActiveSoftDependency = function(index) {
-    index = Math.abs(parseInt(index, 10)) || 0;
+    index = Utils.parseIntegerNumber(index);
     return Task.findValidDependency(this.softDependencies[index]);
 };
 
@@ -1108,7 +1109,7 @@ Task.prototype.parseViewIndex = function() {
 
     for (var ii = 0; ii < viewIndexes.length; ii++) {
         var parts = viewIndexes[ii].split(':');
-        var position = parseInt(parts[1], 10);
+        var position = Utils.parseNaturalNumber(parts[1]);
         var view = parts[0].match(/\w+/)[0];
 
         if (isNaN(position) || position < 1) {
@@ -1593,7 +1594,7 @@ Task.prototype.isDataSetExist = function(index) {
         return this.getTaskStatus() && this.dataSetsCount > 0;
     }
 
-    index = Math.abs(parseInt((index || '0'), 10));
+    index = Utils.parseIntegerNumber(index);
 
     if (Utils.isNumberInvalid(index) === true) {
         return false;
@@ -1684,7 +1685,7 @@ Task.prototype.getDataSet = function(index, key) {
         index = 0;
     }
 
-    var start = parseInt(index, 10) || 0;
+    var start = Utils.parseNaturalNumber(index);
     var sliceParams = start < 0 ? [start] : [start, start + 1];
     var dataSet = Array.prototype.slice.apply(this.graphics, sliceParams)[0];
 
@@ -1772,7 +1773,7 @@ Task.prototype.getDataSets = function() {
 Task.prototype.createGetSetPropMethods = function() {
     var addValueFunc = function(self, key) {
         return function(item, dataSetIndex) {
-            dataSetIndex = Math.abs(parseInt(dataSetIndex, 10)) || 0;
+            dataSetIndex = Utils.parseIntegerNumber(dataSetIndex);
 
             if (typeof self.graphics[dataSetIndex] === 'undefined') {
                 self.graphics[dataSetIndex] = {};
@@ -1788,8 +1789,8 @@ Task.prototype.createGetSetPropMethods = function() {
 
     var getValueFunc = function(self, key) {
         return function(index, dataSetIndex) {
-            index = Math.abs(parseInt(index, 10)) || 0;
-            dataSetIndex = Math.abs(parseInt(dataSetIndex, 10)) || 0;
+            index = Utils.parseIntegerNumber(index);
+            dataSetIndex = Utils.parseIntegerNumber(dataSetIndex);
 
             if (dataSetIndex < self.graphics.length) {
                 return self.graphics[dataSetIndex][key][index];
@@ -1962,7 +1963,7 @@ Task.getTaskData = function(depObj, dataLink) {
     }
 
     // get dataset index
-    var dsIndex = parseInt((depSpec[1] || '0'), 10);
+    var dsIndex = Utils.parseNaturalNumber(depSpec[1]);
 
     //DEBUG_START
     if (Utils.isNumberInvalid(dsIndex) === true) {
@@ -1987,7 +1988,7 @@ Task.getTaskData = function(depObj, dataLink) {
     //DEBUG_STOP
 
     if (depSpec.length > 3) {
-        var ii = Math.abs(parseInt(depSpec[3], 10)) || 0;
+        var ii = Utils.parseIntegerNumber(depSpec[3]);
         return dataSet[depSpec[2]][ii];
     }
 
