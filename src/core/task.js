@@ -1154,20 +1154,34 @@ Task.prototype.createGetSetPropMethods = function() {
 Task.prototype.createAddMessageMethods = function() {
     var _this = this;
     var addMessageFunc = function(item) {
-        return function(message) {
+        return function() {
+            var params = Array.prototype.slice.apply(arguments);
+
+            if (params.empty()) {
+                return false;
+            }
+
+            var message = params.shift();
+
             if (typeof message === 'string') {
                 if (message.indexOf('.') === 0) {
                     message = 'specs.' + _this.getTaskName() + message;
                 }
 
-                message = [message];
+                if (params.empty()) {
+                    params = [message];
+                } else {
+                    params.unshift(message);
+                }
+
+                message = params;
             }
 
             if (Array.isArray(message)) {
                 message = {'message': message};
             }
 
-            if (!message || message.constructor !== Object) {
+            if (message.constructor !== Object) {
                 //DEBUG_START
                 _e('[Dispatcher::addMessage]: message is invalid object');
                 //DEBUG_STOP
