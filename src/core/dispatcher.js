@@ -541,8 +541,8 @@ Dispatcher = (function() {
                     return;
                 }
 
-                if (graphicsViews.hasOwnProperty([view[0]])) {
-                    _e('Next view has been already created');
+                if (graphicsViews.hasOwnProperty(view[0])) {
+                    _e(view, 'Next view has been already created');
                     return;
                 }
 
