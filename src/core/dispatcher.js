@@ -118,13 +118,13 @@ Dispatcher = (function() {
 
     //DEBUG_START
     /**
-     * @property {Number} padLen = 10
+     * @property {Number} padLen = 40
      * @private
      *
      * Amount of spaces that will be added after task name in log
      * for compare feature
      */
-    var padLen = 10;
+    var padLen = 40;
     //DEBUG_STOP
 
     /**
