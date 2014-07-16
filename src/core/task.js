@@ -1605,7 +1605,8 @@ Task.prototype.getGraphicName = function(currentIndex) {
     var result = null;
 
     if (typeof this.graphicName === 'function') {
-        result = this.graphicName(currentIndex, this.dataSetsCount);
+        var params = [this.specName, currentIndex, this.dataSetsCount];
+        result = this.graphicName.apply(null, params);
     } else if (typeof this.graphicName === 'string') {
         result = 'specs.' + this.graphicName + '.name';
     } else {
