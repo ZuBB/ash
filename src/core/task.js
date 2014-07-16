@@ -357,11 +357,12 @@ Task = function(params) {
 
     this.axisName = 'none';
     this.graphicName = null;
-    this.graphicType = '';
     this.lineType = null;
-    this.defaultLineType = typeof $GRAPHIC_TYPE$ === 'undefined' ? 2 : $GRAPHIC_TYPE$;
+    this.graphicType = '';
     this.graphicColor = null;
     this.hiddenGraphics = null;
+    this.defaultLineType =
+        typeof $GRAPHIC_TYPE$ === 'undefined' ? 2 : $GRAPHIC_TYPE$;
 
     this.setLimits = false;
     this.minLimit  = null;
