@@ -343,7 +343,6 @@ Task = function(params) {
   //this.revokedSpecs = [];
   //this.forbiddenChannel = null;
 
-    // experimental
     this.exportData = false;
     this.importData = false;
     this.requestDataLoad = false;
@@ -351,6 +350,9 @@ Task = function(params) {
     // experimental
     this.drawMarkers = false;
     this.customMarkers = [];
+    //DEBUG_START
+    this.logHashInData = false;
+    //DEBUG_STOP
 
     this.viewIndex = null;
     this.providedView = null;
@@ -847,15 +849,13 @@ Task.prototype.logDataStats = function() {
                 return false;
             }
 
-            var not_a_num = typeof dataSet[key][0] !== 'number';
+            var notNum = typeof dataSet[key][0] !== 'number';
             _d(dataSet[key].length, key + '.length');
 
-            if (not_a_num && dataSet[key].length === 1) {
+            if (notNum && dataSet[key].length === 1 && this.logHashInData) {
                 _d(dataSet[key][0], key + '[0]');
                 return false;
-            }
-
-            if (not_a_num) {
+            } else if (notNum) {
                 _d('key `' + key + '` holds non number items');
                 return false;
             }
