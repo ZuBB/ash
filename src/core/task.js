@@ -773,8 +773,8 @@ Task.prototype.requestDataLoadMethod = function() {
     if (result === 0) {
         return false;
     } else if (result === 0.5) {
-        this.addWarning('core.messages.warning2');
-        this.addHint('core.messages.hint2');
+        this.addWarning('core.messages.warning3');
+        this.addHint('core.messages.hint3');
         //DEBUG_START
     } else if (result !== 1) {
         _e('got unknown return code');
@@ -802,8 +802,8 @@ Task.prototype.pullTaskData = function() {
         this.graphics = data;
         return true;
     } else if (data === false) {
-        this.addWarning('core.messages.warning1');
-        this.addHint('core.messages.hint1');
+        this.addWarning('core.messages.warning2');
+        this.addHint('core.messages.hint2');
     }
 
     return false;
