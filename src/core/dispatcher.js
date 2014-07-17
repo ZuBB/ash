@@ -265,7 +265,7 @@ Dispatcher = (function() {
             message = _t('report.version.rel', scriptName, Script.version);
         } else if (Script.buildID.indexOf('BUILD_ID') < 0) {
             message = _t('report.version.vcs_dev', scriptName,
-                    Script.buildID, fixedbuildTime.toLocaleString());
+                    fixedbuildTime.toLocaleString(), Script.buildID);
         } else {
             message = _t('report.version.dev', scriptName,
                     fixedbuildTime.toLocaleString());
