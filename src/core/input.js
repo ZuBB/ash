@@ -175,7 +175,8 @@ Input = (function() {
         },
         'DROPDOWN': {
             'initialValue': function(index, name) {
-                return getDropDownContent(inputFields[name].items, index);
+                return getDropDownContent(name,
+                        inputFields[name].items, index);
             },
             'defaultValue': function() {
                 return 0;
@@ -201,10 +202,10 @@ Input = (function() {
             }
         },
         'CHANNEL': {
-            'initialValue': function(index) {
+            'initialValue': function(index, name) {
                 var items = Utils.range(Host.Channels + 1);
                 items.splice(0, 1, '---');
-                return getDropDownContent(items, index);
+                return getDropDownContent(name, items, index);
             },
             'defaultValue': function() {
                 // if input with type channel was not inited,
@@ -250,7 +251,7 @@ Input = (function() {
                     });
                 }
 
-                return getDropDownContent(items, index);
+                return getDropDownContent(name, items, index);
             },
             'defaultValue': function() {
                 return null;
@@ -264,7 +265,8 @@ Input = (function() {
         },
         'TOGGLE': {
             'initialValue': function(index, name) {
-                return getDropDownContent(inputFields[name].items, index);
+                return getDropDownContent(name,
+                        inputFields[name].items, index);
             },
             'defaultValue': function() {
                 return null;
@@ -304,11 +306,18 @@ Input = (function() {
      *
      * @private
      */
-    var getDropDownContent = function(items/*, selectedIndex*/) {
+    var getDropDownContent = function(name, items/*, selectedIndex*/) {
         // TODO take into account previously selected item
         if (items && Array.isArray(items) && items.length > 1) {
-            var func = function(item) { return _t(item.toString()); };
-            return items.map(func).join('\n');
+            return items
+                .map(function(item) {
+                    item = item.toString();
+                    item = item.indexOf('.') === 0 ?
+                        'inputs.' + name + item : item;
+
+                    return _t(item);
+                })
+                .join('\n');
         } else {
             return '\n';
         }
