@@ -399,14 +399,7 @@ Input = (function() {
      * @private
      */
     var getInputI18Name = function(name) {
-        var key = 'inputs.' + name + '.name';
-        var translation = _t(key);
-
-        if (translation === key) {
-            translation = Script.inputFields[name].name;
-        }
-
-        return translation || key;
+        return _t('inputs.' + name + '.name');
     };
 
     /**
