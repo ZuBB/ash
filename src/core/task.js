@@ -378,6 +378,29 @@ Task = function(params) {
 };
 
 /**
+ * Checks if task's name is valid
+ *
+ * @return {Boolean} result of the check
+ */
+Task.prototype.isTaskNameValid = function() {
+    if (!this.specName) {
+        //DEBUG_START
+        _e('Passed spec misses name');
+        //DEBUG_STOP
+        return false;
+    }
+
+    if (this.specName.indexOf(':') > -1) {
+        //DEBUG_START
+        _e('passed spec\'s name contains \':\'!');
+        //DEBUG_STOP
+        return false;
+    }
+
+    return true;
+};
+
+/**
  * Returns name of the task
  *
  * @private
