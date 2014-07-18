@@ -169,29 +169,26 @@ Dispatcher = (function() {
      * Sometimes we call *task* as *spec*.
      */
     var registerNewTask = function(taskOpts) {
+        //DEBUG_START
         if (!taskOpts) {
-            //DEBUG_START
             _e('can not register empty graphic specs object!');
-            //DEBUG_STOP
             return false;
         }
+        //DEBUG_STOP
 
         var taskObj = new Task(taskOpts);
         var graphicFullName = taskObj.getTaskName();
 
-        if (!graphicFullName || graphicFullName.indexOf(':') > -1) {
-            //DEBUG_START
-            _e('passed spec misses name or name contains \':\'!');
-            //DEBUG_STOP
+        //DEBUG_START
+        if (taskObj.isTaskNameValid() === false) {
             return false;
         }
 
         if (graphicFullName in tasksHash) {
-            //DEBUG_START
             _e(graphicFullName, 'spec name duplication');
-            //DEBUG_STOP
             return false;
         }
+        //DEBUG_STOP
 
         tasksHash[graphicFullName] = taskObj;
         taskOpts = null;
