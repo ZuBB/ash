@@ -480,7 +480,7 @@ Dispatcher = (function() {
             }
         };
         var filterMessagesFunc = function(item) {
-            if (item.message[0] === '') {
+            if (item.message[0] === 'report.messages.empty') {
                 return true;
             }
 
