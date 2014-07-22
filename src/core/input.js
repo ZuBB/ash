@@ -175,8 +175,11 @@ Input = (function() {
         },
         'DROPDOWN': {
             'initialValue': function(index, name) {
-                return getDropDownContent(name,
-                        inputFields[name].items, index);
+                return getDropDownContent({
+                    items: inputFields[name].items,
+                    index: index,
+                    name:  name
+                });
             },
             'defaultValue': function() {
                 return 0;
@@ -204,8 +207,13 @@ Input = (function() {
         'CHANNEL': {
             'initialValue': function(index, name) {
                 var items = Utils.range(Host.Channels + 1);
-                items.splice(0, 1, '---');
-                return getDropDownContent(name, items, index);
+                items.splice(0, 1, _t('inputs.combo.nothing'));
+                return getDropDownContent({
+                    name:  name,
+                    i18n:  false,
+                    items: items,
+                    index: index
+                });
             },
             'defaultValue': function() {
                 // if input with type channel was not inited,
@@ -251,7 +259,12 @@ Input = (function() {
                     });
                 }
 
-                return getDropDownContent(name, items, index);
+                return getDropDownContent({
+                    name:  name,
+                    i18n:  false,
+                    items: items,
+                    index: index
+                });
             },
             'defaultValue': function() {
                 return null;
@@ -265,8 +278,11 @@ Input = (function() {
         },
         'TOGGLE': {
             'initialValue': function(index, name) {
-                return getDropDownContent(name,
-                        inputFields[name].items, index);
+                return getDropDownContent({
+                    items: inputFields[name].items,
+                    index: index,
+                    name:  name
+                });
             },
             'defaultValue': function() {
                 return null;
@@ -299,23 +315,33 @@ Input = (function() {
     };
 
     /**
-     * Returns content ready to be set as dropdown items
+     * Returns string ready to be set as dropdown content
      *
-     * @param {Array} items List of dropdown items
-     * @return {String} stringified dropdown content
+     * @param {Object} key-value hash with params
      *
      * @private
      */
-    var getDropDownContent = function(name, items/*, selectedIndex*/) {
+    var getDropDownContent = function(params) {
         // TODO take into account previously selected item
+
+        var items = params.items;
         if (items && Array.isArray(items) && items.length > 1) {
             return items
                 .map(function(item) {
-                    item = item.toString();
-                    item = item.indexOf('.') === 0 ?
-                        'inputs.' + name + item : item;
+                    var result = null;
 
-                    return _t(item);
+                    if (typeof item === 'string') {
+                        result = item.indexOf('.') === 0 ?
+                            'inputs.' + params.name + item : item;
+                    } else {
+                        result = item.toString();
+                    }
+
+                    if (params.i18n !== false) {
+                        result = _t(result);
+                    }
+
+                    return result;
                 })
                 .join('\n');
         } else {
