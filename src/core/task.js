@@ -1874,7 +1874,6 @@ Task.prototype.findMinMaxValues = function() {
  * @param {String} [key] name of the key which max and min values
  *  should be retrieved
  * @return {Array} array with minimum and maximum values
- * @private
  */
 Task.prototype.getGlobalMinMaxValues = function(key) {
     return this.minMaxValues.global[key];
@@ -1886,7 +1885,6 @@ Task.prototype.getGlobalMinMaxValues = function(key) {
  * @param {Number} [index] zero-based index of dataSet
  * @param {String} [key] name of the key
  * @return {Array} result array with minimum and maximum values
- * @private
  */
 Task.prototype.getLocalMinMaxValues = function(index, key) {
     if (typeof key === 'undefined') {
