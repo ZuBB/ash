@@ -64,7 +64,8 @@ var Script = {};
  *
  * Holds time when script has been built
  */
-Script.buildTimestamp = new Date("TIMESTAMP");
+Script.buildTimestamp = new Date(typeof $TIMESTAMP$ === 'undefined' ?
+        new Date().getTime() : $TIMESTAMP$);
 
 
 /**
@@ -201,12 +202,13 @@ Script.name = '$SCRIPT$'.indexOf('SCRIPT') > 0 ?
 
 
 /**
- * @property {Boolean} dumpTasksData = '$DUMP_TASKS_DATA$'
+ * @property {Boolean} dumpTasksData = false
  *
  * Flag that indicates if dispatcher should dump tasks data. Usefull only for
  * tests
  */
-Script.dumpTasksData = typeof $DUMP_TASKS_DATA$ === 'undefined' ? false : $DUMP_TASKS_DATA$;
+Script.dumpTasksData = typeof $DUMP_TASKS_DATA$ === 'undefined' ?
+    false : !!$DUMP_TASKS_DATA$;
 
 /**
  * @property {Object} messagePrintProps = {}
