@@ -1837,7 +1837,7 @@ Task.prototype.findMinMaxValues = function() {
         return false;
     }
 
-    this.minMaxValues = {'global': {}, 'local': []};
+    this.minMaxValues = {'local': [], 'global': {}, 'globalIndex': []};
 
     this.graphics.forEach(function (dataSet) {
         var lMinMax = {};
@@ -1865,6 +1865,11 @@ Task.prototype.findMinMaxValues = function() {
             minValues.min(),
             maxValues.max()
         ];
+
+        this.minMaxValues.globalIndex.push({
+            index: maxValues.indexOf(maxValues.max()),
+            value: maxValues.max()
+        });
     }, this);
 };
 
@@ -1877,6 +1882,18 @@ Task.prototype.findMinMaxValues = function() {
  */
 Task.prototype.getGlobalMinMaxValues = function(key) {
     return this.minMaxValues.global[key];
+};
+
+/**
+ * Returns max value with dataSet index among all dataSets
+ *
+ * @param {String} [key] name of the key which max and min values
+ *  should be retrieved
+ * @return {Object} ...
+ */
+Task.prototype.getGlobalMaxWithIndexValue = function(key) {
+    var index = this.defaultKeys.indexOf(key);
+    return this.minMaxValues.globalIndex[index];
 };
 
 /**
