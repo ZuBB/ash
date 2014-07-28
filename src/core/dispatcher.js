@@ -463,7 +463,8 @@ Dispatcher = (function() {
     var printMessages = function() {
         var uniqueMessages = null;
         var printMessageFunc = function(item) {
-            var message = _t.apply(null, item.message);
+            var message = item.skipTranslation ?
+                item.message : _t.apply(null, item.message);
             var controlChars = item.controlChars ||
                 messageTypes[type].messageControlChars;
 
