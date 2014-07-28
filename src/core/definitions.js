@@ -5,13 +5,14 @@ var Input      = null;
 var IO         = null;
 var Reporter   = null;
 var Profiler   = null;
-var Color      = null;
 var Utils      = {};
 var MathHelper = {};
 var AHF = {};
 var isScriptAllowedToRun = function() { return true; };
 
-// i18n
+// vendor
+var Color = null;
+var i18n = null;
 var _t = null;
 
 //DEBUG_START
