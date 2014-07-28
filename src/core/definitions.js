@@ -59,15 +59,6 @@ var Script = {};
 
 
 /**
- * @property {Object} dispatcherOpts = {}
- * @experimental
- *
- * Holds options for Dispatcher class
- */
-Script.dispatcherOpts = {};
-
-
-/**
  * @property {Object} buildTimestamp = (Date || String)
  * @readonly
  *
