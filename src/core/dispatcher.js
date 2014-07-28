@@ -251,21 +251,15 @@ Dispatcher = (function() {
     var announce = function() {
         var message = null;
         var scriptName =  Script.name.toUpperCase();
-        var fixedbuildTime = new Date(Script.buildTimestamp);
-        // Ant's tstamp task returns month that starts from 1
-        // since JavaScript treats month as zero-based number
-        // we have to 'go' one month back
-        // TODO possbily this work buggy with dates > 27th
-        fixedbuildTime.setMonth(Script.buildTimestamp.getMonth() - 1);
 
         if (Script.version.indexOf('VERSION') < 0) {
             message = _t('report.version.rel', scriptName, Script.version);
         } else if (Script.buildID.indexOf('BUILD_ID') < 0) {
             message = _t('report.version.vcs_dev', scriptName,
-                    fixedbuildTime.toLocaleString(), Script.buildID);
+                    Script.buildTimestamp.toLocaleString(), Script.buildID);
         } else {
             message = _t('report.version.dev', scriptName,
-                    fixedbuildTime.toLocaleString());
+                    Script.buildTimestamp.toLocaleString());
         }
 
         _rp(message);
