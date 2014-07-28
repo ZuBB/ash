@@ -64,8 +64,8 @@ var Script = {};
  *
  * Holds time when script has been built
  */
-Script.buildTimestamp = new Date(typeof $TIMESTAMP$ === 'undefined' ?
-        new Date().getTime() : $TIMESTAMP$);
+Script.buildTimestamp = new Date('$TIMESTAMP$'.indexOf('TIMESTAMP') > -1 ?
+        new Date().getTime() : '$TIMESTAMP$');
 
 
 /**
