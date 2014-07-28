@@ -1889,6 +1889,10 @@ Task.prototype.getGlobalMinMaxValues = function(key) {
  * @private
  */
 Task.prototype.getLocalMinMaxValues = function(index, key) {
+    if (typeof key === 'undefined') {
+        return this.minMaxValues.local[index];
+    }
+
     return this.minMaxValues.local[index][key];
 };
 
