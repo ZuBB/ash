@@ -646,7 +646,7 @@ Task.prototype.isSoftDependenciesResolved = function() {
 
         if (Task.findValidDependency(specName) === null) {
             //DEBUG_START
-            _w('None soft dependency was resolved');
+            _i('None soft dependency was resolved');
             //DEBUG_STOP
             return false;
         }
