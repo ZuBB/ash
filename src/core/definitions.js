@@ -210,6 +210,16 @@ Script.name = '$SCRIPT$'.indexOf('SCRIPT') > 0 ?
 Script.dumpTasksData = typeof $DUMP_TASKS_DATA$ === 'undefined' ?
     false : !!$DUMP_TASKS_DATA$;
 
+
+/**
+ * @property {String} acceptedSignalType = 'ANA'
+ *
+ * String that indicates which type of the signal cant be processed
+ * by this script
+ */
+Script.acceptedSignalType = '$DATATYPE$'.indexOf('DATATYPE') > 0 ?
+    'ANA' : '$DATATYPE$';
+
 /**
  * @property {Object} messagePrintProps = {}
  *
