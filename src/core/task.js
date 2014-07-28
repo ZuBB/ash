@@ -2007,6 +2007,11 @@ Task.getTaskData = function(depObj, dataLink) {
 
     var depSpec = dataLink.split(':');
 
+    // if no dataset(s) was requested, plain task/spec will be returned
+    if (depSpec.length === 1) {
+        return depObj;
+    }
+
     // process request of all datasets
     if (depSpec[1] === '*') {
         return depObj.getDataSets();
