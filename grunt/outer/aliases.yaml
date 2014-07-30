@@ -1,0 +1,43 @@
+default:
+  - 'dev'
+base:
+  - 'clean'
+  - 'concat:dev'
+  - 'replace:main'
+dev:
+  - 'dev-vars'
+  - 'base'
+  - 'transcode:main'
+
+git-dev:
+ - 'shell:git1'
+ - 'shell:git2'
+ - 'shell:git3'
+
+git-all:
+ - 'git-dev'
+ - 'shell:git4'
+
+lint:
+ - 'dev-vars'
+ - 'clean'
+ - 'concat:jshint'
+ - 'replace:main'
+ - 'strip'
+ - 'jshint'
+
+uib:
+ - 'dev'
+ - 'git-dev'
+ - 'rename:uib'
+
+rqbuild:
+ - 'rq-vars'
+ - 'git-all'
+ - 'base'
+ - 'strip'
+ - 'closure-compiler:main'
+ - 'rename:cc-fix'
+ - 'transcode:main'
+ - 'rename:uib'
+
