@@ -1867,8 +1867,14 @@ Task.prototype.findMinMaxValues = function() {
         ];
 
         this.minMaxValues.globalIndex.push({
-            index: maxValues.indexOf(maxValues.max()),
-            value: maxValues.max()
+            max: {
+                index: maxValues.indexOf(maxValues.max()),
+                value: maxValues.max()
+            },
+            min: {
+                index: minValues.indexOf(minValues.min()),
+                value: minValues.min()
+            }
         });
     }, this);
 };
