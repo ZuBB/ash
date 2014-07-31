@@ -475,7 +475,7 @@ Dispatcher = (function() {
             }
         };
         var filterMessagesFunc = function(item) {
-            if (item.message[0] === 'report.messages.empty') {
+            if (item.message[0] === '') {
                 return true;
             }
 
