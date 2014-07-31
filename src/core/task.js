@@ -888,6 +888,7 @@ Task.prototype.logDataStats = function() {
 
             if (Utils.isNumberInvalid(min) || Utils.isNumberInvalid(max)) {
                 _e('key `' + key + '` contains invalid item');
+                _d(dataSet[key], key);
                 return this.updateStatus(false);
             }
 
