@@ -119,7 +119,7 @@ Dispatcher = (function() {
     //DEBUG_START
     /**
      * @property {Number} padLen = 40
-     * @private
+     * @ignore
      *
      * Amount of spaces that will be added after task name in log
      * for compare feature
