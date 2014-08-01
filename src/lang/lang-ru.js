@@ -34,12 +34,6 @@ i18n.mergeResourceBundle('ru', 'translation', {
         }
     },
 
-    'vendor': {
-        'i18n': {
-            'emptyString': ''
-        }
-    },
-
     inputs: {
         combo: {
             'auto': 'авто',
