@@ -15,12 +15,14 @@ module.exports = function(grunt) {
             }
         },
         shell: {
+            options: {
+                execOptions: {
+                    cwd: grunt.option('repo-path'),
+                }
+            },
             'git-count': {
                 command: 'git ls-files -m | grep -v index.html | wc -l',
                 options: {
-                    execOptions: {
-                        cwd: grunt.option('repo-path')
-                    },
                     callback: function(err, stdout, stderr, cb) {
                         grunt.config.set('git', {
                             'count': parseInt(stdout, 10) || 0
@@ -32,19 +34,12 @@ module.exports = function(grunt) {
             },
             'git-remove': {
                 command: 'git rm $(git ls-files -d -z)',
-                options: {
-                    execOptions: {
-                        cwd: grunt.option('repo-path'),
-                    }
-                }
+            },
+            'git-add': {
+                command: 'git add -A',
             },
             'git-checkout': {
-                command: 'git checkout .',
-                options: {
-                    execOptions: {
-                        cwd: grunt.option('repo-path')
-                    }
-                }
+                command: 'git checkout .'
             }
         },
         gitcommit: {
@@ -52,17 +47,7 @@ module.exports = function(grunt) {
                 options: {
                     message: 'autoupdate of JSDocs',
                     cwd: grunt.option('repo-path')
-                },
-                files: [{
-                    expand: true,
-                    cwd: grunt.option('repo-path'),
-                    src: [
-                        'data-*.js',
-                        'index.html',
-                        'output/*.js',
-                        'source/*.html'
-                    ]
-                }]
+                }
             }
         },
         gitpush: {
@@ -85,6 +70,7 @@ module.exports = function(grunt) {
         } else {
             grunt.task.run([
                 'shell:git-remove',
+                'shell:git-add',
                 'gitcommit',
                 'gitpush'
             ]);
