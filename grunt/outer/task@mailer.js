@@ -12,8 +12,9 @@ module.exports = function(grunt, options) {
     });
 
     grunt.registerTask('mailer-common', function() {
+        var filePath = grunt.file.expand(grunt.config('vars.dest') + '/*')[0];
         grunt.config('nodemailer.options.message.attachments',
-            [{filePath: grunt.config('vars.destFile')}]);
+            [{'filePath': filePath}]);
 
         grunt.config('vars.mail.message', grunt.option('message') || '');
 
