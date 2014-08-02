@@ -10,16 +10,16 @@ module.exports = {
         '<%= vars.ext %>'
     ].join(''),
 
-    /*'mail': {
+    'mail': {
         'to': '',
         'cc': '',
         'bcc': '',
-        'from': '',
+        'from': 'ASH Build System',
         'subject': '',
         'message': '',
-        'attachment': '',
-        'messageFooter': 'Email sent by ASH robat v2.'
-    },*/
+        'messageFooter': 'Email sent by ASH robat v2.',
+        'smtpCredsFile': 'creds.smtp.json'
+    },
 
     'changesets': null,
     'branch': null,
