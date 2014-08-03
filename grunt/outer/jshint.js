@@ -3,7 +3,7 @@ module.exports = {
         reporter: require('jshint-stylish')
     },
     main: {
-        jshintrc: 'build/sdh/jshintrc',
+        jshintrc: 'src/core/jshintrc',
         src: '<%= vars.destFile %>'
     }
 };
