@@ -1,4 +1,4 @@
 module.exports = {
-    clean: ['build/output/']
+    clean: ['build/output/*']
 };
 
