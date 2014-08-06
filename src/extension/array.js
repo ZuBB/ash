@@ -43,7 +43,7 @@ if (!Array.prototype.sortAsc) {
  */
 if (!Array.prototype.last) {
     Array.prototype.last = function() {
-        return this.slice(-1)[0];
+        return this[this.length - 1];
     };
 }
 
