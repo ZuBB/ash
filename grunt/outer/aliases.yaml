@@ -18,7 +18,7 @@ git-all:
  - 'git-dev'
  - 'shell:git4'
 
-lint:
+ts:
  - 'dev-vars'
  - 'clean'
  - 'concat:jshint'
