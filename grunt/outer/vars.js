@@ -2,6 +2,7 @@ module.exports = {
     'ext': 'ajs',
     'dest': 'build/output/',
     'buildType': null,
+    'excludesList': [],
 
     'destFile': [
         '<%= vars.dest %>',
