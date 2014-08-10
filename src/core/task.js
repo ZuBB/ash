@@ -1634,6 +1634,11 @@ Task.prototype.getGraphicName = function(currentIndex) {
     if (typeof this.graphicName === 'function') {
         var params = [this.specName, currentIndex, this.dataSetsCount];
         result = this.graphicName.apply(null, params);
+    } else if (this.graphicName === '&index') {
+        result = 'specs.' + this.specName + '.name' + currentIndex;
+    } else if (this.graphicName === '&1or2+') {
+        result = 'specs.' + this.specName + '.name' +
+            (currentIndex === this.dataSetsCount ? '1' : 'X');
     } else if (typeof this.graphicName === 'string') {
         result = 'specs.' + this.graphicName + '.name';
     } else {
