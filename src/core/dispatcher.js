@@ -664,8 +664,8 @@ Dispatcher = (function() {
                     viewObject[method](arg1, args[1], args[2], args[3], args[4]);
                 } else if (len === 6) {
                     viewObject[method](arg1, args[1], args[2], args[3], args[4], args[5]);
-                } else {
                     //DEBUG_START
+                } else {
                     dumpInfoFunc('This amount of params is not handled yet', args);
                     //DEBUG_STOP
                 }
