@@ -37,7 +37,6 @@ module.exports = function(grunt) {
             src: [
                 'src/core/src/core/!(main).js',
                 'src/core/src/extension/*.js',
-                'src/core/src/lang/init*.js',
                 'src/tasks/*.js',
                 'src/app/*.js',
                 'src/core/src/runner/main.js',
