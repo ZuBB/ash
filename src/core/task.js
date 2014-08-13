@@ -524,10 +524,9 @@ Task.prototype.checkDependencies = function() {
     _d('checking dependencies...');
     //DEBUG_STOP
 
-    result &= this.isDependenciesResolved();
-    result &= this.isSoftDependenciesResolved();
-    result &= this.isForbiddenDependenciesResolved();
-    result  = Boolean(result);
+    result = result && this.isDependenciesResolved();
+    result = result && this.isSoftDependenciesResolved();
+    result = result && this.isForbiddenDependenciesResolved();
 
     return this.updateStatus(result);
 };
