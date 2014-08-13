@@ -19,15 +19,15 @@ module.exports = function(grunt, options) {
         content = content.replace(
                 /^\s*\/\/DEBUG_START[\S\s]*?\/\/DEBUG_STOP/gm, '');
 
+        grunt.file.delete(filepath);
+        grunt.file.write(filepath, content);
+
         // https://github.com/chrisdanford/grunt-lint-pattern/pull/2
         if (/\b_(d|i|p|w|e|f)\(/gm.test(content)) {
             grunt.fail.fatal('Stripped file still has debug functions in it');
             grunt.log.writeln(RegExp.lastMatch);
             return false;
         }
-
-        grunt.file.delete(filepath);
-        grunt.file.write(filepath, content);
     });
 };
 
