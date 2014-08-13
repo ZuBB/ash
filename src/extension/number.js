@@ -16,7 +16,7 @@ if (!Number.prototype.posToSec) {
  */
 if (!Number.prototype.posToMsec) {
     Number.prototype.posToMsec = function() {
-        return Math.round(this) / Host.Frequency * 1000;
+        return this.posToSec() * 1000;
     };
 }
 
