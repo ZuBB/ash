@@ -544,9 +544,9 @@ Task.prototype.isDependenciesResolved = function() {
         if (typeof this.dependencies[ii] !== 'string') {
             _e('Dependency has wrong type!');
             if (typeof this.dependencies[ii] === 'undefined') {
-                _e('Quite possible you have useless comma in deps..');
+                _i('Quite possible you have useless comma in deps..');
             }
-            continue;
+            return false;
         }
         //DEBUG_STOP
 
