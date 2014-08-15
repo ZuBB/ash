@@ -891,7 +891,7 @@ Task.prototype.logDataStats = function() {
             if (Utils.isNumberInvalid(min) || Utils.isNumberInvalid(max)) {
                 _e('key `' + key + '` contains invalid item');
                 _d(dataSet[key], key);
-                return this.updateStatus(false);
+                continue;
             }
 
             _d(min, key + '.min()');
@@ -1816,10 +1816,11 @@ Task.prototype.setGraphicPoints = function(specObj, graphic, params) {
             _e(jj, 'got a NaN insead of number at');
             _i(x, '`' + _1axis + '` equals to');
             _i(y, '`' + _2axis + '` equals to');
-            return false;
+            continue;
             //DEBUG_STOP
 
             this.addBug('core.messages.error1');
+            continue;
         }
 
         prevYValue = specObj[_2axis][jj];
