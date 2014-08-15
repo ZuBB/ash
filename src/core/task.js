@@ -891,7 +891,7 @@ Task.prototype.logDataStats = function() {
             if (Utils.isNumberInvalid(min) || Utils.isNumberInvalid(max)) {
                 _e('key `' + key + '` contains invalid item');
                 _d(dataSet[key], key);
-                continue;
+                return false;
             }
 
             _d(min, key + '.min()');
