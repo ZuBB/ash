@@ -1806,6 +1806,14 @@ Task.prototype.setGraphicPoints = function(specObj, graphic, params) {
         y = specObj[_2axis][jj];
 
         try {
+            // since Host.CreateGraphic().Add[Color]Point silently
+            // 'eats' undefined, NaN and other incorrect values
+            // we forced to do a check (to know when that case(s)
+            // happened) before 'Add[Color]Point' is called
+            if (Utils.isNumberInvalid(x) || Utils.isNumberInvalid(y)) {
+                throw 0;
+            }
+
             if (params.graphicType === 'multicolor') {
                 graphic.AddColorPoint(x, y, specObj.color[jj]);
             } else {
