@@ -106,9 +106,9 @@
  *
  * - name of the input
  * - `Input.separator` This an alias to item that does next trick: adding it
- *   to dialog is a tricky way to say "*its enough for this dialog to have
- *   inputs, lets push next items into new dialog*". Also it causes current
- *   dialog window to be shown and wait for user's input
+ *   to dialog is a way to say "*its enough for this dialog to have inputs,
+ *   lets push next items into new dialog*". Also it causes current
+ *   dialog window to be shown and ready for user's input
  * - anonymous function that should return an array. When
  *   {@link Input#createConfiguration} meets function, it evaluates it and
  *   replaces it with result that function returned. This allows dynamically
