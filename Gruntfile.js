@@ -31,7 +31,7 @@ module.exports = function(grunt) {
                 }
             }
         },
-        'grunt-gta': {
+        gta: {
             options: {
                 cwd: grunt.option('repo-path'),
             },
@@ -52,16 +52,16 @@ module.exports = function(grunt) {
 
     grunt.loadNpmTasks('grunt-jsduck');
     grunt.loadNpmTasks('grunt-shell');
-    grunt.loadNpmTasks('grunt-gta');
+    grunt.loadNpmTasks('grunt-git-them-all');
 
     grunt.registerTask('git', 'check count of modified files', function() {
         if (grunt.config.get('git.count') === 0) {
-            grunt.task.run('grunt-gta:checkout');
+            grunt.task.run('gta:checkout');
         } else {
             grunt.task.run([
-                'grunt-gta:add',
-                'grunt-gta:commit',
-                'grunt-gta:push'
+                'gta:add',
+                'gta:commit',
+                'gta:push'
             ]);
         }
     });
