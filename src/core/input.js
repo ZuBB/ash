@@ -93,7 +93,7 @@
  *     'input6',
  *     'input7',
  *     function(){
- *         return Input.getValue('input1') === 'I want more!' ? [] : [
+ *         return Input.getValue('input1') !== 'I want more!' ? [] : [
  *             'input8',
  *             'input9',
  *         ];
