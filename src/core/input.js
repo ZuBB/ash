@@ -118,12 +118,21 @@
  * {@link Script#dialogsContent} and {@link Script#inputFields} properties
  * are not empty and have valid content
  *
- * To have inputs in dialogs automatically translated you need to add to
- * resource localization file line like next for each input you have defined
+ * To have input fields in dialogs automatically translated you need
+ * to add to language file(s) code like below for each input you have defined
  * in your `src/app/input_fields.js` file
  *
  * ```
- * inputs.YOUR_INPUT_INTERNAL_NAME.name = Введиде пожалуйста число
+ * i18n.mergeResourceBundle('en', 'translation', {
+ *     inputs: {
+ *         // ...
+ *         'YOUR_INPUT_INTERNAL_NAME': {
+ *              'name': 'Please enter your name'
+ *         }
+ *         // ...
+ *     }
+ * });
+ *
  * ```
  *
  * @class
