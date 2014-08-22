@@ -15,14 +15,12 @@ module.exports = function(grunt) {
             }
         },
         shell: {
-            options: {
-                execOptions: {
-                    cwd: grunt.option('repo-path'),
-                }
-            },
             'git-count': {
                 command: 'git ls-files -m | grep -v index.html | wc -l',
                 options: {
+                    execOptions: {
+                        cwd: grunt.option('repo-path'),
+                    },
                     callback: function(err, stdout, stderr, cb) {
                         grunt.config.set('git', {
                             'count': parseInt(stdout, 10) || 0
@@ -31,48 +29,39 @@ module.exports = function(grunt) {
                         cb();
                     }
                 }
-            },
-            'git-remove': {
-                command: 'git rm $(git ls-files -d -z)',
-            },
-            'git-add': {
-                command: 'git add -A',
-            },
-            'git-checkout': {
-                command: 'git checkout .'
             }
         },
-        gitcommit: {
+        'grunt-gta': {
+            options: {
+                cwd: grunt.option('repo-path'),
+            },
+            checkout: {
+                command: 'checkout .',
+            },
+            add: {
+                command: 'add -A .',
+            },
             commit: {
-                options: {
-                    message: 'autoupdate of JSDocs',
-                    cwd: grunt.option('repo-path')
-                }
-            }
-        },
-        gitpush: {
+                command: 'commit -m "autoupdate of JSDocs"',
+            },
             push: {
-                options: {
-                    branch: 'master',
-                    cwd: grunt.option('repo-path')
-                }
+                command: 'push origin master',
             }
         }
     });
 
     grunt.loadNpmTasks('grunt-jsduck');
     grunt.loadNpmTasks('grunt-shell');
-    grunt.loadNpmTasks('grunt-git');
+    grunt.loadNpmTasks('grunt-gta');
 
     grunt.registerTask('git', 'check count of modified files', function() {
         if (grunt.config.get('git.count') === 0) {
-            grunt.task.run('shell:git-checkout');
+            grunt.task.run('grunt-gta:checkout');
         } else {
             grunt.task.run([
-                'shell:git-remove',
-                'shell:git-add',
-                'gitcommit',
-                'gitpush'
+                'grunt-gta:add',
+                'grunt-gta:commit',
+                'grunt-gta:push'
             ]);
         }
     });
