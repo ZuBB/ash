@@ -12,30 +12,25 @@
  */
 Dispatcher = (function() {
     /**
-     * @property {Array} SORTABLE_PROPS = ['area', 'graphic', 'graphicex']
-     * @readonly
-     * @private
-     *
      * List of props that need to be handled in special way.
      * Should be constant indeed
+     *
+     * @private
      */
     var SORTABLE_PROPS = ['area', 'graphic', 'graphicex'];
 
     /**
-     * @property {String} DATA_KEY = 'data'
-     * @readonly
-     * @private
-     *
      * Name of the key that holds data of all tasks.
      * Should be constant indeed
+     *
+     * @private
      */
     var DATA_KEY = 'data';
 
     /**
-     * @property {Date} startTime = new Date()
-     * @private
-     *
      * Holds time when script started to execute
+     *
+     * @private
      */
     var startTime = new Date();
 
@@ -47,10 +42,9 @@ Dispatcher = (function() {
     var drownGraphics = [];
 
     /**
-     * @property {Array} confirmedViews = []
-     * @private
-     *
      * An array that holds names of views that has been confirmed to be drown
+     *
+     * @private
      */
     var confirmedViews = [];
 
@@ -99,11 +93,10 @@ Dispatcher = (function() {
     var tasksHash = {};
 
     /**
-     * @property {Array} specs2Save4Compare = []
-     * @private
-     *
      * An array that holds names of tasks that should be save for future
      * compare feature
+     *
+     * @private
      */
     var specs2Save4Compare = [];
 
