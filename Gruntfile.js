@@ -5,17 +5,15 @@ module.exports = function(grunt) {
             options: {
                 external: ['DataSet'],
 
-                processes: 2,
-                cache: true,
-                'cache-dir': './jsdoc-cache'
+                // https://github.com/senchalabs/jsduck/issues/525
+                'warnings-exit-nonzero': true,
+
+                'cache-dir': './jsdoc-cache',
+                cache: true
             },
             main: {
                 src: ['src/core/*.js'],
                 dest: '/tmp/ash-jsdoc',
-
-                options: {
-                    'warnings-exit-nonzero': true
-                }
             },
             deploy: {
                 src: ['src/core/*.js'],
