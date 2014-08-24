@@ -162,7 +162,7 @@ Dispatcher = (function() {
      * files with tasks into single file. This allows `Dispatcher` class
      * automatically register all tasks that were included into result file.
      * Since tasks may depend on each other, order of register **does
-     * matters**.That order is same as order of files in `src/tasks`
+     * matters**. That order is same as order of files in `src/tasks`
      * directory sorted alphabetically. Make sure you name files with
      * tasks properly.
      *
