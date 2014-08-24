@@ -657,7 +657,8 @@ Dispatcher = (function() {
                     viewObject[method](arg1, args[1], args[2], args[3], args[4], args[5]);
                     //DEBUG_START
                 } else {
-                    dumpInfoFunc('This amount of params is not handled yet', args);
+                    var msg = 'This amount of params is not handled yet';
+                    dumpInfoFunc(msg, args);
                     //DEBUG_STOP
                 }
             } catch (e) {
@@ -900,7 +901,7 @@ Dispatcher = (function() {
         }
 
         //DEBUG_START
-        _p(fileHandler.getFilePath(), 'Next file will be used for writing data');
+        _p(fileHandler.getFilePath(), 'Next file will be used to write data');
         //DEBUG_STOP
 
         var data2Save = {
