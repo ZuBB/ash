@@ -40,10 +40,9 @@ Dispatcher = (function() {
     var startTime = new Date();
 
     /**
-     * @property {Array} drownGraphics = []
-     * @private
-     *
      * An array that holds real graphic objects
+     *
+     * @private
      */
     var drownGraphics = [];
 
