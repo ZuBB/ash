@@ -15,7 +15,7 @@ Dispatcher = (function() {
      * @readonly
      * @private
      *
-     * List of props that need to be handled in special way
+     * List of props that need to be handled in special way.
      * Should be constant indeed
      */
     var SORTABLE_PROPS = ['area', 'graphic', 'graphicex'];
@@ -25,7 +25,7 @@ Dispatcher = (function() {
      * @readonly
      * @private
      *
-     * Name of the key that holds data of all tasks
+     * Name of the key that holds data of all tasks.
      * Should be constant indeed
      */
     var DATA_KEY = 'data';
@@ -797,7 +797,7 @@ Dispatcher = (function() {
      * Returns data for task
      *
      * @param {String} [specName] name of the task
-     * @return {Array|Boolean} 'data' for the specified task.
+     * @return {Array|Boolean} 'data' for the specified task
      */
     var requestTaskData = function(specName) {
         if (data4Compare === null) {
