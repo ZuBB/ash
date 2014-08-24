@@ -12,16 +12,14 @@
  */
 Dispatcher = (function() {
     /**
-     * List of props that need to be handled in special way.
-     * Should be constant indeed
+     * List of props that need to be handled in special way
      *
      * @private
      */
     var SORTABLE_PROPS = ['area', 'graphic', 'graphicex'];
 
     /**
-     * Name of the key that holds data of all tasks.
-     * Should be constant indeed
+     * Name of the key that holds data of all tasks
      *
      * @private
      */
