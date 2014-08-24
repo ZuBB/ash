@@ -797,7 +797,7 @@ Dispatcher = (function() {
      * Returns data for task
      *
      * @param {String} [specName] name of the task
-     * @return {Object|null} data for the specified task
+     * @return {Array|Boolean} 'data' for the specified task.
      */
     var requestTaskData = function(specName) {
         if (data4Compare === null) {
@@ -807,16 +807,15 @@ Dispatcher = (function() {
         var check1 = data4Compare.hasOwnProperty(DATA_KEY);
         var check2 = check1 && data4Compare[DATA_KEY].hasOwnProperty(specName);
 
-        if (check1 === false || check2 === false) {
-            //DEBUG_START
-            var message = 'external file does not contain data for ' +
-                'specified task. format version mismatch?'
-                _e(specName, message);
-            //DEBUG_STOP
-            return false;
+        if (check1 && check2) {
+            return data4Compare[DATA_KEY][specName];
         }
 
-        return data4Compare[DATA_KEY][specName];
+        //DEBUG_START
+        _e(specName, 'External file does not contain data for next task');
+        _i(specName, 'Format version mismatch?');
+        //DEBUG_STOP
+        return false;
     };
 
     /**
