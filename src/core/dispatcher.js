@@ -114,13 +114,7 @@ Dispatcher = (function() {
     var data4Compare = null;
 
     //DEBUG_START
-    /**
-     * @property {Number} padLen = 40
-     * @ignore
-     *
-     * Amount of spaces that will be added after task name in log
-     * for compare feature
-     */
+    // Amount of spaces that will be added after task name in log
     var padLen = 40;
     //DEBUG_STOP
 
