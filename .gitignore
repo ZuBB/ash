@@ -2,7 +2,7 @@
 *.swp
 *.swo
 
-docs
+jsdoc-cache
 node_modules
 
 src/lang/lang-??.iso.js
