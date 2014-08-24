@@ -3,11 +3,19 @@ module.exports = function(grunt) {
         pkg: grunt.file.readJSON('package.json'),
         jsduck: {
             options: {
-                'external': ['DataSet']
+                external: ['DataSet'],
+
+                processes: 2,
+                cache: true,
+                'cache-dir': './jsdoc-cache'
             },
             main: {
                 src: ['src/core/*.js'],
-                dest: '/tmp/ash-jsdoc'
+                dest: '/tmp/ash-jsdoc',
+
+                options: {
+                    'warnings-exit-nonzero': true
+                }
             },
             deploy: {
                 src: ['src/core/*.js'],
