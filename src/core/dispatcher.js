@@ -130,7 +130,8 @@ Dispatcher = (function() {
     /**
      * Registers new task with dictionary of options passed as parameter
      *
-     * @param {Object} [taskOpts] A dictionary with options for new Task instance
+     * @param {Object} [taskOpts] A dictionary with options that
+     *  will be used for creation instance of Task class
      * @return {Boolean} result of the operation
      *
      * See short example below on how to use this method
@@ -140,7 +141,6 @@ Dispatcher = (function() {
      *     specName: 'my_task',
      *     axisName: 'cm',
      *     viewIndex: 'view:1',
-     *     graphicType: 'multicolor',
      *     setLimits: true,
      *     minLimit: 0,
      *     maxLimit: 5.0,
