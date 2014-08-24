@@ -18,7 +18,7 @@ module.exports = function(grunt) {
                     'src/lang/lang-??.js',
                     'src/tasks/*.js',
                     'src/app/*.js',
-                    'src/core/src/runner/main.js',
+                    'src/core/src/core/main.js',
                 ],
                 dest: '<%= vars.destFile %>',
                 filter: function(filepath) {
@@ -39,7 +39,7 @@ module.exports = function(grunt) {
                 'src/core/src/extension/*.js',
                 'src/tasks/*.js',
                 'src/app/*.js',
-                'src/core/src/runner/main.js',
+                'src/core/src/core/main.js',
             ],
             dest: '<%= vars.destFile %>'
         }
