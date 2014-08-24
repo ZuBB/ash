@@ -3,10 +3,11 @@
  *
  * Manages process of script run
  *
- * All methods except {@link Dispatcher#registerNewTask} of this class
- * are called automatically. It is single method, which really requires
- * your attention at start.
+ * Most public methods of this class are called automatically.
+ * if your target is a 'quick start' {@link Dispatcher#registerNewTask}
+ * is single method, which you should pay attention for.
  *
+ * @singleton
  * @class
  */
 Dispatcher = (function() {
