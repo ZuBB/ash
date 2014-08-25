@@ -31,7 +31,7 @@ uib:
  - 'git-dev'
  - 'rename:uib'
 
-rqbuild:
+rqb:
  - 'rq-vars'
  - 'git-all'
  - 'base'
