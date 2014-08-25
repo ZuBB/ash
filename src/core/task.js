@@ -1795,6 +1795,8 @@ Task.prototype.setGraphicPoints = function(specObj, graphic, params) {
     var _1axis = this.defaultKeys[0];
     var _2axis = this.defaultKeys[1];
     var length = specObj[_2axis].length;
+    var isXValueInvalid = null;
+    var isYValueInvalid = null;
     var prevYValue = null;
 
     for (var jj = 0, x, y; jj < length && Host.CanContinue(); jj++) {
@@ -1806,11 +1808,14 @@ Task.prototype.setGraphicPoints = function(specObj, graphic, params) {
         y = specObj[_2axis][jj];
 
         try {
-            // since Host.CreateGraphic().Add[Color]Point silently
-            // 'eats' undefined, NaN and other incorrect values
-            // we forced to do a check (to know when that case(s)
-            // happened) before 'Add[Color]Point' is called
-            if (Utils.isNumberInvalid(x) || Utils.isNumberInvalid(y)) {
+            // since Host.CreateGraphic().Add[Color]Point silently 'eats'
+            // such incorrect values as undefined, NaN
+            // we forced to do a check to know when we faced
+            // with that values before 'Add[Color]Point' actually eats them
+            isXValueInvalid = isNaN(parseFloat(x)) || !isFinite(x);
+            isYValueInvalid = isNaN(parseFloat(y)) || !isFinite(y);
+
+            if (isXValueInvalid || isYValueInvalid) {
                 throw 0;
             }
 
