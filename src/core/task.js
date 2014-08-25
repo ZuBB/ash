@@ -1519,9 +1519,16 @@ Task.prototype.drawGraphics = function() {
  * @private
  */
 Task.prototype.parseViewIndex = function() {
-    var result = [];
-    if (!this.viewIndex) { return result; }
+    if (!this.viewIndex) { return []; }
+
+    //DEBUG_START
+    if (Dispatcher.isViewIndexAvailable(this.viewIndex) === false) {
+        return [];
+    }
+    //DEBUG_STOP
+
     var viewIndexes = this.viewIndex.split(/ ?, ?/);
+    var result = [];
 
     for (var ii = 0; ii < viewIndexes.length; ii++) {
         var parts = viewIndexes[ii].split(':');
