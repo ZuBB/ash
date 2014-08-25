@@ -19,7 +19,7 @@ module.exports = {
                 'src/lang/lang-ru.iso.js',
                 'src/tasks/*.js',
                 'src/app/*.js',
-                'src/core/src/runner/main.js',
+                'src/core/src/core/main.js',
             ]
         }]
     }
