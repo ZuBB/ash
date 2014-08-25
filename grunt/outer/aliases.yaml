@@ -41,3 +41,6 @@ rqb:
  - 'transcode:main'
  - 'rename:uib'
 
+rl:
+ - 'transcode:i18n'
+ - 'loader:main'
