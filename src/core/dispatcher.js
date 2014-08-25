@@ -116,6 +116,9 @@ Dispatcher = (function() {
     //DEBUG_START
     // Amount of spaces that will be added after task name in log
     var padLen = 40;
+
+    // An array of viewIndexes from all tasks
+    var bookedViewIndexes = [];
     //DEBUG_STOP
 
     /**
@@ -737,6 +740,27 @@ Dispatcher = (function() {
         }
     };
 
+    //DEBUG_START
+    /**
+     * Checks if viewIndex of the current task has not been announced
+     * for further usage
+     *
+     * **NOTE**: This method is stripped from production code
+     *
+     * @param {String} viewIndex A string representation of viewIndex
+     * @return {Boolean} result of check
+     */
+    var isViewIndexAvailable = function(viewIndex) {
+        if (bookedViewIndexes.indexOf(viewIndex) > -1) {
+            _e('viewIndex of current task is already booked');
+            return false;
+        }
+
+        bookedViewIndexes.push(viewIndex);
+        return true;
+    };
+    //DEBUG_STOP
+
     /**
      * Stores props of the views that should be set after views will be
      * created into {@link Dispatcher#viewsProps} property
@@ -968,6 +992,10 @@ Dispatcher = (function() {
     //DEBUG_STOP
 
     return {
+        //DEBUG_START
+        'isViewIndexAvailable': isViewIndexAvailable,
+        //DEBUG_STOP
+
         'addMessage':          addMessage,
         'addSpec4Saving':      addSpec4Saving,
         'getTaskObject':       getTaskObject,
