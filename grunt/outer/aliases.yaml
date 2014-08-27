@@ -24,7 +24,7 @@ ts:
  - 'concat:jshint'
  - 'replace:main'
  - 'strip'
- - 'jshint'
+ - 'jshint:light'
 
 uib:
  - 'dev'
