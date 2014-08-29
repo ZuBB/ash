@@ -20,23 +20,6 @@ module.exports = function(grunt) {
                 dest: grunt.option('repo-path')
             }
         },
-        shell: {
-            'git-count': {
-                command: 'git ls-files -m | grep -v index.html | wc -l',
-                options: {
-                    execOptions: {
-                        cwd: grunt.option('repo-path'),
-                    },
-                    callback: function(err, stdout, stderr, cb) {
-                        grunt.config.set('git', {
-                            'count': parseInt(stdout, 10) || 0
-                        });
-
-                        cb();
-                    }
-                }
-            }
-        },
         gta: {
             options: {
                 cwd: grunt.option('repo-path'),
@@ -52,27 +35,28 @@ module.exports = function(grunt) {
             },
             push: {
                 command: 'push origin master',
+            },
+            count: {
+                command: 'ls-files -m | grep -v index.html | wc -l',
+                options: {
+                    storeOutputTo: 'count'
+                }
             }
         }
     });
 
     grunt.loadNpmTasks('grunt-jsduck');
-    grunt.loadNpmTasks('grunt-shell');
     grunt.loadNpmTasks('grunt-git-them-all');
 
     grunt.registerTask('git', 'check count of modified files', function() {
-        if (grunt.config.get('git.count') === 0) {
+        if ((parseInt(count, 10) || 0) === 0) {
             grunt.task.run('gta:checkout');
         } else {
-            grunt.task.run([
-                'gta:add',
-                'gta:commit',
-                'gta:push'
-            ]);
+            grunt.task.run(['gta:add', 'gta:commit', 'gta:push']);
         }
     });
 
-    grunt.registerTask('jsdoc', ['jsduck:deploy', 'shell:git-count', 'git']);
+    grunt.registerTask('jsdoc', ['jsduck:deploy', 'gta:count', 'git']);
     grunt.registerTask('default', ['jsduck:main']);
 };
 
