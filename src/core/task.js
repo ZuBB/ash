@@ -1839,7 +1839,7 @@ Task.prototype.setGraphicPoints = function(specObj, graphic, params) {
             continue;
             //DEBUG_STOP
 
-            this.addBug('core.messages.error1');
+            this.addBug({'message': 'core.messages.error1', 'onetime': true});
             continue;
         }
 
