@@ -39,7 +39,10 @@ module.exports = function(grunt) {
             count: {
                 command: 'ls-files -m | grep -v index.html | wc -l',
                 options: {
-                    storeOutputTo: 'count'
+                    storeOutputTo: 'count',
+                    postProcessOutput: function(output) {
+                        return parseInt(output, 10) || 0;
+                    }
                 }
             }
         }
@@ -49,7 +52,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-git-them-all');
 
     grunt.registerTask('git', 'check count of modified files', function() {
-        if ((parseInt(count, 10) || 0) === 0) {
+        if (count === 0) {
             grunt.task.run('gta:checkout');
         } else {
             grunt.task.run(['gta:add', 'gta:commit', 'gta:push']);
