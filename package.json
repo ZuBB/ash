@@ -26,6 +26,6 @@
   "devDependencies": {
     "grunt": "^0.4.2",
     "grunt-jsduck": "^1.0.1",
-    "grunt-git-them-all": "~0.0.3"
+    "grunt-git-them-all": "~0.0.5"
   }
 }
