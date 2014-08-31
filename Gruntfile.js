@@ -52,7 +52,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-git-them-all');
 
     grunt.registerTask('git', 'check count of modified files', function() {
-        if (count === 0) {
+        if (grunt.config('count') === 0) {
             grunt.task.run('gta:checkout');
         } else {
             grunt.task.run(['gta:add', 'gta:commit', 'gta:push']);
