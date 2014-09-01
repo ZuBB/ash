@@ -13,8 +13,8 @@ module.exports = function(grunt, options) {
                 '<%= vars.buildType %>.',
                 '<%= vars.branch %>-',
                 '<%= vars.changesets %>',
-                grunt.config('vars.modified') ? '+' : '',
-                '.<%= vars.ext %>'
+                '<%= vars.modified %>.',
+                '<%= vars.ext %>'
             ].join('')
         }
     };

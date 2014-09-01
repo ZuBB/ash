@@ -23,7 +23,7 @@ module.exports = function(grunt, options) {
             options: {
                 storeOutputTo: 'vars.modified',
                 postProcessOutput: function(stdout) {
-                    return stdout.trim().length > 0;
+                    return stdout.trim().length > 0 ? '+' : '';
                 }
             }
         },
