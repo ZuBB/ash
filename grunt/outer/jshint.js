@@ -15,6 +15,7 @@ module.exports = {
         nonbsp: true,
         undef: true,
         loopfunc: true,
+        sub: true,
     },
     core: {
         src: 'src/core/src/core/*js',
