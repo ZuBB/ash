@@ -9,15 +9,6 @@ dev:
   - 'base'
   - 'transcode:main'
 
-git-dev:
- - 'gta:branch'
- - 'gta:commits'
- - 'gta:modified'
-
-git-all:
- - 'git-dev'
- - 'gta:version'
-
 ts:
  - 'dev-vars'
  - 'clean'
@@ -28,12 +19,14 @@ ts:
 
 uib:
  - 'dev'
- - 'git-dev'
+ - 'gta:branch'
+ - 'gta:commits'
+ - 'gta:modified'
  - 'rename:uib'
 
 rqb:
  - 'rq-vars'
- - 'git-all'
+ - 'gta'
  - 'base'
  - 'strip'
  - 'closure-compiler:main'
