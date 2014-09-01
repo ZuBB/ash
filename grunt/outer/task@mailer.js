@@ -37,6 +37,6 @@ module.exports = function(grunt, options) {
         grunt.config('vars.mail.subject',
                 grunt.config('pkg.name') + ': new build of release type');
 
-        grunt.task.run('rqbuild', 'mailer-transport', 'mailer-common');
+        grunt.task.run('rqb', 'mailer-transport', 'mailer-common');
     });
 };
