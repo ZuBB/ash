@@ -243,20 +243,19 @@ Dispatcher = (function() {
      * @private
      */
     var announce = function() {
-        var message = null;
-        var scriptName =  Script.name.toUpperCase();
+        var params = null;
 
         if (Script.version.indexOf('VERSION') < 0) {
-            message = _t('report.version.rel', scriptName, Script.version);
+            params = ['report.version.rel', Script.name, Script.version];
         } else if (Script.buildID.indexOf('BUILD_ID') < 0) {
-            message = _t('report.version.vcs_dev', scriptName,
-                    Script.buildTimestamp.toLocaleString(), Script.buildID);
+            params = ['report.version.vcs_dev', Script.name,
+                Script.buildTimestamp.toLocaleString(), Script.buildID];
         } else {
-            message = _t('report.version.dev', scriptName,
-                    Script.buildTimestamp.toLocaleString());
+            params = ['report.version.dev', Script.name,
+                Script.buildTimestamp.toLocaleString()];
         }
 
-        _rp(message);
+        _rp(_t.apply(null, params));
         //DEBUG_START
         _rp(_t('report.date', startTime.toLocaleString()));
         //DEBUG_STOP
