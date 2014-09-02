@@ -26,15 +26,6 @@ module.exports = function(grunt, options) {
                     return stdout.trim().length > 0 ? '+' : '';
                 }
             }
-        },
-        version: {
-            command: 'describe --abbrev=0 --tags',
-            options: {
-                storeOutputTo: 'vars.version',
-                postProcessOutput: function(stdout) {
-                    return stdout.trim();
-                }
-            }
         }
     };
 };

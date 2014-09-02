@@ -1,12 +1,13 @@
 module.exports = {
     'ext': 'ajs',
+    'name': '',
     'dest': 'build/output/',
     'buildType': null,
     'excludesList': [],
 
     'destFile': [
         '<%= vars.dest %>',
-        '<%= pkg.name %>.',
+        '<%= vars.name %>.',
         '<%= vars.buildType %>.',
         '<%= vars.ext %>'
     ].join(''),
@@ -22,10 +23,9 @@ module.exports = {
         'smtpCredsFile': 'creds.smtp.json'
     },
 
-    'changesets': null,
     'branch': null,
-    'version': null,
     'modified': null,
+    'changesets': null,
 
     'datatype': '$DATATYPE$',
     'demo_mode': false,

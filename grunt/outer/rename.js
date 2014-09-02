@@ -9,7 +9,7 @@ module.exports = function(grunt, options) {
             src: '<%= vars.destFile %>',
             dest: [
                 '<%= vars.dest %>',
-                '<%= pkg.name %>.',
+                '<%= vars.name %>.',
                 '<%= vars.buildType %>.',
                 '<%= vars.branch %>-',
                 '<%= vars.changesets %>',

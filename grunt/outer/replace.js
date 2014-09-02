@@ -1,10 +1,10 @@
 module.exports = function(grunt, options) {
     return {
-        main: {
+        dev: {
             src: '<%= vars.destFile %>',
             dest: '<%= vars.destFile %>',
             replacements: [
-                { from: '$SCRIPT$', to: '<%= pkg.name %>' },
+                { from: '$SCRIPT$', to: '<%= vars.name %>' },
                 { from: '$DATATYPE$', to: '<%= vars.datatype %>' },
                 { from: '$DEMO_MODE$', to: '<%= vars.demo_mode %>' },
                 { from: '$TIMESTAMP$', to: new Date().toUTCString() },
@@ -12,17 +12,17 @@ module.exports = function(grunt, options) {
                 {
                     from: '$DUMP_TASKS_DATA$',
                     to: '<%= vars.dump_tasks_data %>'
-                },
-                {
-                    from: '$VERSION$',
-                    to: function(pattern) {
-                        return grunt.config('vars.version') || pattern;
-                    }
-                },
+                }
+            ]
+        },
+        uib: {
+            src: '<%= vars.destFile %>',
+            dest: '<%= vars.destFile %>',
+            replacements: [
                 {
                     from: '$BUILD_ID$',
                     to: function(pattern) {
-                        var changesets = grunt.config('vars.branch');
+                        var changesets = grunt.config('vars.changesets');
                         var branch = grunt.config('vars.branch');
 
                         if (branch && changesets) {
@@ -30,6 +30,18 @@ module.exports = function(grunt, options) {
                         }
 
                         return pattern;
+                    }
+                }
+            ]
+        },
+        rqb: {
+            src: '<%= vars.destFile %>',
+            dest: '<%= vars.destFile %>',
+            replacements: [
+                {
+                    from: '$VERSION$',
+                    to: function(pattern) {
+                        return grunt.config('pkg.version') || pattern;
                     }
                 }
             ]
