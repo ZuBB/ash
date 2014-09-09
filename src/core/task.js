@@ -1205,6 +1205,11 @@ Task.prototype.createAddMessageMethods = function() {
             }
 
             if (Array.isArray(message)) {
+                //DEBUG_START
+                if (message[0].indexOf('.') === 0) {
+                    _w('incomplete key?');
+                }
+                //DEBUG_STOP
                 message = {'message': message};
             }
 
