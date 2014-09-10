@@ -13,4 +13,3 @@ module.exports = function(grunt) {
         grunt.file.write(name, grunt.util.normalizelf(content));
     });
 };
-

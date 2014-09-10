@@ -1,14 +1,15 @@
 module.exports = function(grunt, path) {
     return {
         // path to task.js files, defaults to grunt dir
-        configPath: path.join(process.cwd(), 'src/core/grunt/outer'),
+        configPath: path.join(process.cwd(), 'src/core/common/grunt'),
         overridePath: path.join(process.cwd(), 'build/sdh'),
 
         // auto grunt.initConfig
         init: true,
         jitGrunt: {
             replace: 'grunt-text-replace',
-            gta: 'grunt-git-them-all'
+            gta: 'grunt-git-them-all',
+            shell: 'grunt-shell-spawn'
         },
 
         // data passed into config. can use with <%= test %>
@@ -21,4 +22,3 @@ module.exports = function(grunt, path) {
         loadGruntTasks: true
     };
 };
-

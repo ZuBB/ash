@@ -32,4 +32,3 @@ module.exports = {
     'dump_tasks_data': false,
     'graphic_type': null
 };
-
