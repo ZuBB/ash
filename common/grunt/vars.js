@@ -7,7 +7,7 @@ module.exports = {
 
     'destFile': [
         '<%= vars.dest %>',
-        '<%= vars.name %>.',
+        '<%= vars.name.toLowerCase() %>.',
         '<%= vars.buildType %>.',
         '<%= vars.ext %>'
     ].join(''),

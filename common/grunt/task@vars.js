@@ -9,7 +9,7 @@ module.exports = function(grunt) {
     grunt.registerTask('rq-vars', function() {
         grunt.config.set('vars.buildType', 'release');
         grunt.config.set('vars.graphic_type', 0);
-        grunt.config.set('vars.name', grunt.config('pkg.title').toLowerCase());
+        grunt.config.set('vars.name', grunt.config('pkg.title'));
 
         if (grunt.file.exists('excludes_list.json')) {
             grunt.config('vars.excludesList',
