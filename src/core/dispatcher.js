@@ -752,7 +752,7 @@ Dispatcher = (function() {
      */
     var isViewIndexAvailable = function(viewIndex) {
         if (bookedViewIndexes.indexOf(viewIndex) > -1) {
-            _e('viewIndex of current task is already booked');
+            _e(viewIndex, 'Next viewIndex is already booked:');
             return false;
         }
 
