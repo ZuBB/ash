@@ -270,8 +270,10 @@ IO = (function() {
      *
      * @ignore
      */
-    var isFileExist = function(filepath) {
-        return filepath && FSObject.FileExists(filepath);
+    var isFileExist = function() {
+        var params = [].slice.call(arguments, 0);
+
+        return params.length > 0 && FSObject.FileExists(buildPath(params));
     };
 
     /**
