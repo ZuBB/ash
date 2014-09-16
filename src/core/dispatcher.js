@@ -498,8 +498,6 @@ Dispatcher = (function() {
                 messageTypes[type].messages
                     .filter(filterMessagesFunc)
                     .forEach(printMessageFunc);
-
-                _rl('');
             }
         }
 
