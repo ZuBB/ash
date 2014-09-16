@@ -4,6 +4,7 @@ module.exports = function(grunt) {
         jsduck: {
             options: {
                 external: ['DataSet'],
+                exclude: ['src/core/io.js'],
 
                 // https://github.com/senchalabs/jsduck/issues/525
                 'warnings-exit-nonzero': true,
