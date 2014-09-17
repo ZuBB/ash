@@ -8,34 +8,33 @@ MathHelper.get_middle_val = function(dataObj, valueX, ii) {
     var result  = null;
     var new_val = null;
     var neighbors = null;
-    var _1axis = Script.defaultKeys[0];
-    var _2axis = Script.defaultKeys[1];
+    var data1axis = dataObj[Script.defaultKeys[0]];
+    var data2axis = dataObj[Script.defaultKeys[1]];
 
     // target value is less than 1st item
-    if (valueX < dataObj[_1axis][0]) {
+    if (valueX < data1axis[0]) {
         //      new pos <-> old pos
         // (r)  new val <-> old val
-        new_val = valueX * dataObj[_2axis][0] / dataObj[_1axis][0];
+        new_val = valueX * data2axis[0] / data1axis[0];
         // TODO: we have fixed tricky case here. now its just plain copy
-        result = [dataObj[_2axis][0], 0];
+        result = [data2axis[0], 0];
     // target value is bigger than last item
-    } else if (valueX > dataObj[_1axis][dataObj[_1axis].length - 1]) {
+    } else if (valueX > data1axis.last()) {
         //      new pos <-> old pos
         // (r)  new val <-> old val
-        var old_pos = dataObj[_1axis].length - 1;
-        new_val = valueX * dataObj[_2axis][old_pos] / dataObj[_1axis][old_pos];
-        result = [new_val, old_pos];
+        new_val = valueX * data2axis.last() / data1axis.last();
+        result = [new_val, data1axis.length - 1];
     // target value is inside data array
     } else {
-        neighbors = dataObj[_1axis].getNeigborsIndexes(valueX, ii);
+        neighbors = data1axis.getNeigborsIndexes(valueX, ii);
 
         if (neighbors.length === 1) {
-            result = [dataObj[_2axis][neighbors[0]], neighbors[0]];
+            result = [data2axis[neighbors[0]], neighbors[0]];
         } else if (neighbors.length === 2) {
-            new_val = dataObj[_2axis][neighbors[0]] +
-                (dataObj[_2axis][neighbors[1]] - dataObj[_2axis][neighbors[0]]) /
-                (dataObj[_1axis][neighbors[1]] - dataObj[_1axis][neighbors[0]]) *
-                (valueX - dataObj[_1axis][neighbors[0]]);
+            new_val = data2axis[neighbors[0]] +
+                (data2axis[neighbors[1]] - data2axis[neighbors[0]]) /
+                (data1axis[neighbors[1]] - data1axis[neighbors[0]]) *
+                (valueX - data1axis[neighbors[0]]);
 
             result = [new_val, neighbors[0]];
         } else {
