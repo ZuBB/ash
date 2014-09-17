@@ -301,6 +301,7 @@ Dispatcher = (function() {
         var sortFn = function(a, b) { return a.length - b.length; };
         padLen = Math.ceil(specs.sort(sortFn).last().length * 1.4);
 
+        var stopAfter = Input.getValue('stop_after') - 1;
         var preProcess = function(specObj, ii) {
             var specName = specObj.getTaskName();
             var outputStr = [];
@@ -352,7 +353,7 @@ Dispatcher = (function() {
             //DEBUG_START
             postProcess(specObj);
 
-            if (Script.stopAfterTask === specNames[ii]) {
+            if (stopAfter > -1 && stopAfter === ii) {
                 _rl('tasks queue terminated', {colors: [0, 0xFFAD00]});
                 break;
             }
