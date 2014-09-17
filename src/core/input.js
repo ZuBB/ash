@@ -451,6 +451,7 @@ Input = (function() {
      *
      * @private
      */
+    //DEBUG_START
     var injectStopAfterInput = function() {
         if (Script.showStopAfterInput === false) {
             return true;
@@ -463,6 +464,7 @@ Input = (function() {
             items: [].concat('', Dispatcher.listRegisteredTasks())
         };
     };
+    //DEBUG_STOP
 
     /**
      * Creates dialog window(s), and shows them.
@@ -482,7 +484,9 @@ Input = (function() {
             return false;
         }
 
+        //DEBUG_START
         injectStopAfterInput();
+        //DEBUG_STOP
 
         inputFields = JSON.parse(JSON.stringify(Script.inputFields));
         dialogsContent = Script.dialogsContent.slice(0);
