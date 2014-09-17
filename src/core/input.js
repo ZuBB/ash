@@ -444,12 +444,12 @@ Input = (function() {
         return _t('inputs.' + name + '.name');
     };
 
+    //DEBUG_START
     /**
      * Returns localized name of the input by its internal name
      *
      * @private
      */
-    //DEBUG_START
     var injectStopAfterInput = function() {
         if (Script.showStopAfterInput === false) {
             return true;
