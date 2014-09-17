@@ -409,10 +409,8 @@ Input = (function() {
     /**
      * Checks if given input is known for this script
      *
-     * @param {String} name Internal name of the input
-     * @return {Boolean} localized name
-     *
-     * @private
+     * @param {String} [name] Internal name of the input
+     * @return {Boolean} result of the check
      */
     var isInputNameKnown = function(name) {
         if (typeof name !== 'string' || name.length === 0) {
@@ -627,7 +625,8 @@ Input = (function() {
         'getDefaultValue':     getDefaultValue,
         'getFilledInputs':     getFilledInputs,
         'getInputsByType':     getInputsByType,
-        'getValue':            getValue
+        'getValue':            getValue,
+        'isInputNameKnown':    isInputNameKnown
     };
 
 })();
