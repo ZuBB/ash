@@ -301,7 +301,9 @@ Dispatcher = (function() {
         var sortFn = function(a, b) { return a.length - b.length; };
         padLen = Math.ceil(specs.sort(sortFn).last().length * 1.4);
 
-        var stopAfter = Input.getValue('stop_after') - 1;
+        var stopAfter = (Input.isInputNameKnown('stop_after') ?
+            Input.getValue('stop_after') : 0) - 1;
+
         var preProcess = function(specObj, ii) {
             var specName = specObj.getTaskName();
             var outputStr = [];
