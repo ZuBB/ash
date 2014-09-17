@@ -156,6 +156,7 @@ if (!Array.prototype.min) {
  */
 if (!Array.prototype.getNeigborsIndexes) {
     Array.prototype.getNeigborsIndexes = function(value, start/*, direction*/) {
+        // NOTE: this only works if numbers in array are growing
         var ii = start || 0;
 
         // target value is less (or equal) compared to 1st item
@@ -164,26 +165,17 @@ if (!Array.prototype.getNeigborsIndexes) {
         }
 
         // target value is bigger (or equal) compared to last item
-        if (value > this.max()) {
+        if (value > this.last()) {
             return [this.length - 1];
         }
 
-        for ( ; ii < this.length && Host.CanContinue(); ii++) {
-            if (typeof this[ii + 1] === 'undefined') {
-                return [];
-            }
-
-            // NOTE: this only works if numbers in array are growing
-            if (this[ii] < value && this[ii + 1] > value) {
-                return [ii, ii + 1];
-            }
-
+        for ( ; ii < this.length; ii++) {
             if (value === this[ii]) {
                 return [ii];
             }
 
-            if (value === this[ii + 1]) {
-                return [ii + 1];
+            if (this[ii] < value && this[ii + 1] > value) {
+                return [ii, ii + 1];
             }
         }
 
