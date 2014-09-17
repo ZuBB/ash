@@ -220,6 +220,17 @@ Script.dumpTasksData = typeof $DUMP_TASKS_DATA$ === 'undefined' ?
 Script.acceptedSignalType = '$DATATYPE$'.indexOf('DATATYPE') > 0 ?
     'ANA' : '$DATATYPE$';
 
+//DEBUG_START
+/**
+ * @property {Boolean} showStopAfterInput = false
+ *
+ * A flag that turns off or on an appearance of special input field
+ * that contains all tasks that were registered. If user selects any item
+ * from that input, tasks queue will be terminated after selected item.
+ */
+Script.showStopAfterInput = false;
+//DEBUG_STOP
+
 /**
  * @property {Object} messagePrintProps = {}
  *

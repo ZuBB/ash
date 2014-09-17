@@ -447,6 +447,24 @@ Input = (function() {
     };
 
     /**
+     * Returns localized name of the input by its internal name
+     *
+     * @private
+     */
+    var injectStopAfterInput = function() {
+        if (Script.showStopAfterInput === false) {
+            return true;
+        }
+
+        Script.dialogsContent.unshift('stop_after');
+        Script.inputFields['stop_after'] = {
+            i18n:  false,
+            type:  'DROPDOWN',
+            items: [].concat('', Dispatcher.listRegisteredTasks())
+        };
+    };
+
+    /**
      * Creates dialog window(s), and shows them.
      * Content of the dialogs is based on content of
      * {@link Script#dialogsContent} property. Specs of input fields are
@@ -463,6 +481,8 @@ Input = (function() {
             //DEBUG_STOP
             return false;
         }
+
+        injectStopAfterInput();
 
         inputFields = JSON.parse(JSON.stringify(Script.inputFields));
         dialogsContent = Script.dialogsContent.slice(0);
