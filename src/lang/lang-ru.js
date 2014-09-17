@@ -35,6 +35,9 @@ i18n.mergeResourceBundle('ru', 'translation', {
     },
 
     inputs: {
+        'stop_after': {
+            'name': 'Остановить после задачи'
+        },
         combo: {
             'auto': 'авто',
             'custom': 'другие',
