@@ -989,11 +989,23 @@ Dispatcher = (function() {
 
         fh.close();
     };
+
+    /**
+     * Returns list of the tasks that have been registered
+     *
+     * **NOTE**: This method is stripped from production code
+     *
+     * @return {Array} list of registered tasks
+     */
+    var listRegisteredTasks = function() {
+        return Object.keys(tasksHash);
+    };
     //DEBUG_STOP
 
     return {
         //DEBUG_START
         'isViewIndexAvailable': isViewIndexAvailable,
+        'listRegisteredTasks':  listRegisteredTasks,
         //DEBUG_STOP
 
         'addMessage':          addMessage,
