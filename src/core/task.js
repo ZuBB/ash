@@ -2012,7 +2012,7 @@ Task.prototype.sendViewsProps = function() {
  * @private
  */
 Task.prototype.sendConfirmedView = function() {
-    if (this.providedView && this.getTaskStatus()) {
+    if (this.providedView !== null && this.getTaskStatus()) {
         //DEBUG_START
         _d(this.providedView, 'this spec managed to provide next view');
         //DEBUG_STOP
@@ -2021,26 +2021,30 @@ Task.prototype.sendConfirmedView = function() {
 };
 
 /**
- * Makes task that one which provides a view
+ * Makes task one that provides a view
  *
- * @param {String} viewDef keyword that makes task to provide a view
+ * @param {String} viewDef keyword that represents view specs
+ * @return {Boolean} result of the operation
  */
 Task.prototype.setProvidedView = function(viewDef) {
+    //DEBUG_START
     if (typeof viewDef !== 'string') {
+        _e('"viewDef" is not a string');
         return false;
     }
 
     if (viewDef.length === 0) {
+        _e('"viewDef" can not be zero length string');
         return false;
     }
 
     if (viewDef.indexOf(':') < 1) {
+        _e('"viewDef" should follow next format "name:number"');
         return false;
     }
+    //DEBUG_STOP
 
-    this.providedView = viewDef;
-
-    return this.providedView !== null;
+    return (this.providedView = viewDef) !== null;
 };
 
 /**
