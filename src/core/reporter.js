@@ -25,7 +25,8 @@
  * - 1st - color of the text
  * - 2nd - background color
  *
- * For example see annotation of {@link Reporter#insertColorsMark} method
+ * Color should be specified as **6** hex numbers. For example see annotation
+ * of {@link Reporter#insertColorsMark} method
  *
  * @param {Array} [controlChars.notation] An array with 2 numbers that
  * represent 'address' of the graphic that should be pointed to
@@ -98,14 +99,14 @@ Reporter = (function() {
      *
      * ```
      * // raw example
-     * ReportOut("<ta=FFFFFF,0000FF Blue>");
+     * ReportOut("<ta=0000FF,FFFFFF Blue text>");
      * // example with help of wrapper function
-     * _rw('Blue', {colors: [0xFFFFFF, 0xFF0000]});
+     * _rw('Blue text', {colors: [0x0000FF, 0xFFFFFF]});
      * ```
      *
-     * @param {String} string Text that should be coloured
-     * @param {Array} colors An array of colors
-     * @return {string} crafted string with appended color pseudocodes
+     * @param {String} [string] Text that should be coloured
+     * @param {Array} [colors] An array of colors
+     * @return {String} crafted string with appended color pseudocodes
      * @private
      */
     var insertColorsMark = function(string, colors) {
