@@ -282,7 +282,8 @@ Input = (function() {
                 var path = IO.getSafeDirPath(inputFields[name].path);
                 // we need '-1' here because by default filesdropdown gets blank
                 // item as 1st item of dropdown so indexed are shifted a bit
-                return IO.buildPath(path, IO.getDirFiles(path)[value - 1]);
+                return value === 0 ? '' :
+                    IO.buildPath(path, IO.getDirFiles(path)[value - 1]);
             }
         },
         'TOGGLE': {
