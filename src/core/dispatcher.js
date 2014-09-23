@@ -867,37 +867,36 @@ Dispatcher = (function() {
      * @return {Boolean} result of the load operation
      */
     var loadExternalData = function(filename) {
-        var result = 0;
-
-        if (IO.isFileExist(filename)) {
+        if (IO.isFileExist(filename) === false) {
             //DEBUG_START
-            _d(filename, 'will try to load external data in next file');
+            _e(filename, 'Can not find next file');
             //DEBUG_STOP
-
-            try {
-                data4Compare = JSON.parse(IO.readFileContent(filename));
-                result = 1;
-                //DEBUG_START
-                _d('all is OK');
-                //DEBUG_STOP
-            } catch(e) {
-                //DEBUG_START
-                _e('smth went wrong');
-                _d(e.message, 'error message');
-                //DEBUG_STOP
-            }
-            //DEBUG_START
-        } else {
-            _d(filename, 'Can not find next file');
-            //DEBUG_STOP
+            return 1;
         }
 
-        // if format is not the same
-        if (data4Compare && data4Compare.format !== Script.dumpFormat) {
-            result = 0.5;
+        //DEBUG_START
+        _d(filename, 'will try to load external data in next file');
+        //DEBUG_STOP
+        var result = null;
+
+        try {
+            result = 2;
+            data4Compare = IO.readFileContent(filename);
+            result = 3;
+            data4Compare = JSON.parse(data4Compare);
+            //DEBUG_START
+            _d('all is OK');
+            //DEBUG_STOP
+            result = 0;
+        } catch(e) {
+            //DEBUG_START
+            _e('smth went wrong');
+            _d(e.message, 'error message');
+            //DEBUG_STOP
+            return result;
         }
 
-        return result;
+        return data4Compare['metadata'] || 4;
     };
 
     /**
