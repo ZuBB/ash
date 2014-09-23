@@ -36,6 +36,15 @@ Dispatcher = (function() {
     var startTime = new Date();
 
     /**
+     * @property {Object} metadata = {'timestamp': startTime.toUTCString()}
+     * @private
+     *
+     * Hash with params that will be stored alongside task data
+     * in 'compare' feature;
+     */
+    var metadata = {'timestamp': startTime.toUTCString()};
+
+    /**
      * @property {Array} drownGraphics = []
      * @private
      *
@@ -780,6 +789,21 @@ Dispatcher = (function() {
     };
 
     /**
+     * Stores additional params of metadata for 'compare' feature.
+     *
+     * @param {Object} [params] A dictionary with param names and theirs
+     * values
+     */
+    var addParamsToMetadata = function(params) {
+        if (params && params.constructor === Object) {
+            metadata = Utils.mergeRecursive(metadata, params);
+            return true;
+        }
+
+        return false;
+    };
+
+    /**
      * Stores view that is confirmed for creation into
      * {@link Dispatcher#confirmedViews} property
      *
@@ -788,7 +812,6 @@ Dispatcher = (function() {
      * there should be strong reason for that.
      *
      * @param {String} view Name of view
-     *
      */
     var storeConfirmedView = function(view) {
         if (view) {
@@ -1012,6 +1035,7 @@ Dispatcher = (function() {
         //DEBUG_STOP
 
         'addMessage':          addMessage,
+        'addParamsToMetadata': addParamsToMetadata,
         'addSpec4Saving':      addSpec4Saving,
         'getTaskObject':       getTaskObject,
         'getValidTaskObject':  getValidTaskObject,
