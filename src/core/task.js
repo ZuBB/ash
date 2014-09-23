@@ -762,9 +762,9 @@ Task.prototype.processTaskDataMethod = function() {
     var result = null;
 
     if (this.requestDataLoad) {
-        result = this.requestDataLoadMethod();
+        result = this.processLoadResult(this.requestDataLoadMethod());
     } else if (this.importData) {
-        result = this.pullTaskData();
+        result = this.processPullResult(this.pullTaskData());
     } else {
         //DEBUG_START
         _d('calculation of task\'s data');
@@ -795,21 +795,36 @@ Task.prototype.requestDataLoadMethod = function() {
     _d('load of external data');
     //DEBUG_STOP
 
-    var result = Dispatcher.loadExternalData(Input.getValue(this.dataSource));
+    var filename = Input.getValue(this.dataSource);
+    var result = false;
 
-    if (result === 0) {
-        return false;
-    } else if (result === 0.5) {
-        this.addWarning('core.messages.warning3');
-        this.addHint('core.messages.hint3');
-        //DEBUG_START
-    } else if (result !== 1) {
-        _e('got unknown return code');
-        _d(result);
-        //DEBUG_STOP
+    if (filename) {
+        result = Dispatcher.loadExternalData(filename);
+    } else {
+        return result;
     }
 
-    return true;
+    if (typeof result === 'number') {
+        this.addError('core.messages.dataLoad.error' + result);
+        return result;
+    }
+
+    return result;
+};
+
+/**
+ * Function that performs check of the result that was returned after
+ * {@link Dispatcher#loadExternalData} call. Default source code of this
+ * function is a stub. User may optionally redefine it.
+ *
+ * @return {Boolean} result of the operation
+ */
+Task.prototype.processLoadResult = function(result) {
+    //DEBUG_START
+    _i('you did not redefine \'processLoadResult\' function');
+    //DEBUG_STOP
+
+    return typeof result !== 'number';
 };
 
 /**
@@ -825,27 +840,43 @@ Task.prototype.pullTaskData = function() {
 
     var data = Dispatcher.requestTaskData(this.getTaskName());
 
-    if (Array.isArray(data)) {
+    if (typeof data !== 'number') {
         this.graphics = data;
-        return true;
-    } else if (data === false) {
+        data = 0;
+    }
+
+    return data;
+};
+
+/**
+ * Function that performs check of the result that was returned after
+ * {@link Dispatcher#requestTaskData} call. Default source code of this
+ * function is a stub. User may optionally redefine it.
+ *
+ * @return {Boolean} result of the operation
+ */
+Task.prototype.processPullResult = function(result) {
+    //DEBUG_START
+    _i('you did not redefine \'processPullResult\' function');
+    //DEBUG_STOP
+
+    if (result > 0) {
         this.addWarning('core.messages.warning2');
         this.addHint('core.messages.hint2');
     }
 
-    return false;
+    return result === 0;
 };
 
 /**
  * Function that performs calculation of the data. Default source code of this
- * function is a stub. User should optionally redefine it
+ * function is a stub. User may optionally redefine it.
  *
  * @return {Boolean} result of the operation
- * @private
  */
 Task.prototype.calc_data = function() {
     //DEBUG_START
-    _d('you did not redefine \'calc_data\' function');
+    _i('you did not redefine \'calc_data\' function');
     //DEBUG_STOP
     return true;
 };
@@ -1265,14 +1296,13 @@ Task.prototype.processViewsProps = function() {
 
 /**
  * Function that performs creation of the properties for view(s). Default
- * source code of this function is a stub. User should optionally redefine it
+ * source code of this function is a stub. User may optionally redefine it.
  *
  * @return {Boolean} result of the operation
- * @private
  */
 Task.prototype.make_props = function() {
     //DEBUG_START
-    _d('you did not redefine \'make_props\' function');
+    _i('you did not redefine \'make_props\' function');
     //DEBUG_STOP
     return true;
 };
