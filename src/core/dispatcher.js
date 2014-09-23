@@ -20,14 +20,6 @@ Dispatcher = (function() {
     var SORTABLE_PROPS = ['area', 'graphic', 'graphicex'];
 
     /**
-     * @property {String} DATA_KEY = 'data'
-     * @private
-     *
-     * Name of the key that holds data of all tasks.
-     */
-    var DATA_KEY = 'data';
-
-    /**
      * @property {Date} startTime = new Date()
      * @private
      *
