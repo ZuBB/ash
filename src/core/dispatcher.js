@@ -939,6 +939,7 @@ Dispatcher = (function() {
         _d(specs2Save4Compare, 'list of specs for saving');
         //DEBUG_STOP
 
+        var data2Save = {};
         var fileHandler = null;
         var fileOptopns = {
             noutf:    true,
@@ -954,17 +955,15 @@ Dispatcher = (function() {
         _p(fileHandler.getFilePath(), 'Next file will be used to write data');
         //DEBUG_STOP
 
-        var data2Save = {
-            'timestamp': startTime.toUTCString(),
-            'format':    Script.dumpFormat
-        };
-
-        data2Save[DATA_KEY] = {};
-
         specs2Save4Compare.forEach(function(item) {
-            data2Save[DATA_KEY][item + '_external'] =
+            data2Save[item + '_external'] =
                 getTaskObject(item).getDataSets();
         });
+
+        data2Save = {
+            'data': data2Save,
+            'metadata': metadata
+        };
 
         //DEBUG_START
         if (/VERSION/.test(Script.version)) {
