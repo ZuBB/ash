@@ -843,21 +843,22 @@ Dispatcher = (function() {
      */
     var requestTaskData = function(specName) {
         if (data4Compare === null) {
-            return null;
+            return 1;
         }
 
-        var check1 = data4Compare.hasOwnProperty(DATA_KEY);
-        var check2 = check1 && data4Compare[DATA_KEY].hasOwnProperty(specName);
-
-        if (check1 && check2) {
-            return data4Compare[DATA_KEY][specName];
+        if (data4Compare['data'].constructor !== Object) {
+            return 2;
         }
 
-        //DEBUG_START
-        _e(specName, 'External file does not contain data for next task');
-        _i(specName, 'Format version mismatch?');
-        //DEBUG_STOP
-        return false;
+        if (data4Compare['data'].hasOwnProperty(specName) === false) {
+            return 3;
+        }
+
+        if (Array.isArray(data4Compare['data'][specName]) === false) {
+            return 4;
+        }
+
+        return data4Compare['data'][specName];
     };
 
     /**
