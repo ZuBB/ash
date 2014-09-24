@@ -805,7 +805,7 @@ Task.prototype.requestDataLoadMethod = function() {
     }
 
     if (typeof result === 'number') {
-        this.addError('core.messages.dataLoad.error' + result);
+        this.addError('core.messages.loadData.error' + result);
         return result;
     }
 
@@ -861,8 +861,11 @@ Task.prototype.processPullResult = function(result) {
     //DEBUG_STOP
 
     if (result > 0) {
-        this.addWarning('core.messages.warning2');
-        this.addHint('core.messages.hint2');
+        this.addError('core.messages.pullData.error' + result);
+    }
+
+    if (result === 3) {
+        this.addHint('core.messages.pullData.hint3');
     }
 
     return result === 0;
