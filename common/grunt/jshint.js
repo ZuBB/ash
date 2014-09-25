@@ -4,42 +4,38 @@
 module.exports = {
     options: {
         reporter: require('jshint-stylish'),
-
-        globals: {
-            'ActiveXObject': false,
-            'Enumerator': false,
-            'Host': false
-        },
-
-        es3: true,
-        nonbsp: true,
-        undef: true,
-        loopfunc: true,
-        sub: true,
     },
-    core: {
-        src: 'src/core/src/core/*js',
+    i18n: {
+        src: [
+            'src/core/src/lang/init-lang.js',
+            'src/core/src/lang/lang-??.js',
+            'src/lang/lang-??.js',
+        ],
+
         options: {
-            curly: true,
-            eqeqeq: true,
-            forin: true,
-
-            indent: 4,
-            maxdepth: 3,
-            maxlen: 80,
-
-            latedef: true,
-            unused: true,
-            multistr: true,
-            passfail: false,
-            loopfunc: false,
+            es3: true,
+            latedef: false,
         }
     },
     light: {
-        src: '<%= vars.destFile %>'
-    },
-    moderate: {
         src: '<%= vars.destFile %>',
+
+        options: {
+            globals: {
+                'ActiveXObject': false,
+                'Enumerator': false,
+                'Host': false
+            },
+
+            es3: true,
+            nonbsp: true,
+            undef: true,
+            loopfunc: true,
+            sub: true,
+        }
+    },
+    core: {
+        src: 'src/core/src/core/*js',
         options: {
             curly: true,
             eqeqeq: true,
