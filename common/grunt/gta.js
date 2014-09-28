@@ -18,6 +18,15 @@ module.exports = function(grunt, options) {
                 }
             }
         },
+        sha: {
+            command: 'git rev-parse --short=8 HEAD',
+            options: {
+                storeOutputTo: 'vars.hash',
+                postProcessOutput: function(stdout) {
+                    return stdout.trim();
+                }
+            }
+        },
         modified: {
             command: 'diff --stat',
             options: {
