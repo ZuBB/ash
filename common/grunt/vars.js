@@ -23,6 +23,7 @@ module.exports = {
         'smtpCredsFile': 'creds.smtp.json'
     },
 
+    'hash': null,
     'branch': null,
     'modified': null,
     'changesets': null,
