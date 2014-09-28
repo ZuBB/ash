@@ -13,6 +13,7 @@ module.exports = function(grunt, options) {
                 '<%= vars.buildType %>.',
                 '<%= vars.branch %>-',
                 '<%= vars.changesets %>',
+                '<%= vars.hash === null ? "" : "[" + vars.hash + "]" %>',
                 '<%= vars.modified %>.',
                 '<%= vars.ext %>'
             ].join('')
