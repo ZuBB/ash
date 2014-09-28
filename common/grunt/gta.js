@@ -19,7 +19,7 @@ module.exports = function(grunt, options) {
             }
         },
         sha: {
-            command: 'git rev-parse --short=8 HEAD',
+            command: 'git rev-parse --short HEAD',
             options: {
                 storeOutputTo: 'vars.hash',
                 postProcessOutput: function(stdout) {
