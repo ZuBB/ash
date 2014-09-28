@@ -224,10 +224,10 @@ Input = (function() {
                     index: index
                 });
             },
-            'defaultValue': function() {
+            'defaultValue': function(value) {
                 // if input with type channel was not inited,
                 // than we need to do a direct reply with most strict answer
-                return null;
+                return value || null;
             },
             'runtimeValue': function(rawValue) {
                 var channel = parseInt(rawValue, 10);
