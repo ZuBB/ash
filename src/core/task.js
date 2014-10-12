@@ -1839,37 +1839,29 @@ Task.prototype.draw2DGraphic = function(specObj, params, index) {
 Task.prototype.setGraphicPoints = function(specObj, graphic, params) {
     var _1axis = this.defaultKeys[0];
     var _2axis = this.defaultKeys[1];
-    var length = specObj[_2axis].length;
+    var _1axisData = specObj[_1axis];
+    var _2axisData = specObj[_2axis];
+    var length = _2axisData.length;
     var isXValueInvalid = null;
     var isYValueInvalid = null;
     var prevYValue = null;
 
     for (var jj = 0, x, y; jj < length && Host.CanContinue(); jj++) {
         if (params.graphicType === 'sidestep' && prevYValue !== null) {
-            graphic.AddPoint(specObj[_1axis][jj], prevYValue);
+            graphic.AddPoint(_1axisData[jj], prevYValue);
         }
 
-        x = specObj[_1axis][jj];
-        y = specObj[_2axis][jj];
+        x = _1axisData[jj];
+        y = _2axisData[jj];
 
-        try {
-            // since Host.CreateGraphic().Add[Color]Point silently 'eats'
-            // such incorrect values as undefined, NaN
-            // we forced to do a check to know when we faced
-            // with that values before 'Add[Color]Point' actually eats them
-            isXValueInvalid = isNaN(parseFloat(x)) || !isFinite(x);
-            isYValueInvalid = isNaN(parseFloat(y)) || !isFinite(y);
+        // since Host.CreateGraphic().Add[Color]Point silently 'eats'
+        // such incorrect values as undefined, NaN
+        // we forced to do a check to know when we faced
+        // with that values before they will be passed to 'Add[Color]Point'
+        isXValueInvalid = isNaN(parseFloat(x)) || !isFinite(x);
+        isYValueInvalid = isNaN(parseFloat(y)) || !isFinite(y);
 
-            if (isXValueInvalid || isYValueInvalid) {
-                throw 0;
-            }
-
-            if (params.graphicType === 'multicolor') {
-                graphic.AddColorPoint(x, y, specObj.color[jj]);
-            } else {
-                graphic.AddPoint(x, y);
-            }
-        } catch (e) {
+        if (isXValueInvalid || isYValueInvalid) {
             //DEBUG_START
             _e(jj, 'got a NaN insead of number at');
             _i(x, '`' + _1axis + '` equals to');
@@ -1881,13 +1873,17 @@ Task.prototype.setGraphicPoints = function(specObj, graphic, params) {
             continue;
         }
 
-        prevYValue = specObj[_2axis][jj];
+        if (params.graphicType === 'multicolor') {
+            graphic.AddColorPoint(x, y, specObj.color[jj]);
+        } else {
+            graphic.AddPoint(x, y);
+        }
 
-        // TODO temporary disable this markers
-        // untill we figure out how to proceed them
+        prevYValue = _2axisData[jj];
+
+        // TODO check how to do this more flexible
         if (this.drawMarkers) {
-            // TODO check how to do this more flexible
-            this.drawMarker(specObj[_1axis][jj] * Host.Frequency, '');
+            this.drawMarker(_1axisData[jj] * Host.Frequency, '');
         }
     }
 
