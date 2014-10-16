@@ -1854,14 +1854,26 @@ Task.prototype.setGraphicPoints = function(specObj, graphic, params) {
         x = _1axisData[jj];
         y = _2axisData[jj];
 
-        // since Host.CreateGraphic().Add[Color]Point silently 'eats'
-        // such incorrect values as undefined, NaN
-        // we forced to do a check to know when we faced
-        // with that values before they will be passed to 'Add[Color]Point'
-        isXValueInvalid = isNaN(parseFloat(x)) || !isFinite(x);
-        isYValueInvalid = isNaN(parseFloat(y)) || !isFinite(y);
+        try {
+            //DEBUG_START
+            // since Host.CreateGraphic().Add[Color]Point silently 'eats'
+            // such incorrect values as undefined, NaN
+            // we forced to do a check to know when we faced
+            // with that values before 'Add[Color]Point' actually eats them
+            isXValueInvalid = isNaN(parseFloat(x)) || !isFinite(x);
+            isYValueInvalid = isNaN(parseFloat(y)) || !isFinite(y);
 
-        if (isXValueInvalid || isYValueInvalid) {
+            if (isXValueInvalid || isYValueInvalid) {
+                throw 0;
+            }
+            //DEBUG_STOP
+
+            if (params.graphicType === 'multicolor') {
+                graphic.AddColorPoint(x, y, specObj.color[jj]);
+            } else {
+                graphic.AddPoint(x, y);
+            }
+        } catch (e) {
             //DEBUG_START
             _e(jj, 'got a NaN insead of number at');
             _i(x, '`' + _1axis + '` equals to');
@@ -1871,12 +1883,6 @@ Task.prototype.setGraphicPoints = function(specObj, graphic, params) {
 
             this.addBug({'message': 'core.messages.error1', 'onetime': true});
             continue;
-        }
-
-        if (params.graphicType === 'multicolor') {
-            graphic.AddColorPoint(x, y, specObj.color[jj]);
-        } else {
-            graphic.AddPoint(x, y);
         }
 
         prevYValue = _2axisData[jj];
