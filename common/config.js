@@ -1,15 +1,28 @@
 module.exports = function(grunt, path) {
+    var filePath = path.join(process.cwd(), 'custom-config-dirs.json');
+    var configDirs = [];
+
+    if (grunt.file.exists(filePath)) {
+        configDirs = grunt.file.readJSON(filePath).pathes;
+    }
+
+    configDirs = configDirs.map(function(item) {
+        return path.join(process.cwd(), item);
+    });
+
     return {
         // path to task.js files, defaults to grunt dir
         configPath: path.join(process.cwd(), 'src/core/common/grunt'),
-        overridePath: path.join(process.cwd(), 'build/sdh'),
+        overridePath: configDirs,
 
         // auto grunt.initConfig
         init: true,
         jitGrunt: {
-            replace: 'grunt-text-replace',
-            gta: 'grunt-git-them-all',
-            shell: 'grunt-shell-spawn'
+            staticMappings: {
+                replace: 'grunt-text-replace',
+                gta: 'grunt-git-them-all',
+                shell: 'grunt-shell-spawn'
+            }
         },
 
         // data passed into config. can use with <%= test %>
