@@ -39,3 +39,9 @@ rqb:
 rl:
   - 'transcode:i18n'
   - 'loader:main'
+
+setDeps:
+  - 'update_json:common'
+
+getDeps:
+  - 'update_json:local'
