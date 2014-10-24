@@ -575,7 +575,7 @@ Input = (function() {
 
         if (typeof(index) === 'undefined') {
             //DEBUG_START
-            _i(name, 'getting value of input that was not inited');
+            _d(name, 'getting value of input that was not inited');
             //DEBUG_STOP
             return _getDefaultValue(name);
         }

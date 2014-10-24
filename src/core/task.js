@@ -559,7 +559,7 @@ Task.prototype.isDependenciesResolved = function() {
 
         if (!depObj) {
             //DEBUG_START
-            _i(this.dependencies[ii], 'Next dependency was not resolved');
+            _d(this.dependencies[ii], 'Next dependency was not resolved');
             //DEBUG_STOP
             return false;
         }
@@ -821,7 +821,7 @@ Task.prototype.requestDataLoadMethod = function() {
  */
 Task.prototype.processLoadResult = function(result) {
     //DEBUG_START
-    _i('you did not redefine \'processLoadResult\' function');
+    _d('you did not redefine \'processLoadResult\' function');
     //DEBUG_STOP
 
     return typeof result !== 'number';
@@ -857,7 +857,7 @@ Task.prototype.pullTaskData = function() {
  */
 Task.prototype.processPullResult = function(result) {
     //DEBUG_START
-    _i('you did not redefine \'processPullResult\' function');
+    _d('you did not redefine \'processPullResult\' function');
     //DEBUG_STOP
 
     if (result > 0) {
@@ -879,7 +879,7 @@ Task.prototype.processPullResult = function(result) {
  */
 Task.prototype.calc_data = function() {
     //DEBUG_START
-    _i('you did not redefine \'calc_data\' function');
+    _d('you did not redefine \'calc_data\' function');
     //DEBUG_STOP
     return true;
 };
@@ -1305,7 +1305,7 @@ Task.prototype.processViewsProps = function() {
  */
 Task.prototype.make_props = function() {
     //DEBUG_START
-    _i('you did not redefine \'make_props\' function');
+    _d('you did not redefine \'make_props\' function');
     //DEBUG_STOP
     return true;
 };
