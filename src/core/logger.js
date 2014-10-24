@@ -26,8 +26,8 @@
  * _d(a, 'my custom array');
  * ```
  *
- * You may want to divorce log message with some importance level. To help you
- * with this task we have different log levels
+ * You may want to distinguish log messages with some importance level.
+ * To help you with this task we have next log levels
  *
  * - `debug` - used to print debug messages; shortcut function - `_d()`
  * - `info`  - used to print inforational messages; shortcut function - `_i()`
@@ -57,21 +57,21 @@
  * There are 4 notes on usage of those comments
  *
  * - `DEBUG_STOP` must written with 'O'. In example above we have to do
- *   a little cheat to actually pass a fake DEBUG_STOP pair to this strict
- *   system
+ *   little cheat to actually pass a fake DEBUG_START/DEBUG_STOP pair
+ *   to this strict system
  * - there **should not** be a space between `//` and `D` letter
  * - make sure every `DEBUG_START` comment has its own `DEBUG_STOP` pair.
- * Missing one of them causes absolutely weird bugs that are very hard to
- * discover
- * - make sure context of two pairs of DEBUG_{START,STOP} is not intersect.
- *   This also causes absolutely weird bugs that are very hard to discover
+ *   Missing one of them causes absolutely weird bugs that are very hard to fix
+ * - make sure context of two pairs of DEBUG_{START,STOP} is not intersected.
+ *   This also causes absolutely weird bugs that are very hard to resolve
  *
- * There are couple of edge cases where logger powerless to inspect passed value
+ * There are couple of edge cases where logger fails to inspect passed value
  *
  * - MVC/C objects that are not from JavaScript world. Under this you should
  * understant a objects that are created by functions like
  * `Host.CreateGraphic` or `Host.CreateGraphicView`
- * - Array with items that are not simple JavaScript objects. Here is an example
+ * - Array with items that are not simple JavaScript objects.
+ *   Here is an example
  *
  * ```
  * _d([{a: 1}, {b: 'hi'}])
@@ -94,11 +94,10 @@
  *
  * - if script that is run is located in `build/output` dir of project where
  *   development of script is done, log file will appears at root dir (`./`)
- *   and will have `NAME_OF_YOUR_SCRIPT-last-log.txt` name. Log files will be
- *   rotated to `./logs` dir
- * - if script is not located in `build/output` dir, then log file will be
- *   within same dir as script does. Log files will be rotated to
- *   `./NAME_OF_YOUR_SCRIPT-logs` dir
+ *   of the project and will have `NAME_OF_YOUR_SCRIPT-last-log.txt` name.
+ *   Log files will be rotated to `./logs` dir
+ * - in all other cases log file will be within same dir as script does.
+ *   Log files will be rotated to `./NAME_OF_YOUR_SCRIPT-logs` dir
  */
 Logger = (function() {
     var buffer = [];
