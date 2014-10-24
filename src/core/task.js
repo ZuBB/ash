@@ -464,8 +464,8 @@ Task.prototype.updateStatus = function(taskStatus) {
 Task.prototype.process = function() {
     this.createAddMessageMethods();
     this.createGetSetPropMethods();
-    this.checkDataSource();
     this.checkDependencies();
+    this.checkDataSource();
     this.processTaskDataMethod();
     //DEBUG_START
     this.logDataStats();
@@ -489,6 +489,10 @@ Task.prototype.process = function() {
  * @private
  */
 Task.prototype.checkDataSource = function() {
+    if (this.getTaskStatus() === false) {
+        return false;
+    }
+
     var result = true;
 
     if (this.dataSource) {
