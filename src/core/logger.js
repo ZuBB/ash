@@ -104,6 +104,7 @@ Logger = (function() {
     var buffer = [];
     var module = {};
     var fileHandler = null;
+    var currentLogLevel = 0;
     var levels = ['DEBUG', 'INFO ', 'WARN ', 'ERROR', 'FATAL'];
     var stats = {
         'WARN ': {count: 0, symbol: '.', color: 0xFF9100},
@@ -182,6 +183,10 @@ Logger = (function() {
         var outputStr = createOutputStr(lfBefore, level, value, desc);
 
         if (!outputStr) {
+            return;
+        }
+
+        if (currentLogLevel > level) {
             return;
         }
 
