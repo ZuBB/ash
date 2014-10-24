@@ -465,7 +465,6 @@ Task.prototype.process = function() {
     this.createAddMessageMethods();
     this.createGetSetPropMethods();
     this.checkDataSource();
-  //this.checkForbiddenChannel();
     this.checkDependencies();
     this.processTaskDataMethod();
     //DEBUG_START
@@ -655,28 +654,6 @@ Task.prototype.isSoftDependenciesResolved = function() {
     }
 
     return true;
-};
-
-/**
- * Checks if non allowed channel is entered by user for this task
- *
- * @return {Boolean} result of the check
- * @ignore
- */
-Task.prototype.checkForbiddenChannel = function() {
-    if (this.getTaskStatus() === false) {
-        return false;
-    }
-
-    if (this.forbiddenChannel) {
-        var channel = Input.getValue(this.forbiddenChannel);
-
-        if (!isNaN(channel) && channel > 0) {
-            return true;
-        }
-    }
-
-    return false;
 };
 
 /**
