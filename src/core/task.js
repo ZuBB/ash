@@ -1827,15 +1827,16 @@ Task.prototype.setGraphicPoints = function(specObj, graphic, params) {
     var isYValueInvalid = null;
     var prevYValue = null;
 
-    for (var jj = 0, x, y; jj < length && Host.CanContinue(); jj++) {
-        if (params.graphicType === 'sidestep' && prevYValue !== null) {
-            graphic.AddPoint(_1axisData[jj], prevYValue);
-        }
+    // https://dev.opera.com/articles/efficient-javascript/?page=3#trycatch
+    try {
+        for (var jj = 0, x, y; jj < length && Host.CanContinue(); jj++) {
+            x = _1axisData[jj];
+            y = _2axisData[jj];
 
-        x = _1axisData[jj];
-        y = _2axisData[jj];
+            if (params.graphicType === 'sidestep' && prevYValue !== null) {
+                graphic.AddPoint(x, prevYValue);
+            }
 
-        try {
             //DEBUG_START
             // since Host.CreateGraphic().Add[Color]Point silently 'eats'
             // such incorrect values as undefined, NaN
@@ -1845,7 +1846,10 @@ Task.prototype.setGraphicPoints = function(specObj, graphic, params) {
             isYValueInvalid = isNaN(parseFloat(y)) || !isFinite(y);
 
             if (isXValueInvalid || isYValueInvalid) {
-                throw 0;
+                _e(jj, 'got a NaN insead of number at');
+                _i(x, '`' + _1axis + '` equals to');
+                _i(y, '`' + _2axis + '` equals to');
+                continue;
             }
             //DEBUG_STOP
 
@@ -1854,24 +1858,16 @@ Task.prototype.setGraphicPoints = function(specObj, graphic, params) {
             } else {
                 graphic.AddPoint(x, y);
             }
-        } catch (e) {
-            //DEBUG_START
-            _e(jj, 'got a NaN insead of number at');
-            _i(x, '`' + _1axis + '` equals to');
-            _i(y, '`' + _2axis + '` equals to');
-            continue;
-            //DEBUG_STOP
 
-            this.addBug({'message': 'core.messages.error1', 'onetime': true});
-            continue;
+            prevYValue = _2axisData[jj];
+
+            // TODO check how to do this more flexible
+            if (this.drawMarkers) {
+                this.drawMarker(_1axisData[jj] * Host.Frequency, '');
+            }
         }
-
-        prevYValue = _2axisData[jj];
-
-        // TODO check how to do this more flexible
-        if (this.drawMarkers) {
-            this.drawMarker(_1axisData[jj] * Host.Frequency, '');
-        }
+    } catch (e) {
+        this.addBug({'message': 'core.messages.error1', 'onetime': true});
     }
 
     return true;
