@@ -37,6 +37,9 @@ module.exports = function(grunt) {
             push: {
                 command: 'push origin master',
             },
+            push_gh: {
+                command: 'push --mirror github',
+            },
             count: {
                 command: 'ls-files -m | grep -v index.html | wc -l',
                 options: {
@@ -56,7 +59,7 @@ module.exports = function(grunt) {
         if (grunt.config('count') === 0) {
             grunt.task.run('gta:checkout');
         } else {
-            grunt.task.run(['gta:add', 'gta:commit', 'gta:push']);
+            grunt.task.run(['gta:add', 'gta:commit', 'gta:push', 'gta:push_gh']);
         }
     });
 
