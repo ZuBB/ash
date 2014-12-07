@@ -65,10 +65,10 @@
  * - make sure context of two pairs of DEBUG_{START,STOP} is not intersected.
  *   This also causes absolutely weird bugs that are very hard to resolve
  *
- * There are couple of edge cases where logger fails to inspect passed value
+ * There are couple of edge cases where Logger fails to inspect passed values:
  *
  * - MVC/C objects that are not from JavaScript world. Under this you should
- * understant a objects that are created by functions like
+ * understant objects that are created by functions like
  * `Host.CreateGraphic` or `Host.CreateGraphicView`
  * - Array with items that are not simple JavaScript objects.
  *   Here is an example
