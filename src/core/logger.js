@@ -46,19 +46,16 @@
  * build it using release target. Format of that magic comments is next
  *
  * ```
- * //DEBUG_START
+ * // DEBUG_START
  * _d('I want to have this message only in development mode');
- * //DEBUG_ST0P
+ * // DEBUG_STOP
  * ```
  *
  * You can do logging at any place you want and any amount you need. Single
  * limit here is a free space on your hard drive
  *
- * There are 4 notes on usage of those comments
+ * There are 3 notes on usage of those comments
  *
- * - `DEBUG_STOP` must written with 'O'. In example above we have to do
- *   little cheat to actually pass a fake DEBUG_START/DEBUG_STOP pair
- *   to this strict system
  * - there **should not** be a space between `//` and `D` letter
  * - make sure every `DEBUG_START` comment has its own `DEBUG_STOP` pair.
  *   Missing one of them causes absolutely weird bugs that are very hard to fix
