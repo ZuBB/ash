@@ -342,7 +342,7 @@ Dispatcher = (function() {
         _rl('');
         //DEBUG_STOP
 
-        for (var ii = 0, specObj; ii < length && Host.CanContinue(); ii++) {
+        for (var ii = 0, specObj; ii < length && $H_CC_inline; ii++) {
             Host.SetStatusText(_t('core.status.message', ii));
             specObj = tasksHash[specNames[ii]];
 

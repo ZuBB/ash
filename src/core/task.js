@@ -1829,7 +1829,7 @@ Task.prototype.setGraphicPoints = function(specObj, graphic, params) {
 
     // https://dev.opera.com/articles/efficient-javascript/?page=3#trycatch
     try {
-        for (var jj = 0, x, y; jj < length && Host.CanContinue(); jj++) {
+        for (var jj = 0, x, y; jj < length; jj++) {
             x = _1axisData[jj];
             y = _2axisData[jj];
 
