@@ -8,7 +8,6 @@ var Profiler   = null;
 var Utils      = {};
 var MathHelper = {};
 var AHF = {};
-var isScriptAllowedToRun = function() { return true; };
 
 // vendor
 var Color = null;

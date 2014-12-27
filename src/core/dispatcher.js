@@ -196,6 +196,19 @@ Dispatcher = (function() {
     };
 
     /**
+     * Returns a flag which indicates if script is allowed to run
+     *
+     * Purpose of this function is to define if this particular instance
+     * of script is allowed to run (in some particular environment)
+     * It is OK for developer to redefine this function for his needs
+     *
+     * @return {Boolean} value of permition to run script
+     */
+    var isScriptAllowedToRun = function() {
+        return true;
+    };
+
+    /**
      * Runs all top-level tasks of Dispatcher. Best annotation here it to see
      * a source code.
      *
@@ -1025,18 +1038,19 @@ Dispatcher = (function() {
         'listRegisteredTasks':  listRegisteredTasks,
         //DEBUG_STOP
 
-        'addMessage':          addMessage,
-        'addParamsToMetadata': addParamsToMetadata,
-        'addSpec4Saving':      addSpec4Saving,
-        'getTaskObject':       getTaskObject,
-        'getValidTaskObject':  getValidTaskObject,
-        'listMessageTypes':    listMessageTypes,
-        'loadExternalData':    loadExternalData,
-        'process':             process,
-        'registerNewTask':     registerNewTask,
-        'requestTaskData':     requestTaskData,
-        'storeConfirmedView':  storeConfirmedView,
-        'storeGraphicObject':  storeGraphicObject,
-        'storeViewsProps':     storeViewsProps
+        'addMessage':           addMessage,
+        'addParamsToMetadata':  addParamsToMetadata,
+        'addSpec4Saving':       addSpec4Saving,
+        'getTaskObject':        getTaskObject,
+        'getValidTaskObject':   getValidTaskObject,
+        'isScriptAllowedToRun': isScriptAllowedToRun,
+        'listMessageTypes':     listMessageTypes,
+        'loadExternalData':     loadExternalData,
+        'process':              process,
+        'registerNewTask':      registerNewTask,
+        'requestTaskData':      requestTaskData,
+        'storeConfirmedView':   storeConfirmedView,
+        'storeGraphicObject':   storeGraphicObject,
+        'storeViewsProps':      storeViewsProps
     };
 })();
