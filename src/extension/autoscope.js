@@ -47,17 +47,10 @@ AHF.aveValueAt = function(channel, params) {
     // in case interval is bigger than samples shift should be zero
     shift = ((interval - 1) / 2) > shift ? 0 : shift;
 
-    for (var ii = 0, position; ii < length; ii++) {
+    for (var ii = 0, position; ii < length && $H_CC_inline; ii++) {
         position = fstVal + (interval * ii) + shift;
         result[_1axis].push(position / Host.Frequency);
         result[_2axis].push(Host.AveValueAt(channel, position, samples));
-
-        if (!Host.CanContinue()) {
-            //DEBUG_START
-            _f('Host.CanContinue() said we need to stop');
-            //DEBUG_STOP
-            break;
-        }
     }
 
     if (Boolean(params.skipTrailing) !== true) {
