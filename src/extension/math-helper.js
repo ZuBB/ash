@@ -75,7 +75,7 @@ MathHelper.avgXPointsTo1 = function(dataObj, aveItems) {
     var length = dataObj[_2axis].length;
     var result = Utils.createDataSetStub();
 
-    for (var ii = 0; ii < length && Host.CanContinue(); ii += aveItems) {
+    for (var ii = 0; ii < length && $H_CC_inline; ii += aveItems) {
         var end = Math.min(ii + aveItems, length);
 
         if (ii + aveItems > length) {
@@ -108,7 +108,7 @@ MathHelper.changeDataTimeline = function(srcXObj, srcYObj) {
     var _1axis = Script.defaultKeys[0];
     var _2axis = Script.defaultKeys[1];
 
-    for (var ii = 0; ii < srcXObj[_1axis].length && Host.CanContinue(); ii++) {
+    for (var ii = 0; ii < srcXObj[_1axis].length && $H_CC_inline; ii++) {
         result = MathHelper.get_middle_val(srcYObj, srcXObj[_1axis][ii], result[1]);
 
         dstObj[_1axis].push(srcXObj[_1axis][ii]);
@@ -134,7 +134,7 @@ MathHelper.smoothData = function(srcObj, passCount, returnAll) {
     var tmpObj1 = null;
     var results = [];
 
-    for (var ii = 1; ii < srcObj[_1axis].length && Host.CanContinue(); ii++) {
+    for (var ii = 1; ii < srcObj[_1axis].length && $H_CC_inline; ii++) {
         timeObj[_1axis].push((srcObj[_1axis][ii] + srcObj[_1axis][ii - 1]) / 2);
     }
 
