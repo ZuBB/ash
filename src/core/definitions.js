@@ -15,7 +15,8 @@ var i18n = null;
 var _t = null;
 
 //DEBUG_START
-var Logger     = null;
+// logger stuff
+var Logger = null;
 var _d = null;
 var _i = null;
 var _p = null;
