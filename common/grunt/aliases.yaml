@@ -4,6 +4,7 @@ base:
   - 'clean'
   - 'concat:dev'
   - 'replace:dev'
+  - 'replace:AU@IS-js'
 dev:
   - 'dev-vars'
   - 'base'

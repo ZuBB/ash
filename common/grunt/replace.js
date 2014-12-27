@@ -1,5 +1,12 @@
 module.exports = function(grunt, options) {
     return {
+        'AU@IS-js': {
+            src: '<%= vars.destFile %>',
+            dest: '<%= vars.destFile %>',
+            replacements: [
+                { from: ' && $H_CC_inline', to: '' },
+            ]
+        },
         dev: {
             src: '<%= vars.destFile %>',
             dest: '<%= vars.destFile %>',

@@ -25,6 +25,11 @@ var _e = null;
 var _f = null;
 //DEBUG_STOP
 
+//MACROS_START
+// macros stuff
+var $H_CC_inline = true;
+//MACROS_STOP
+
 // reporter stuff
 var _rw = null;
 var _rl = null;
