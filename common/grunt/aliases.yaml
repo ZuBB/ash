@@ -9,6 +9,9 @@ dev:
   - 'dev-vars'
   - 'base'
   - 'transcode:main'
+tst:
+  - 'test-vars'
+  - 'dev'
 
 ts:
  - 'dev-vars'

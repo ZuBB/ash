@@ -16,4 +16,9 @@ module.exports = function(grunt) {
                 grunt.file.readJSON('excludes_list.json').excludesList);
         }
     });
+
+    grunt.registerTask('test-vars', function() {
+        //grunt.config.set('vars.createGraphics', false);
+        grunt.config.set('vars.logLevel', 1);
+    });
 };

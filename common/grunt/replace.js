@@ -13,6 +13,7 @@ module.exports = function(grunt, options) {
             replacements: [
                 { from: '$SCRIPT$', to: '<%= vars.name %>' },
                 { from: '$DATATYPE$', to: '<%= vars.datatype %>' },
+                { from: '$LOG_LEVEL$', to: '<%= vars.logLevel %>' },
                 { from: '$DEMO_MODE$', to: '<%= vars.demo_mode %>' },
                 { from: '$TIMESTAMP$', to: new Date().toUTCString() },
                 { from: '$GRAPHIC_TYPE$', to: '<%= vars.graphic_type %>' },

@@ -234,6 +234,14 @@ Script.acceptedSignalType = '$DATATYPE$'.indexOf('DATATYPE') > 0 ?
  * from that input, tasks queue will be terminated after selected item.
  */
 Script.showStopAfterInput = false;
+
+
+/**
+ * @property {Number} logLevel = 0
+ *
+ * A property that holds desired log level
+ */
+Script.logLevel = typeof $LOG_LEVEL$ === 'number' ? $LOG_LEVEL$ : 0;
 //DEBUG_STOP
 
 /**
