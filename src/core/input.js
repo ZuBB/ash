@@ -339,15 +339,17 @@ Input = (function() {
             return items
                 .map(function(item) {
                     var result = null;
+                    var isItemNumber = null;
 
                     if (typeof item === 'string') {
                         result = item.indexOf('.') === 0 ?
                             'inputs.' + params.name + item : item;
                     } else {
                         result = item.toString();
+                        isItemNumber = typeof item === 'number';
                     }
 
-                    if (params.i18n !== false) {
+                    if (params.i18n !== false && isItemNumber !== true) {
                         result = _t(result);
                     }
 
