@@ -100,7 +100,7 @@ Logger = (function() {
     var buffer = [];
     var module = {};
     var fileHandler = null;
-    var currentLogLevel = 0;
+    var currentLogLevel = null;
     var levels = ['DEBUG', 'INFO ', 'WARN ', 'ERROR', 'FATAL'];
     var stats = {
         'WARN ': {count: 0, symbol: '.', color: 0xFF9100},
@@ -115,6 +115,8 @@ Logger = (function() {
      * @method init
      */
     module.init = function() {
+        module.setLogLevel();
+
         if (initFSHandler()) {
             while (Array.isArray(buffer) && buffer.length) {
                 module.log(buffer.shift());
@@ -122,6 +124,16 @@ Logger = (function() {
         }
 
         buffer = null;
+    };
+
+    /**
+     * function that ...
+     *
+     * @member Logger
+     * @method setLogLevel
+     */
+    module.setLogLevel = function() {
+        currentLogLevel = parseInt(Script.logLevel, 10) || 0;
     };
 
     /**
