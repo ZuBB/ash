@@ -17,8 +17,8 @@ module.exports = {
                 'src/core/src/lang/lang-ru.iso.js',
                 'src/lang/lang-en.js',
                 'src/lang/lang-ru.iso.js',
-                'src/tasks/*.js',
                 'src/app/*.js',
+                'src/tasks/*.js',
                 'src/core/src/core/main.js',
             ]
         }]
