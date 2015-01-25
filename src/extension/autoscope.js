@@ -63,3 +63,12 @@ AHF.aveValueAt = function(channel, params) {
     return result;
 };
 
+AHF.getHostAppVersion = function() {
+    // >> скажите пожалуйста с какой версии программы в скрипте
+    // >> можна получить версию программы из свойства Version обьекта Host?
+    // >> я про это
+    // >> ReportOut((Host.Version || 'версия недоступна') + "\n");
+    // RE:
+    // Начиная с v4.3.7.4
+    return Host.Version || 4373;
+};
