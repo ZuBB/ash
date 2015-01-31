@@ -155,8 +155,8 @@ Dispatcher = (function() {
      * Each definition like above should reside in separate file in
      * `src/tasks` directory. Build system concatenates all files including
      * files with tasks into single file. This allows `Dispatcher` class
-     * automatically register all tasks that were included into result file.
-     * Since tasks may depend on each other, order of register **does
+     * automatically register every task that was included into result file.
+     * Since tasks may depend on each other, order of inclusion **does
      * matters**. That order is same as order of files in `src/tasks`
      * directory sorted alphabetically. Make sure you name files with
      * tasks properly.
