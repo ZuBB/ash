@@ -1,6 +1,7 @@
 var currentLocale = null;
 
 switch (Host.GetCurLanguage()) {
+    // https://technet.microsoft.com/en-us/library/ms143508(v=sql.90).aspx
     case 1049: currentLocale = 'ru'; break;
     case 1033: currentLocale = 'en'; break;
     default:
