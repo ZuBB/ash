@@ -1842,8 +1842,8 @@ Task.prototype.setGraphicPoints = function(specObj, graphic, params) {
             // such incorrect values as undefined, NaN
             // we forced to do a check to know when we faced
             // with that values before 'Add[Color]Point' actually eats them
-            isXValueInvalid = isNaN(parseFloat(x)) || !isFinite(x);
-            isYValueInvalid = isNaN(parseFloat(y)) || !isFinite(y);
+            isXValueInvalid = typeof x !== 'number' || !isFinite(x);
+            isYValueInvalid = typeof y !== 'number' || !isFinite(y);
 
             if (isXValueInvalid || isYValueInvalid) {
                 _e(jj, 'got a NaN insead of number at');
