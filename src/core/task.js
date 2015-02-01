@@ -1867,7 +1867,7 @@ Task.prototype.setGraphicPoints = function(specObj, graphic, params) {
             }
         }
     } catch (e) {
-        this.addBug({'message': 'core.messages.error1', 'onetime': true});
+        this.addBug({'message': ['core.messages.error1'], 'onetime': true});
     }
 
     return true;
