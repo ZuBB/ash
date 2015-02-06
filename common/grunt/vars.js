@@ -3,7 +3,6 @@ module.exports = {
     'name': '',
     'dest': 'build/output/',
     'buildType': null,
-    'excludesList': [],
 
     'destFile': [
         '<%= vars.dest %>',

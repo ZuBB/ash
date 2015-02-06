@@ -2,7 +2,7 @@ default:
   - 'dev'
 base:
   - 'clean'
-  - 'concat:dev'
+  - 'concat'
   - 'replace:dev'
   - 'replace:AU@IS-js'
 dev:
@@ -16,7 +16,7 @@ tst:
 ts:
  - 'dev-vars'
  - 'clean'
- - 'concat:jshint'
+ - 'concat'
  - 'replace:dev'
  - 'strip_code'
  - 'jshint:light'
