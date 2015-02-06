@@ -10,9 +10,6 @@ module.exports = function(grunt) {
         grunt.config.set('vars.graphic_type', 0);
         grunt.config.set('vars.name', grunt.config('pkg.releaseFilename') ||
             grunt.config('pkg.devFilename'));
-
-        grunt.config('vars.excludesList',
-                grunt.config('pkg.excludesList') || []);
     });
 
     grunt.registerTask('test-vars', function() {
@@ -25,7 +22,6 @@ module.exports = function(grunt) {
         'name': '',
         'dest': 'build/output/',
         'buildType': null,
-        'excludesList': [],
 
         'destFile': [
             '<%= vars.dest %>',

@@ -24,7 +24,8 @@ module.exports = {
             globals: {
                 'ActiveXObject': false,
                 'Enumerator': false,
-                'Host': false
+                'Host': false,
+                'JSON': false
             },
 
             es3: true,

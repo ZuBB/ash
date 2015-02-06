@@ -247,6 +247,20 @@ Logger = (function() {
      * @method close
      */
     module.close = function() {
+        var padLen = null;
+
+        try {
+            padLen = Dispatcher.listRegisteredTasks()
+                .sort(function(a, b) { return a.length - b.length; })
+                .last()
+                .length;
+        } catch (e) {
+            padLen = 40;
+        }
+
+        _i('<<<<< GRAND_TOTAL'.rpad(Math.ceil((padLen + 6) * 1.4)) +
+                Profiler.get_ms_time('main') + ' ms passed');
+
         if (fileHandler !== null) {
             if (fileHandler.getSize() > Math.pow(2, 30)) {
                 fileHandler.close();
