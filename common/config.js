@@ -1,19 +1,19 @@
 module.exports = function(grunt, path) {
-    var filePath = path.join(process.cwd(), 'custom-config-dirs.json');
-    var configDirs = [];
+    var filePath = path.join(process.cwd(), 'config.json');
+    var dataObj  = null;
 
     if (grunt.file.exists(filePath)) {
-        configDirs = grunt.file.readJSON(filePath).pathes;
+        dataObj = grunt.file.readJSON(filePath);
+    } else {
+        grunt.fail.fatal('No main config found');
     }
 
-    configDirs = configDirs.map(function(item) {
-        return path.join(process.cwd(), item);
-    });
-
     return {
-        // path to task.js files, defaults to grunt dir
+        // path to task.js files
         configPath: path.join(process.cwd(), 'src/core/common/grunt'),
-        overridePath: configDirs,
+        overridePath: (dataObj.usersTaskFolders || []).map(function(item) {
+            return path.join(process.cwd(), item);
+        }),
 
         // auto grunt.initConfig
         init: true,
@@ -27,7 +27,7 @@ module.exports = function(grunt, path) {
 
         // data passed into config. can use with <%= test %>
         data: {
-            pkg: grunt.file.readJSON('package.json')
+            pkg: dataObj
         },
 
         // can optionally pass options to load-grunt-tasks.

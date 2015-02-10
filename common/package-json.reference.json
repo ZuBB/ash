@@ -1,0 +1,27 @@
+{
+  "name": "ats",
+  "author": "Vasyl Zuzyak <zvasylvv@gmail.com>",
+  "version": "0.0.0",
+  "private": true,
+  "devDependencies": {
+    "grunt": "0.4.5",
+    "grunt-bump": "0.0.16",
+    "grunt-closure-compiler": "0.0.21",
+    "grunt-contrib-clean": "0.6.0",
+    "grunt-contrib-compress": "0.12.0",
+    "grunt-contrib-concat": "0.5.0",
+    "grunt-contrib-copy": "0.7.0",
+    "grunt-contrib-jshint": "0.10.0",
+    "grunt-contrib-rename": "0.0.3",
+    "grunt-contrib-watch": "0.6.1",
+    "grunt-git-them-all": "0.0.10",
+    "grunt-nodemailer": "0.2.1",
+    "grunt-shell-spawn": "0.3.0",
+    "grunt-text-replace": "0.3.12",
+    "grunt-transcode": "0.0.3",
+    "jshint-stylish": "1.0.0",
+    "load-grunt-config": "0.14.0",
+    "quiet-grunt": "0.2.3",
+    "time-grunt": "1.0.0"
+  }
+}
