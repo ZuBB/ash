@@ -45,7 +45,7 @@ rl:
   - 'loader:main'
 
 setDeps:
-  - 'update_json:common'
+  - 'copy:config2common'
 
 getDeps:
-  - 'update_json:local'
+  - 'copy:config2local'
