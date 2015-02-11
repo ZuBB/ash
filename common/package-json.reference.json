@@ -17,6 +17,7 @@
     "grunt-nodemailer": "0.2.1",
     "grunt-shell-spawn": "0.3.0",
     "grunt-simple-git": "1.0.0",
+    "grunt-strip-code": "git://github.com/ZuBB/grunt-strip-code.git#custom_tag",
     "grunt-text-replace": "0.3.12",
     "grunt-transcode": "0.0.3",
     "jshint-stylish": "1.0.0",
