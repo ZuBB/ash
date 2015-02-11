@@ -20,7 +20,7 @@ module.exports = function(grunt, path) {
         jitGrunt: {
             staticMappings: {
                 replace: 'grunt-text-replace',
-                gta: 'grunt-git-them-all',
+                git: 'grunt-simple-git',
                 shell: 'grunt-shell-spawn'
             }
         },

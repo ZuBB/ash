@@ -24,14 +24,14 @@ ts:
 uib:
   - 'dev-vars'
   - 'base'
-  - 'gta'
+  - 'git'
   - 'replace:uib'
   - 'transcode:main'
   - 'rename:uib'
 
 rqb:
   - 'rq-vars'
-  - 'gta'
+  - 'git'
   - 'base'
   - 'replace:rqb'
   - 'strip'
