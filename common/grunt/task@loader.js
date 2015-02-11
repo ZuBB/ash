@@ -1,6 +1,6 @@
 module.exports = function(grunt) {
     grunt.registerMultiTask('loader', function() {
-        var name = grunt.config('pkg.name') + '-quick.ajs';
+        var name = grunt.config('pkg.devFilename') + '-quick.ajs';
         var prefix = this.options().prefix;
         var content = this.files
         .map(function(item) {
