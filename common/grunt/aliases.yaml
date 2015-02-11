@@ -18,7 +18,7 @@ ts:
  - 'clean'
  - 'concat:jshint'
  - 'replace:dev'
- - 'strip'
+ - 'strip_code'
  - 'jshint:light'
 
 uib:
@@ -34,7 +34,7 @@ rqb:
   - 'git'
   - 'base'
   - 'replace:rqb'
-  - 'strip'
+  - 'strip_code'
   - 'closure-compiler:main'
   - 'rename:cc-fix'
   - 'transcode:main'
