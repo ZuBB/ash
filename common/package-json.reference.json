@@ -16,6 +16,7 @@
     "grunt-contrib-watch": "0.6.1",
     "grunt-nodemailer": "0.2.1",
     "grunt-shell-spawn": "0.3.0",
+    "grunt-simple-git": "1.0.0",
     "grunt-text-replace": "0.3.12",
     "grunt-transcode": "0.0.3",
     "jshint-stylish": "1.0.0",
