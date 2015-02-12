@@ -879,6 +879,11 @@ Task.prototype.logDataStats = function() {
     this.graphics.forEach(function (dataSet, index) {
         _d('----- ' + index + ' -----');
         Object.keys(dataSet).forEach(function (key) {
+            if (dataSet[key] === null || dataSet[key] === void 0) {
+                _e(dataSet[key], 'key `' + key + '` value');
+                return false;
+            }
+
             if (Array.isArray(dataSet[key]) === false) {
                 _d(dataSet[key].toString(), 'key `' + key + '` value');
                 return false;
