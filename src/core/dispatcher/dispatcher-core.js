@@ -134,8 +134,6 @@ Dispatcher = (function() {
     /**
      * Runs all top-level tasks of Dispatcher. Best annotation here it to see
      * a source code.
-     *
-     * @private
      */
     this.process = function() {
         runPreProcessMethods();
@@ -226,8 +224,8 @@ Dispatcher = (function() {
             Profiler.start(specName);
 
             outputStr.push('>'.repeat(15), ' Processing next (');
-                    outputStr.push((ii + 1).toString().lpad(' ', count.length));
-                    outputStr.push('/' + count + ') spec: ');
+            outputStr.push((ii + 1).toString().lpad(' ', count.length));
+            outputStr.push('/' + count + ') spec: ');
             outputStr.push(specName.rpad(' ', padLen));
 
             _d('\n'.repeat(4));
@@ -345,16 +343,18 @@ Dispatcher = (function() {
         }
     };
 
+    //DEBUG_START
     /**
      * Returns list of the tasks that have been registered
      *
      * **NOTE**: This method is stripped from production code
      *
-     * @return {Array} list of registered tasks
+     * @return {Array} list of registered task names
      */
     this.listRegisteredTasks = function() {
         return Object.keys(tasksHash);
     };
+    //DEBUG_STOP
 
     /**
      * ...
@@ -447,3 +447,4 @@ Dispatcher = (function() {
 
     return this;
 }).apply({});
+
