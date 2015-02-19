@@ -37,9 +37,9 @@ module.exports = function(grunt) {
         'src/core/src/vendor/json/json2.js',
         'src/core/src/vendor/es5-shim/es5-shim.js',
 
-        'src/core/src/extension/*.js',
+        'src/core/src/extension',
 
-        'src/app/*.js',
+        'src/app/',
         'src/core/src/core/main.js',
     ];
 
@@ -49,26 +49,23 @@ module.exports = function(grunt) {
                 return ~filepath.indexOf(allowedFilename);
             });
         },
-        colorlib: function() {
+        colorlib: function(filepath) {
             return ~filepath.indexOf('vendor/color');
         },
-        i18n: function() {
-            return
-                ~filepath.indexOf('src/lang') ||
-                ~filepath.indexOf('i18next');
-        },
         compare: function(filepath) {
-            return
-                ~filepath.indexOf('dispatcher-dump4compare.js') ||
-                ~filepath.indexOf('dispatcher-dump.js');
-        },
-        dump: function(filepath) {
-            return
-                ~filepath.indexOf('dispatcher-dump4test.js') ||
-                ~filepath.indexOf('dispatcher-dump.js');
+            var file1 = ~filepath.indexOf('dispatcher-dump4compare.js');
+            var file2 = ~filepath.indexOf('dispatcher-dump.js');
+
+            return Boolean(file1 || file2);
         },
         graphics: function(filepath) {
             return ~filepath.indexOf('dispatcher-graphics.js');
+        },
+        i18n: function(filepath) {
+            var file1 = ~filepath.indexOf('src/lang');
+            var file2 = ~filepath.indexOf('i18next');
+
+            return Boolean(file1 || file2);
         },
         tasks: function(filepath) {
             var releaseType = grunt.config('vars.buildType');
@@ -82,12 +79,20 @@ module.exports = function(grunt) {
                 return true;
             }
 
-            return excludesList.indexOf(filepath) < 0;
-        },
+            return !excludesList.some(function(allowedFilename) {
+                return ~filepath.indexOf(allowedFilename);
+            });
+        /*},
         jshint: function(filepath) {
             return
                 filepath.indexOf('vendor') < 0 &&
-                filepath.indexOf('lang') < 0;
+                filepath.indexOf('lang') < 0;*/
+        },
+        test: function(filepath) {
+            var file1 = ~filepath.indexOf('dispatcher-dump4test.js');
+            var file2 = ~filepath.indexOf('dispatcher-dump.js');
+
+            return Boolean(file1 || file2);
         }
     };
 
