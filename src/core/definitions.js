@@ -12,7 +12,7 @@ var AHF = {};
 // vendor
 var Color = null;
 var i18n = null;
-var _t = null;
+var _t = function(key) { return key; };
 
 //DEBUG_START
 // logger stuff
