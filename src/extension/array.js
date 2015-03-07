@@ -199,14 +199,14 @@ if (!Array.prototype.mode) {
 
         if (typeof mapFunction === 'function') {
             // noop
-        } else if (!Utils.isNumberInvalid(mapFunction)) {
+        } else if (!Number.isInvalid(mapFunction)) {
             itemIndex = parseInt(mapFunction, 10);
             mapFunction = function(a) { return a; };
         } else {
             mapFunction = function(a) { return a; };
         }
 
-        if (Utils.isNumberInvalid(itemIndex)) {
+        if (Number.isInvalid(itemIndex)) {
             itemIndex = 1;
         }
 

@@ -28,3 +28,13 @@ if (!Number.prototype.msToPos) {
         return Math.round(this / 1000 * Host.Frequency);
     };
 }
+
+/**
+ * helper function that ...
+ */
+if (!Number.isInvalid) {
+    Number.isInvalid = function(number) {
+        return isNaN(parseFloat(number)) || !isFinite(number);
+    };
+}
+

@@ -20,7 +20,11 @@ Utils.sleep = function(milliSeconds) {
  * @ignore
  */
 Utils.isNumberInvalid = function(number) {
-    return isNaN(parseFloat(number)) || !isFinite(number);
+    //DEBUG_START
+    _e('`Utils.isNumberInvalid()` is deprecated. ' +
+            'Use `Number.isInvalid()` instead');
+    //DEBUG_STOP
+    return Number.isInvalid(number);
 };
 
 /**

@@ -152,7 +152,7 @@ Input = (function() {
             },
             'runtimeValue': function(rawValue) {
                 var parsedValue = parseInt(rawValue, 10);
-                return Utils.isNumberInvalid(parsedValue) ?
+                return Number.isInvalid(parsedValue) ?
                     DATATYPE.INT.defaultValue() : parsedValue;
             }
         },
@@ -166,7 +166,7 @@ Input = (function() {
             },
             'runtimeValue': function(rawValue) {
                 var parsedValue = parseFloat(rawValue);
-                return Utils.isNumberInvalid(parsedValue) ?
+                return Number.isInvalid(parsedValue) ?
                     DATATYPE.FLOAT.defaultValue() : parsedValue;
             }
         },

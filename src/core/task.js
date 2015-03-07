@@ -908,7 +908,7 @@ Task.prototype.logDataStats = function() {
             var min = dataSet[key].min();
             var max = dataSet[key].max();
 
-            if (Utils.isNumberInvalid(min) || Utils.isNumberInvalid(max)) {
+            if (Number.isInvalid(min) || Number.isInvalid(max)) {
                 _e('key `' + key + '` contains invalid item');
                 _d(dataSet[key], key);
                 return false;
@@ -1037,7 +1037,7 @@ Task.prototype.isDataSetExist = function(index) {
 
     index = Utils.parseIntegerNumber(index);
 
-    if (Utils.isNumberInvalid(index) === true) {
+    if (Number.isInvalid(index) === true) {
         return false;
     }
 
@@ -2101,7 +2101,7 @@ Task.getTaskData = function(depObj, dataLink) {
     var dsIndex = Utils.parseNaturalNumber(depSpec[1]);
 
     //DEBUG_START
-    if (Utils.isNumberInvalid(dsIndex) === true) {
+    if (Number.isInvalid(dsIndex) === true) {
         _e(dsIndex, 'index is not a valid number');
         return null;
     }
