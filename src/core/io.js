@@ -5,6 +5,10 @@
  * @ignore
  */
 IO = (function() {
+    if (typeof ActiveXObject === 'undefined') {
+        return null;
+    }
+
     // http://msdn.microsoft.com/en-us/library/hww8txat(v=vs.84).aspx
     var FSObject = new ActiveXObject('Scripting.FileSystemObject');
     var safeExecute = function(params) {
@@ -124,17 +128,7 @@ IO = (function() {
             failureMessage: 'Failed to create handler due to next error',
             tryFunc: function() {
                 return function() {
-                    if (params.utf8) {
-                        var handler = null;
-                        // http://goo.gl/J8OH5J (msdn)
-                        handler = new ActiveXObject("ADODB.Stream");
-                        handler.Charset = "utf-8";
-                        handler.Open();
-                        return handler;
-                    }
-
-                    var unicode = !!!params.noutf;
-                    return FSObject.CreateTextFile(filename, true, unicode);
+                    return FSObject.CreateTextFile(filename, true, true);
                 }();
             },
             failureResult: null
@@ -155,13 +149,7 @@ IO = (function() {
                 failureMessage: 'Failed to write data due to next error',
                 tryFunc: function() {
                     return function() {
-                        outputStr = outputStr.toString();
-
-                        if (params.utf8) {
-                            fileHandler.WriteText(outputStr);
-                        } else {
-                            fileHandler.Write(outputStr);
-                        }
+                        fileHandler.Write(outputStr.toString());
                     }();
                 }
             });
@@ -180,21 +168,29 @@ IO = (function() {
                 return true;
             }
 
-            var result = safeExecute({
+            return safeExecute({
                 failureMessage: 'Failed to (save&)close file due to next error',
                 tryFunc: function() {
                     return function() {
-                        if (params.utf8) {
-                            fileHandler.SaveToFile(filename, 2);
-                        }
-
                         fileHandler.Close();
                         fileHandler = null;
                     }();
                 }
             });
+        };
 
-            if (params.convert2utf8 !== true) {
+        this.getFilePath = function() {
+            return filename;
+        };
+
+        this.getSize = function() {
+            return fileHandler ? fileHandler.size : 0;
+        };
+
+        this.resaveInUTF = function(fromEnc) {
+            var result = this.close();
+
+            if (result !== true) {
                 return result;
             }
 
@@ -206,6 +202,7 @@ IO = (function() {
                         var objStream2 = null;
                         var fileContent = null;
 
+                        // http://goo.gl/J8OH5J (msdn)
                         objStream1 = new ActiveXObject("ADODB.Stream");
                         objStream1.Charset = "Unicode";
                         objStream1.Open();
@@ -228,10 +225,6 @@ IO = (function() {
                     }();
                 }
             });
-        };
-
-        this.getFilePath = function() {
-            return filename;
         };
     };
 
@@ -286,7 +279,7 @@ IO = (function() {
             failureResult: null,
             tryFunc: function() {
                 return function() {
-                    var fileHandler = FSObject.OpenTextFile(filepath, 1);
+                    var fileHandler = FSObject.OpenTextFile(filepath, 1, false, -1);
                     var fileContent = fileHandler.ReadAll();
                     fileHandler.Close();
                     return fileContent;
@@ -360,12 +353,17 @@ IO = (function() {
         return result;
     };
 
+    var getTempFolderPath = function() {
+        return FSObject.GetSpecialFolder(2).path;
+    };
+
     return {
         'buildPath'           : buildPath,
         'createFile'          : createFile,
         'getDirFiles'         : getDirFiles,
         'getSafeDirPath'      : getSafeDirPath,
         'getSafeNeighbourPath': getSafeNeighbourPath,
+        'getTempFolderPath'   : getTempFolderPath,
         'isFileExist'         : isFileExist,
         'isPathAbsolute'      : isPathAbsolute,
         'readFileContent'     : readFileContent
