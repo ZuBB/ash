@@ -146,8 +146,6 @@ Logger = (function() {
         var result      = false;
 
         var fileHandlerOptions = {
-            convert2utf8: true,
-
             filedir: [Host.CurPath, logPath],
             filename: Script.name + '-last-log.txt',
             backupDir: [Host.CurPath, logPath, 'logs'],
@@ -250,7 +248,12 @@ Logger = (function() {
      */
     module.close = function() {
         if (fileHandler !== null) {
-            fileHandler.close();
+            if (fileHandler.getSize() > Math.pow(2, 30)) {
+                fileHandler.close();
+            } else {
+                fileHandler.resaveInUTF();
+            }
+
             fileHandler = null;
         }
 
