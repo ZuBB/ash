@@ -6,8 +6,10 @@
  * @param {String} descr - string that will be print before value
  */
 if (!String.prototype.rpad) {
-    String.prototype.rpad = function(padString, length) {
+    String.prototype.rpad = function(length, padString) {
+        padString = padString || ' ';
         var str = this;
+
         while (str.length < length) {
             str = str + padString;
         }
@@ -24,8 +26,10 @@ if (!String.prototype.rpad) {
  * @param {String} descr - string that will be print before value
  */
 if (!String.prototype.lpad) {
-    String.prototype.lpad = function(padString, length) {
+    String.prototype.lpad = function(length, padString) {
+        padString = padString || ' ';
         var str = this;
+
         while (str.length < length) {
             str = padString + str;
         }
