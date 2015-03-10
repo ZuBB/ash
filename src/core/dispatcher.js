@@ -244,7 +244,7 @@ Dispatcher = (function() {
         _rp(_t('report.done', Profiler.get_HRF_time('main')));
 
         //DEBUG_START
-        _i('<<<<< ' + 'GRAND_TOTAL'.rpad(' ', padLen) +
+        _i('<<<<< ' + 'GRAND_TOTAL'.rpad(padLen) +
                 Profiler.get_ms_time('main') + ' ms passed');
         dumpTasks2Disk();
         Logger.close();
@@ -325,9 +325,9 @@ Dispatcher = (function() {
             Profiler.start(specName);
 
             outputStr.push('>'.repeat(15), ' Processing next (');
-                    outputStr.push((ii + 1).toString().lpad(' ', count.length));
+                    outputStr.push((ii + 1).toString().lpad(count.length));
                     outputStr.push('/' + count + ') spec: ');
-            outputStr.push(specName.rpad(' ', padLen));
+            outputStr.push(specName.rpad(padLen));
 
             _d('\n'.repeat(4));
             _rw(outputStr.join(''));
@@ -343,7 +343,7 @@ Dispatcher = (function() {
             var profilerString = '';
             var profileTime = Profiler.stop(specName);
             profilerString += '<'.repeat(5) + ' ';
-            profilerString += specName.rpad(' ', padLen);
+            profilerString += specName.rpad(padLen);
             profilerString += ' ' + profileTime.toString();
             profilerString += ' ms passed';
 

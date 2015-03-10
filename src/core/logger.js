@@ -155,11 +155,11 @@ Logger = (function() {
 
                 backname =
                     backname.getFullYear() + '.' +
-                    (backname.getMonth() + 1).toString().lpad('0', 2) + '.' +
-                    backname.getDate().toString().lpad('0', 2) + '_' +
-                    backname.getHours().toString().lpad('0', 2) + '-' +
-                    backname.getMinutes().toString().lpad('0', 2) + '-' +
-                    backname.getSeconds().toString().lpad('0', 2);
+                    (backname.getMonth() + 1).toString().lpad(2, '0') + '.' +
+                    backname.getDate().toString().lpad(2, '0') + '_' +
+                    backname.getHours().toString().lpad(2, '0') + '-' +
+                    backname.getMinutes().toString().lpad(2, '0') + '-' +
+                    backname.getSeconds().toString().lpad(2, '0');
 
                 return filePath.replace(/last/, backname);
             }
@@ -270,9 +270,9 @@ Logger = (function() {
         _rl('');
 
         for (var level in stats) {
-            var count = stats[level].count.toString().lpad(' ', 3);
+            var count = stats[level].count.toString().lpad(3);
             _rw(level + ': ' + count + ' ');
-            var bar = ''.rpad(stats[level].symbol, stats[level].count);
+            var bar = ''.rpad(stats[level].count, stats[level].symbol);
             if (bar.length > 0) {
                 _rw(bar, {colors: [0, stats[level].color]});
             } else {
