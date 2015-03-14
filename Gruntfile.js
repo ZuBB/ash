@@ -13,11 +13,17 @@ module.exports = function(grunt) {
                 cache: true
             },
             main: {
-                src: ['src/core/*.js'],
+                src: [
+                    'src/core/*.js',
+                    'src/core/dispatcher/*.js'
+                ],
                 dest: '/tmp/ash-jsdoc',
             },
             deploy: {
-                src: ['src/core/*.js'],
+                src: [
+                    'src/core/*.js',
+                    'src/core/dispatcher/*.js'
+                ],
                 dest: grunt.option('repo-path')
             }
         },
