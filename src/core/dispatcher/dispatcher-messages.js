@@ -165,7 +165,7 @@ Dispatcher = (function() {
         _rp(_t('report.done', Profiler.get_HRF_time('main')));
 
         var errorMessages = messageTypes['error'];
-        if (errorMessages && errorMessages.messages.length > 0) {
+        if (errorMessages && errorMessages.messages.empty()) {
             Host.ShowReport();
         }
     };
