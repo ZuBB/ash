@@ -8,10 +8,12 @@ module.exports = function(grunt, path) {
         grunt.fail.fatal('No main config found');
     }
 
+    var configPathes = (dataObj.usersTaskFolders || []);
+    configPathes.unshift('src/core/common/grunt');
+
     return {
         // path to task.js files
-        configPath: path.join(process.cwd(), 'src/core/common/grunt'),
-        overridePath: (dataObj.usersTaskFolders || []).map(function(item) {
+        configPath: configPathes.map(function(item) {
             return path.join(process.cwd(), item);
         }),
 
