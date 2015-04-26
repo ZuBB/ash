@@ -156,7 +156,8 @@ Dispatcher = (function() {
      */
     var logIncomingParams = function() {
         _p('');
-        _d(Host.CurFileName, 'current file');
+        _d(Host.CurPath, 'current dir');
+        _d(Host.CurFileName, 'current data file');
         _d(Host.Frequency, 'frequency');
         _d(Host.NumberOfSamples, 'samples');
         _d(Host.NumberOfSamples.posToSec(), 'duration');
