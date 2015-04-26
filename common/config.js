@@ -21,8 +21,9 @@ module.exports = function(grunt, path) {
         init: true,
         jitGrunt: {
             staticMappings: {
-                replace: 'grunt-text-replace',
+                bom: 'grunt-bom-removal',
                 git: 'grunt-simple-git',
+                replace: 'grunt-text-replace',
                 shell: 'grunt-shell-spawn'
             }
         },
