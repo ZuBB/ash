@@ -187,7 +187,7 @@ IO = (function() {
             return fileHandler ? fileHandler.size : 0;
         };
 
-        this.resaveInUTF = function(fromEnc) {
+        this.resaveInUTF = function() {
             var result = this.close();
 
             if (result !== true) {
