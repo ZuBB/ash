@@ -48,7 +48,7 @@ Dispatcher = (function() {
     /**
      * Registers new task with dictionary of options passed as parameter
      *
-     * @param {Object} [taskOpts] A dictionary with options that
+     * @param {Object} taskOpts A dictionary with options that
      *  will be used for creation instance of Task class
      * @return {Boolean} result of the operation
      *
