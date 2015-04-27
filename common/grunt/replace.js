@@ -7,7 +7,6 @@ module.exports = function(grunt, options) {
                 { from: '$SCRIPT$', to: '<%= vars.name %>' },
                 { from: '$DATATYPE$', to: '<%= vars.datatype %>' },
                 { from: '$LOG_LEVEL$', to: '<%= vars.logLevel %>' },
-                { from: '$DEMO_MODE$', to: '<%= vars.demo_mode %>' },
                 { from: '$TIMESTAMP$', to: new Date().toUTCString() },
                 { from: '$GRAPHIC_TYPE$', to: '<%= vars.graphic_type %>' },
                 { from: ' && $H_CC_inline', to: '' },
@@ -30,6 +29,7 @@ module.exports = function(grunt, options) {
             src: '<%= vars.destFile %>',
             dest: '<%= vars.destFile %>',
             replacements: [
+                { from: '$DEMO_MODE$', to: '<%= vars.demo_mode %>' },
                 {
                     from: '$VERSION$',
                     to: function(pattern) {
