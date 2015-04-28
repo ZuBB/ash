@@ -207,16 +207,6 @@ Script.name = '$SCRIPT$'.indexOf('SCRIPT') > 0 ?
 
 
 /**
- * @property {Boolean} dumpTasksData = false
- *
- * Flag that indicates if dispatcher should dump tasks data. Usefull only for
- * tests
- */
-Script.dumpTasksData = typeof $DUMP_TASKS_DATA$ === 'undefined' ?
-    false : !!$DUMP_TASKS_DATA$;
-
-
-/**
  * @property {String} acceptedSignalType = 'ANA'
  *
  * String that indicates which type of the signal cant be processed

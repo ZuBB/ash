@@ -11,10 +11,6 @@ module.exports = function(grunt, options) {
                 { from: '$TIMESTAMP$', to: new Date().toUTCString() },
                 { from: '$GRAPHIC_TYPE$', to: '<%= vars.graphic_type %>' },
                 { from: ' && $H_CC_inline', to: '' },
-                {
-                    from: '$DUMP_TASKS_DATA$',
-                    to: '<%= vars.dump_tasks_data %>'
-                }
             ]
         },
         uib: {
