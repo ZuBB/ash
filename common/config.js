@@ -21,6 +21,7 @@ module.exports = function(grunt, path) {
         init: true,
         jitGrunt: {
             staticMappings: {
+                closureCompiler: 'grunt-closure-tools',
                 bom: 'grunt-bom-removal',
                 git: 'grunt-simple-git',
                 replace: 'grunt-text-replace',

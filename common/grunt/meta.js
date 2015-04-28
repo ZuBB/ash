@@ -43,7 +43,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask('meta-minify', function() {
         if (grunt.config('environment.env') === 'rqb') {
-            grunt.task.run('closure-compiler:main');
+            grunt.task.run('closureCompiler');
         }
     });
 
