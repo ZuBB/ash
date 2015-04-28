@@ -1,12 +1,5 @@
 module.exports = function(grunt, options) {
     return {
-        'AU@IS-js': {
-            src: '<%= vars.destFile %>',
-            dest: '<%= vars.destFile %>',
-            replacements: [
-                { from: ' && $H_CC_inline', to: '' },
-            ]
-        },
         dev: {
             src: '<%= vars.destFile %>',
             dest: '<%= vars.destFile %>',
@@ -17,6 +10,7 @@ module.exports = function(grunt, options) {
                 { from: '$DEMO_MODE$', to: '<%= vars.demo_mode %>' },
                 { from: '$TIMESTAMP$', to: new Date().toUTCString() },
                 { from: '$GRAPHIC_TYPE$', to: '<%= vars.graphic_type %>' },
+                { from: ' && $H_CC_inline', to: '' },
                 {
                     from: '$DUMP_TASKS_DATA$',
                     to: '<%= vars.dump_tasks_data %>'
