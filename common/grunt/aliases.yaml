@@ -22,10 +22,9 @@ ts:
  - 'jshint:light'
 
 uib:
+  - 'git'
   - 'dev-vars'
   - 'base'
-  - 'git'
-  - 'replace:uib'
   - 'transcode:main'
   - 'rename:uib'
 

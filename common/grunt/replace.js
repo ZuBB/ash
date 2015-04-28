@@ -11,12 +11,6 @@ module.exports = function(grunt, options) {
                 { from: '$TIMESTAMP$', to: new Date().toUTCString() },
                 { from: '$GRAPHIC_TYPE$', to: '<%= vars.graphic_type %>' },
                 { from: ' && $H_CC_inline', to: '' },
-            ]
-        },
-        uib: {
-            src: '<%= vars.destFile %>',
-            dest: '<%= vars.destFile %>',
-            replacements: [
                 {
                     from: '$BUILD_ID$',
                     to: function(pattern) {
