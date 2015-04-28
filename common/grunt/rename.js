@@ -1,12 +1,7 @@
 module.exports = function(grunt, options) {
     return {
-        'cc-fix': {
-            // FIXME
-            src: '<%= vars.destFile %>1',
-            dest: '<%= vars.destFile %>',
-        },
         uib: {
-            src: '<%= vars.destFile %>',
+            src: '<%= vars.getLastDestFile() %>',
             dest: [
                 '<%= vars.dest %>',
                 '<%= vars.name %>.',

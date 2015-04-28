@@ -1,9 +1,8 @@
 module.exports = {
     main: {
         closurePath: '.',
-        js: '<%= vars.destFile %>',
-        // cant write to same file, have to go with workaround
-        jsOutputFile: '<%= vars.destFile %>1',
+        js: '<%= vars.getLastDestFile() %>',
+        jsOutputFile: '<%= vars.getNewDestFile(grunt.task.current) %>',
         noreport: true,
         options: {
             //language_in: 'ECMASCRIPT5_STRICT',

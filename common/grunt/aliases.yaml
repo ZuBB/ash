@@ -35,7 +35,6 @@ rqb:
   - 'replace:rqb'
   - 'strip_code'
   - 'closure-compiler:main'
-  - 'rename:cc-fix'
   - 'transcode:main'
   - 'rename:uib'
 

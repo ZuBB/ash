@@ -1,8 +1,8 @@
 module.exports = function(grunt, options) {
     return {
         dev: {
-            src: '<%= vars.destFile %>',
-            dest: '<%= vars.destFile %>',
+            src: '<%= vars.getLastDestFile() %>',
+            dest: '<%= vars.getNewDestFile(grunt.task.current) %>',
             replacements: [
                 { from: '$SCRIPT$', to: '<%= vars.name %>' },
                 { from: '$DATATYPE$', to: '<%= vars.datatype %>' },
@@ -26,8 +26,8 @@ module.exports = function(grunt, options) {
             ]
         },
         rqb: {
-            src: '<%= vars.destFile %>',
-            dest: '<%= vars.destFile %>',
+            src: '<%= vars.getLastDestFile() %>',
+            dest: '<%= vars.getNewDestFile(grunt.task.current) %>',
             replacements: [
                 { from: '$DEMO_MODE$', to: '<%= vars.demo_mode %>' },
                 {

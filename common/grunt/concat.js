@@ -6,7 +6,7 @@ module.exports = function(grunt) {
         },
         dev: {
             src: '<%= build.filesList %>',
-            dest: '<%= vars.destFile %>',
+            dest: '<%= vars.getNewDestFile(grunt.task.current) %>',
             filter: function(filepath) {
                 var isRelease = grunt.config('vars.buildType') === 'release';
                 return grunt.config('build.filterFunction')(filepath,

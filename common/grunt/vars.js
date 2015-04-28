@@ -17,6 +17,8 @@ module.exports = function(grunt) {
         grunt.config.set('vars.logLevel', 1);
     });
 
+    var allDestFilenames = [];
+
     return {
         'ext': 'ajs',
         'name': '',
@@ -50,7 +52,26 @@ module.exports = function(grunt) {
         'demo_mode': false,
         'dump_tasks_data': false,
         'graphic_type': null,
-        'logLevel': 0
+        'logLevel': 0,
+
+        'getLastDestFile': function() {
+            return allDestFilenames.slice(-2).shift();
+        },
+
+        'getNewDestFile': function(currentTask) {
+            var newFilename = [
+                grunt.config('vars.dest'),
+                grunt.config('vars.name').toLowerCase(),
+                '.'+ currentTask.name + '.',
+                grunt.config('vars.ext')
+            ].join('');
+
+            if (allDestFilenames.indexOf(newFilename) < 0) {
+                allDestFilenames.push(newFilename);
+            }
+
+            return newFilename;
+        }
     };
 };
 
