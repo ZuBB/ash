@@ -22,7 +22,7 @@ module.exports = function(grunt) {
             'from': 'ASH Build System',
             'subject': '',
             'message': '',
-            'messageFooter': 'Email sent by ASH robat v2.',
+            'messageFooter': 'Email sent by ASH robat v3.',
             'smtpCredsFile': 'creds.smtp.json'
         },
 
