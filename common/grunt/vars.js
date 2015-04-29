@@ -50,7 +50,6 @@ module.exports = function(grunt) {
 
         'datatype': '$DATATYPE$',
         'demo_mode': false,
-        'dump_tasks_data': false,
         'graphic_type': null,
         'logLevel': 0,
 
