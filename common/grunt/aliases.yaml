@@ -1,44 +1,36 @@
-default:
-  - 'dev'
-base:
+template:
+  - 'meta-vars'
+  - 'meta-git'
   - 'clean'
-  - 'concat:dev'
-  - 'replace:dev'
+  - 'concat'
+  - 'meta-replace'
+  - 'meta-strip'
+  - 'meta-lint'
+  - 'meta-minify'
+  - 'meta-iconv'
+  - 'meta-naming'
+  - 'scriptOwned'
 
 dev:
-  - 'dev-vars'
-  - 'base'
-  - 'transcode:main'
-tst:
-  - 'test-vars'
-  - 'dev'
-
-ts:
- - 'dev-vars'
- - 'clean'
- - 'concat:jshint'
- - 'replace:dev'
- - 'strip_code'
- - 'jshint:light'
+  - 'environment:dev'
+  - 'template'
 
 uib:
-  - 'git'
-  - 'dev-vars'
-  - 'base'
-  - 'transcode:main'
-  - 'rename:uib'
+  - 'environment:uib'
+  - 'template'
+
+ts:
+  - 'environment:lint'
+  - 'template'
 
 rqb:
-  - 'rq-vars'
-  - 'git'
-  - 'base'
-  - 'replace:rqb'
-  - 'strip_code'
-  - 'closure-compiler:main'
-  - 'transcode:main'
-  - 'rename:uib'
+  - 'environment:rqb'
+  - 'template'
 
 rl:
   - 'transcode:i18n'
   - 'loader:main'
+
+default:
+  - 'dev'
 

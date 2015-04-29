@@ -1,36 +1,19 @@
 module.exports = function(grunt) {
-    grunt.registerTask('dev-vars', function() {
-        grunt.config.set('vars.buildType', 'dev');
+    grunt.registerTask('vars-dev', function() {
         grunt.config.set('vars.graphic_type', 2);
-        grunt.config.set('vars.name', grunt.config('pkg.devFilename'));
     });
 
-    grunt.registerTask('rq-vars', function() {
-        grunt.config.set('vars.buildType', 'release');
+    grunt.registerTask('vars-rq', function() {
         grunt.config.set('vars.graphic_type', 0);
-        grunt.config.set('vars.name', grunt.config('pkg.releaseFilename') ||
-            grunt.config('pkg.devFilename'));
-    });
-
-    grunt.registerTask('test-vars', function() {
-        //grunt.config.set('vars.createGraphics', false);
-        grunt.config.set('vars.logLevel', 1);
     });
 
     var allDestFilenames = [];
 
     return {
         'ext': 'ajs',
-        'name': '',
+        'name': '<%= pkg.devFilename %>',
         'dest': 'build/output/',
         'buildType': null,
-
-        'destFile': [
-            '<%= vars.dest %>',
-            '<%= vars.name.toLowerCase() %>.',
-            '<%= vars.buildType %>.',
-            '<%= vars.ext %>'
-        ].join(''),
 
         'mail': {
             'to': '',
@@ -77,5 +60,4 @@ module.exports = function(grunt) {
         }
     };
 };
-
 

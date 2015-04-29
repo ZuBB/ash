@@ -1,15 +1,28 @@
-module.exports = function(grunt, options) {
+module.exports = function(grunt) {
     return {
         dev: {
             src: '<%= vars.getLastDestFile() %>',
             dest: '<%= vars.getNewDestFile(grunt.task.current) %>',
             replacements: [
-                { from: '$SCRIPT$', to: '<%= vars.name %>' },
+                { from: ' && $H_CC_inline', to: '' },
                 { from: '$DATATYPE$', to: '<%= vars.datatype %>' },
                 { from: '$LOG_LEVEL$', to: '<%= vars.logLevel %>' },
                 { from: '$TIMESTAMP$', to: new Date().toUTCString() },
                 { from: '$GRAPHIC_TYPE$', to: '<%= vars.graphic_type %>' },
-                { from: ' && $H_CC_inline', to: '' },
+                {
+                    from: '$SCRIPT$',
+                    to: function(pattern) {
+                        var rqb = grunt.config('environment.env') === 'rqb';
+                        var key = rqb ? 'scriptTitle' : 'devFilename';
+                        return grunt.config.get('pkg.' + key);
+                    }
+                }
+            ]
+        },
+        uib: {
+            src: '<%= vars.getLastDestFile() %>',
+            dest: '<%= vars.getNewDestFile(grunt.task.current) %>',
+            replacements: [
                 {
                     from: '$BUILD_ID$',
                     to: function(pattern) {
@@ -40,3 +53,4 @@ module.exports = function(grunt, options) {
         }
     };
 };
+
