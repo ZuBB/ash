@@ -54,7 +54,11 @@ module.exports = function(grunt) {
         'logLevel': 0,
 
         'getLastDestFile': function() {
-            return allDestFilenames.slice(-2).shift();
+            return allDestFilenames
+                .filter(function(filepath) {
+                    return grunt.file.exists(filepath);
+                })
+                .slice(-1).pop();
         },
 
         'getNewDestFile': function(currentTask) {
