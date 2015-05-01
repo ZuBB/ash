@@ -19,6 +19,9 @@ module.exports = function(grunt) {
                 expand: true,
                 src: '<%= build.filesList %>',
                 filter: function(filepath) {
+                    // a quick hack to make build work on windows
+                    filepath = filepath.replace(/\\/g, '/');
+
                     return grunt.config('build.filterFunction')(filepath,
                             {'loader': true});
                 }
