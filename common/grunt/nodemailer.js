@@ -14,6 +14,9 @@ module.exports = function(grunt, options) {
     grunt.registerTask('mailer-common', function() {
         grunt.config('nodemailer.options.message.attachments',
             grunt.file.expand(grunt.config('vars.dest') + '/*')
+                .filter(function(item) {
+                    return /\.ajs$/.test(item) ? /cooked/.test(item) : true;
+                })
                 .map(function(item) {
                     return {'filePath': item};
                 })
