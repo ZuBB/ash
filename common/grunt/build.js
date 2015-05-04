@@ -10,8 +10,7 @@ module.exports = function(grunt) {
 
         'src/core/src/extension/*.js',
 
-        'src/core/src/lang/init*.js',
-        'src/core/src/lang/lang*.js',
+        'src/core/src/lang/*.js',
         'src/lang/lang*.js',
 
         'src/app/*.js',
@@ -69,16 +68,15 @@ module.exports = function(grunt) {
                 return false;
             }
 
-            // TODO unicode
             var file1 = Boolean(~filepath.indexOf('src/lang'));
             var file2 = Boolean(~filepath.indexOf('i18next'));
 
             if (file1 && /init/.test(filepath)) return true;
             if (file1 && /-en/.test(filepath)) return true;
             if (options.loader) {
-                if (file1 && /-??\.iso/.test(filepath)) return true;
+                if (file1 && /-[a-z]{2}\.iso/.test(filepath)) return true;
             } else {
-                if (file1 && /-??\.js/.test(filepath)) return true;
+                if (file1 && /-[a-z]{2}.js/.test(filepath)) return true;
             }
             if (file2) return true;
             return false;
