@@ -32,7 +32,7 @@ module.exports = function(grunt) {
         'changesets': null,
 
         'datatype': '$DATATYPE$',
-        'demo_mode': false,
+        'demoMode': false,
         'graphic_type': null,
         'logLevel': 0,
 
