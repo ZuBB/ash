@@ -1,4 +1,5 @@
 template:
+  - 'prev_file:script'
   - 'meta-vars'
   - 'meta-git'
   - 'clean'

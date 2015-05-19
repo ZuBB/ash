@@ -61,10 +61,10 @@ module.exports = {
 
         // [OPTIONAL] Target files to compile. Can be a string, an array of strings
         // or grunt file syntax (<config:...>, *)
-        src: '<%= vars.getLastDestFile() %>',
+        src: '<%= prev_file.script.getLastDestFile() %>',
 
         // [OPTIONAL] set an output file
-        dest: '<%= vars.getNewDestFile(grunt.task.current) %>',
+        dest: '<%= prev_file.script.getNewDestFile(grunt.task.current) %>',
     }
 };
 

@@ -7,7 +7,6 @@ module.exports = function(grunt) {
         grunt.config.set('vars.graphic_type', 0);
     });
 
-    var allDestFilenames = [];
 
     return {
         'ext': 'ajs',
@@ -34,30 +33,7 @@ module.exports = function(grunt) {
         'datatype': '$DATATYPE$',
         'demoMode': false,
         'graphic_type': null,
-        'logLevel': 0,
-
-        'getLastDestFile': function() {
-            return allDestFilenames
-                .filter(function(filepath) {
-                    return grunt.file.exists(filepath);
-                })
-                .slice(-1).pop();
-        },
-
-        'getNewDestFile': function(currentTask) {
-            var newFilename = [
-                grunt.config('vars.dest'),
-                grunt.config('vars.name').toLowerCase(),
-                '.'+ currentTask.name + '.',
-                grunt.config('vars.ext')
-            ].join('');
-
-            if (allDestFilenames.indexOf(newFilename) < 0) {
-                allDestFilenames.push(newFilename);
-            }
-
-            return newFilename;
-        }
+        'logLevel': 0
     };
 };
 

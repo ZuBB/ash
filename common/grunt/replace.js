@@ -1,8 +1,8 @@
 module.exports = function(grunt) {
     return {
         dev: {
-            src: '<%= vars.getLastDestFile() %>',
-            dest: '<%= vars.getNewDestFile(grunt.task.current) %>',
+            src: '<%= prev_file.script.getLastDestFile() %>',
+            dest: '<%= prev_file.script.getNewDestFile(grunt.task.current) %>',
             replacements: [
                 { from: ' && $H_CC_inline', to: '' },
                 { from: '$DATATYPE$', to: '<%= vars.datatype %>' },
@@ -21,8 +21,8 @@ module.exports = function(grunt) {
             ]
         },
         uib: {
-            src: '<%= vars.getLastDestFile() %>',
-            dest: '<%= vars.getNewDestFile(grunt.task.current) %>',
+            src: '<%= prev_file.script.getLastDestFile() %>',
+            dest: '<%= prev_file.script.getNewDestFile(grunt.task.current) %>',
             replacements: [
                 {
                     from: '$BUILD_ID$',
@@ -40,8 +40,8 @@ module.exports = function(grunt) {
             ]
         },
         rqb: {
-            src: '<%= vars.getLastDestFile() %>',
-            dest: '<%= vars.getNewDestFile(grunt.task.current) %>',
+            src: '<%= prev_file.script.getLastDestFile() %>',
+            dest: '<%= prev_file.script.getNewDestFile(grunt.task.current) %>',
             replacements: [
                 {
                     from: '$VERSION$',

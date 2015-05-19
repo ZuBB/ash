@@ -1,8 +1,8 @@
 module.exports = function(grunt, options) {
     return {
         strip: {
-            src: '<%= vars.getLastDestFile() %>',
-            dest: '<%= vars.getNewDestFile(grunt.task.current) %>',
+            src: '<%= prev_file.script.getLastDestFile() %>',
+            dest: '<%= prev_file.script.getNewDestFile(grunt.task.current) %>',
             options: {
                 parityCheck: true,
                 intersectionCheck: true,
