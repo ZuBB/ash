@@ -236,6 +236,43 @@ if (!Array.prototype.mode) {
 }
 
 /**
+ * helper function that finds value in set that is most spread in it
+ * http://goo.gl/TA8i8T
+ *
+ * @method getUnique
+ * @param {Float} raw_value - value itself
+ */
+if (!Array.prototype.mode2) {
+    Array.prototype.mode2 = function() {
+        if (this.length === 0) {
+            // original source used null here
+            return 0;
+        }
+
+        var modeMap = {};
+        var maxCount = 1;
+        var modes = this[0];
+
+        for (var ii = 0; ii < this.length; ii++) {
+            var el = this[ii];
+
+            if (modeMap.hasOwnProperty(el)) {
+                modeMap[el]++;
+            } else {
+                modeMap[el] = 1;
+            }
+
+            if (modeMap[el] > maxCount) {
+                modes = el;
+                maxCount = modeMap[el];
+            }
+        }
+
+        return modes;
+    };
+}
+
+/**
  * function that finds average absolute deviation
  *
  * http://en.wikipedia.org/wiki/Absolute_deviation
