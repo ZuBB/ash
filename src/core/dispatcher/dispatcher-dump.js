@@ -17,28 +17,37 @@ Dispatcher = (function() {
      * @private
      */
     this.dumpData2Disk = function(params) {
-        var condition1  = Array.isArray(params.tasks2Save) === false;
-        var condition2  = params.tasks2Save.length < 1;
-        var data2Save   = {'data': {}};
         var fileHandler = null;
+        var taskNameMapper = params.taskNameMapper || function(taskName) {
+            return taskName;
+        };
+        var data2Save = {
+            'data': {},
+            'metadata': {
+                'timestamp': new Date().toUTCString()
+            }
+        };
 
-        if (condition1 || condition2 ||
-            (fileHandler = IO.createFile(params.fileOptions)) === null) {
-                return false;
+        if (params.tasks2Save.length === 0) {
+            return false;
+        }
+
+        if ((fileHandler = IO.createFile(params.fileOptions)) === null) {
+            return false;
         }
 
         //DEBUG_START
         _p(fileHandler.getFilePath(), 'Next file will be used to write data');
         //DEBUG_STOP
 
-        params.tasks2Save.forEach(function(item) {
-            var taskObj = this.getTaskObject(item);
+        params.tasks2Save.forEach(function(taskName) {
+            var taskObj = this.getTaskObject(taskName);
 
             if ((taskObj instanceof Task) === false) {
                 return false;
             }
 
-            var taskName = taskObj.getTaskName();
+            taskName = taskNameMapper(taskName);
 
             data2Save['data'][taskName] = {};
             Object.keys(params.taskProps2Save).forEach(function(key) {
@@ -48,7 +57,11 @@ Dispatcher = (function() {
         }, this);
 
         if (params.metadata && Object.keys(params.metadata).length > 0) {
-            data2Save['metadata'] = params.metadata;
+            for (var key in params.metadata) {
+                if (data2Save['metadata'].hasOwnProperty(key) === false) {
+                    data2Save['metadata'][key] = params.metadata[key];
+                }
+            }
         }
 
         //DEBUG_START

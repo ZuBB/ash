@@ -81,11 +81,15 @@ Dispatcher = (function() {
             return 3;
         }
 
-        if (Array.isArray(data4Compare['data'][specName]) === false) {
+        if (data4Compare['data'][specName].constructor !== Object) {
             return 4;
         }
 
-        return data4Compare['data'][specName];
+        if (Array.isArray(data4Compare['data'][specName]['data']) === false) {
+            return 5;
+        }
+
+        return data4Compare['data'][specName]['data'];
     };
 
     /**
@@ -159,10 +163,10 @@ Dispatcher = (function() {
             'fileOptions': fileOptions,
             'metadata': metadata,
             'taskProps2Save': {'data': 'getDataSets'},
-            'tasks2Save': tasks2Save.map(function(item) {
-                // TODO take care about '_external'
-                return item;
-            })
+            'tasks2Save': tasks2Save,
+            'taskNameMapper': function(taskName) {
+                return taskName + '_external';
+            }
         });
     };
 
