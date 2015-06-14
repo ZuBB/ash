@@ -302,18 +302,14 @@ Dispatcher = (function() {
         }
     };
 
-    //DEBUG_START
     /**
      * Returns list of the tasks that have been registered
-     *
-     * **NOTE**: This method is stripped from production code
      *
      * @return {Array} list of registered task names
      */
     this.listRegisteredTasks = function() {
         return Object.keys(tasksHash);
     };
-    //DEBUG_STOP
 
     /**
      * Run methods of Dispatcher object that were requested for running
