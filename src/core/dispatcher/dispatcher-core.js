@@ -231,16 +231,20 @@ Dispatcher = (function() {
         //DEBUG_STOP
 
         for (var ii = 0, specObj; ii < length && $H_CC_inline; ii++) {
-            Host.SetStatusText(_t('core.status.message', ii));
             specObj = tasksHash[specNames[ii]];
+
+            if (typeof that.stepProgressIn === 'function') {
+                that.stepProgressIn(_t('core.status.message', ii));
+            }
 
             //DEBUG_START
             preProcess(specObj, ii);
             //DEBUG_STOP
 
             specObj.process();
-            if (typeof that.stepProgress === 'function') {
-                that.stepProgress(ii);
+
+            if (typeof that.stepProgressOut === 'function') {
+                that.stepProgressOut(ii);
             }
 
             //DEBUG_START

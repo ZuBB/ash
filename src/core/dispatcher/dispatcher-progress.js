@@ -21,22 +21,28 @@ Dispatcher = (function() {
     };
 
     /**
-     * Sets visualises current progress in progress and status bars
-     *
-     * @param {Number} step index of current step
-     */
-    this.stepProgress = function(step) {
-        if (typeof step === 'number' && isFinite(step)) {
-            Host.SetProgress(step + 1);
-            //SetStatusText('some message');
-        }
-    };
-
-    /**
      * Stops visualisation on application's progress bar
      */
     this.stopProgress = function() {
         Host.HideProgress();
+    };
+
+    /**
+     * Sets current progress in status bar
+     *
+     * @param {String} text text that represents current step
+     */
+    this.stepProgressIn = function(text) {
+        SetStatusText(text);
+    };
+
+    /**
+     * Visualises current progress in progress bar
+     *
+     * @param {Number} step index of current step
+     */
+    this.stepProgressOut = function(step) {
+        Host.SetProgress(step + 1);
     };
 
     // schedule method in parenthes to be run
