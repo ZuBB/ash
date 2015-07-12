@@ -15,7 +15,7 @@ module.exports = function(grunt, options) {
         grunt.config('nodemailer.options.message.attachments',
             grunt.file.expand(grunt.config('vars.dest') + '/*')
                 .filter(function(item) {
-                    return /\.ajs$/.test(item) ? /cooked/.test(item) : true;
+                    return /js$/.test(item) ? /cooked/.test(item) : true;
                 })
                 .map(function(item) {
                     return {'filePath': item};
