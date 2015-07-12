@@ -498,7 +498,11 @@ Task.prototype.checkDataSource = function() {
     if (this.dataSource) {
         var dataSource = Input.getValue(this.dataSource);
 
-        if (typeof dataSource === 'undefined') {
+        // check for null is required for case when
+        //      number of channel is requested that is unset by user
+        // check for undefined is required for case when
+        //      we need to get a value of input that was not shown to user
+        if (typeof dataSource === 'undefined' || dataSource === null) {
             //DEBUG_START
             _w(this.dataSource, 'dataSource is not valid');
             //DEBUG_STOP
