@@ -33,7 +33,7 @@ Dispatcher = (function() {
      * @param {String} text text that represents current step
      */
     this.stepProgressIn = function(text) {
-        SetStatusText(text);
+        Host.SetStatusText(text);
     };
 
     /**
