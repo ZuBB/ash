@@ -22,8 +22,8 @@ IO = (function() {
             var message = params.failureMessage ||
                 'Next error occured during executing of IO function';
 
-            _ro(message);
-            _ro(e.message);
+            typeof _ro !== 'undefined' && _ro(message);
+            typeof _ro !== 'undefined' && _ro(e.message);
             //DEBUG_STOP
 
             if (typeof params.catchFunc === 'function') {
