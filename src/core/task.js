@@ -846,11 +846,17 @@ Task.prototype.processPullResult = function(result) {
     //DEBUG_STOP
 
     if (result > 0) {
-        this.addError('core.messages.pullData.error' + result);
+        this.addError({
+            'message': ['core.messages.pullData.error' + result],
+            'onetime': true
+        });
     }
 
     if (result === 3) {
-        this.addHint('core.messages.pullData.hint3');
+        this.addHint({
+            'message': ['core.messages.pullData.hint3'],
+            'onetime': true
+        });
     }
 
     return result === 0;
