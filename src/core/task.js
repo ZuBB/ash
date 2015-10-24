@@ -100,7 +100,7 @@
  * - `index` is an ordinal number (starting from 1) used to define order
  * of creation specified view.
  * - `viewName` is an **internal** name of the view. This name is used
- * everywhere inside scripts. View object itself will attemp to get its
+ * everywhere inside scripts. View object itself will attempt to get its
  * localized name automatically in following way:
  *
  * `_t('views.' + providedView + '.name')`
