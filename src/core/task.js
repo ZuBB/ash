@@ -2085,7 +2085,7 @@ Task.prototype.setProvidedView = function(viewDef) {
 Task.getTaskData = function(depObj, dataLink) {
     //DEBUG_START
     if ((depObj instanceof Task) === false) {
-        _e('Passed depObj params is not a Task instance object');
+        _e('Passed depObj param is not a Task instance object');
         return null;
     }
 
