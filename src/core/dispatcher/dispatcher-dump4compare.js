@@ -63,75 +63,6 @@ Dispatcher = (function() {
     };
 
     /**
-     * Returns data for task
-     *
-     * @param {String} [specName] name of the task
-     * @return {Array|Boolean} 'data' for the specified task
-     */
-    this.requestTaskData = function(specName) {
-        if (data4Compare === null) {
-            return 1;
-        }
-
-        if (data4Compare['data'].constructor !== Object) {
-            return 2;
-        }
-
-        if (data4Compare['data'].hasOwnProperty(specName) === false) {
-            return 3;
-        }
-
-        if (data4Compare['data'][specName].constructor !== Object) {
-            return 4;
-        }
-
-        if (Array.isArray(data4Compare['data'][specName]['data']) === false) {
-            return 5;
-        }
-
-        return data4Compare['data'][specName]['data'];
-    };
-
-    /**
-     * Reads data for this task from file
-     *
-     * @param {String} [filename] variable with filename to read data from
-     * @return {Boolean} result of the load operation
-     */
-    this.loadExternalData = function(filename) {
-        if (IO.isFileExist(filename) === false) {
-            //DEBUG_START
-            _e(filename, 'Can not find next file');
-            //DEBUG_STOP
-            return 1;
-        }
-
-        //DEBUG_START
-        _d(filename, 'will try to load external data in next file');
-        //DEBUG_STOP
-        var result = null;
-
-        try {
-            result = 2;
-            data4Compare = IO.readFileContent(filename);
-            result = 3;
-            data4Compare = JSON.parse(data4Compare);
-            //DEBUG_START
-            _d('all is OK');
-            //DEBUG_STOP
-            result = 0;
-        } catch(e) {
-            //DEBUG_START
-            _e('smth went wrong');
-            _d(e.message, 'error message');
-            //DEBUG_STOP
-            return result;
-        }
-
-        return data4Compare['metadata'] || 4;
-    };
-
-    /**
      * Remebers task name for future store and compare
      * property
      *
@@ -145,6 +76,67 @@ Dispatcher = (function() {
         if (specName) {
             return tasks2Save.push(specName);
         }
+    };
+
+    /**
+     * Reads data for this task from file
+     *
+     * @param {String} [filename] variable with filename to read data from
+     * @return {Boolean} result of the load operation
+     */
+    this.loadExternalData = function(filename) {
+        //DEBUG_START
+        _d(filename, 'trying to load external data from next file');
+        //DEBUG_STOP
+
+        if (IO.isFileExist(filename) === false) {
+            // file does not exist
+            return 1;
+        }
+
+        try {
+            data4Compare = JSON.parse(IO.readFileContent(filename));
+        } catch(e) {
+            //DEBUG_START
+            _e('smth went wrong');
+            _d(e.message, 'error message');
+            //DEBUG_STOP
+            // fail to read/parse file
+            return 2;
+        }
+
+        if (!data4Compare.metadata || !data4Compare.data) {
+            // mandatory keys are missed
+            return 3;
+        }
+
+        return data4Compare.metadata;
+    };
+
+    /**
+     * Returns data for task
+     *
+     * @param {String} [specName] name of the task
+     * @return {Array|Boolean} 'data' for the specified task
+     */
+    this.requestTaskData = function(specName) {
+        if (data4Compare === null) {
+            return 1;
+        }
+
+        if (data4Compare['data'].hasOwnProperty(specName) === false) {
+            return 2;
+        }
+
+        if (data4Compare['data'][specName].constructor !== Object) {
+            return 3;
+        }
+
+        if (Array.isArray(data4Compare['data'][specName]['data']) === false) {
+            return 4;
+        }
+
+        return data4Compare['data'][specName]['data'];
     };
 
     /**

@@ -809,7 +809,7 @@ Task.prototype.processLoadResult = function(result) {
     _d('you did not redefine \'processLoadResult\' function');
     //DEBUG_STOP
 
-    return typeof result !== 'number';
+    return result && result.constructor === Object;
 };
 
 /**
@@ -846,17 +846,19 @@ Task.prototype.processPullResult = function(result) {
     //DEBUG_STOP
 
     if (result > 0) {
-        this.addError({
-            'message': ['core.messages.pullData.error' + result],
+        this.addWarning({
+            'message': ['core.messages.pullData.warn1'],
             'onetime': true
         });
-    }
 
-    if (result === 3) {
-        this.addHint({
-            'message': ['core.messages.pullData.hint3'],
-            'onetime': true
-        });
+        //DEBUG_START
+        var message = result === 0 ?
+            '`data4Compare` is null. "pull" called before "load"?' :
+            'current task\'s data in external file is absent or has wrong type';
+
+        _w(message);
+        _d(result, 'case code is');
+        //DEBUG_STOP
     }
 
     return result === 0;
