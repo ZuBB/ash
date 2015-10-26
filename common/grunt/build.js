@@ -1,6 +1,7 @@
 module.exports = function(grunt) {
     var totalFileList = [
-        'src/core/src/core/!(main).js',
+        'src/core/src/core/host.js',
+        'src/core/src/core/!(main|host|io).js',
         'src/core/src/core/dispatcher/*.js',
 
         'src/core/src/vendor/json/json2.js',
@@ -20,9 +21,10 @@ module.exports = function(grunt) {
     ];
 
     var basicFileList = [
+        'host.js',
         'definitions.js',
         'input.js',
-        'io.js',
+        //'io.js',
         'logger.js',
         'main.js',
         'profiler.js',

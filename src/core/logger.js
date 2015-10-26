@@ -187,6 +187,8 @@ Logger = (function() {
      */
     module.log = function(lfBefore, level, value, desc) {
         var outputStr = createOutputStr(lfBefore, level, value, desc);
+        console.log(outputStr);
+        return
 
         if (!outputStr) {
             return;

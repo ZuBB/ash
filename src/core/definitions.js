@@ -2,7 +2,7 @@
 var Dispatcher = null;
 var Task       = null;
 var Input      = null;
-var IO         = null;
+//var IO         = null;
 var Reporter   = null;
 var Profiler   = null;
 var Utils      = {};
@@ -202,8 +202,11 @@ Script.version = '$VERSION$';
  *
  * In other case you can always redefine it manually in "user's file"
  */
-Script.name = '$SCRIPT$'.indexOf('SCRIPT') > 0 ?
-    Host.CurPath.match(/([^\\]+)\\?$/)[1] : '$SCRIPT$';
+Script.name = '$SCRIPT$'.indexOf('SCRIPT') > 0 ? (
+        (Host.CurPath.match(/[\\/]{1}[^\\/]+[\\/]{0,1}$/) || '')
+        .replace('\\', '')
+        .replace('/', '')
+        ) : '$SCRIPT$';
 
 
 /**

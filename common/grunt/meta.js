@@ -49,7 +49,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask('meta-iconv', function() {
         if (grunt.config('environment.env') !== 'lint') {
-            grunt.task.run('transcode:main');
+            //grunt.task.run('transcode:main');
         }
     });
 
