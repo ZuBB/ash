@@ -47,6 +47,10 @@ module.exports = function(grunt) {
                 return false;
             }
 
+            if (~filepath.indexOf('src/tasks') !== 0) {
+                return false;
+            }
+
             return basicFileList.some(function(allowedFilename) {
                 return ~filepath.indexOf(allowedFilename);
             });
@@ -92,7 +96,7 @@ module.exports = function(grunt) {
                 return true;
             }
 
-            if (!Array.isArray(excludesList) || excludesList.length < 1) {
+            if (Array.isArray(excludesList) === false) {
                 return true;
             }
 
