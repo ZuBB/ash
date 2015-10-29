@@ -27,6 +27,7 @@ module.exports = function(grunt) {
         'main.js',
         'profiler.js',
         'reporter.js',
+        'reporter.uos.js',
         'task.js',
         'utils.js',
 

@@ -13,6 +13,10 @@ IO = (function() {
     var FSObject = new ActiveXObject('Scripting.FileSystemObject');
     var safeExecute = function(params) {
         var result;
+        var reportOptions = {
+            reportOnly: true,
+            lfAfter: true
+        };
 
         try {
             result = params.tryFunc();
@@ -22,8 +26,8 @@ IO = (function() {
             var message = params.failureMessage ||
                 'Next error occured during executing of IO function';
 
-            typeof _ro !== 'undefined' && _ro(message);
-            typeof _ro !== 'undefined' && _ro(e.message);
+            typeof _rc !== 'undefined' && _rc(message, reportOptions);
+            typeof _rc !== 'undefined' && _rc(e.message, reportOptions);
             //DEBUG_STOP
 
             if (typeof params.catchFunc === 'function') {

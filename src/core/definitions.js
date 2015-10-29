@@ -31,10 +31,10 @@ var $H_CC_inline = true;
 //MACROS_STOP
 
 // reporter stuff
-var _rw = null;
-var _rl = null;
-var _rp = null;
-var _ro = null;
+var _rw = function() { return 'function `_rw` is not defined'; };
+var _rl = function() { return 'function `_rl` is not defined'; };
+var _rp = function() { return 'function `_rp` is not defined'; };
+var _rc = function() { return 'function `_rc` is not defined'; };
 
 // Namespace for constants.
 var CONSTS = {};
