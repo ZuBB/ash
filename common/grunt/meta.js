@@ -1,4 +1,19 @@
 module.exports = function(grunt) {
+    function metaTaskSkeleton(taskFunction) {
+        var currEnv = grunt.config('environment.env');
+        var platforms = grunt.config('pkg.platforms') || ['uos'];
+        var tasksToRun = null;
+
+        platforms.forEach(function(platform) {
+            grunt.config('vars.platform', platform);
+            tasksToRun = taskFunction(currEnv);
+
+            if (tasksToRun) {
+                grunt.task.run(tasksToRun);
+            }
+        });
+    }
+
     grunt.registerTask('meta-vars', function() {
         if (grunt.config('environment.env') === 'rqb') {
             grunt.task.run('vars-rq');
@@ -14,51 +29,68 @@ module.exports = function(grunt) {
         }
     });
 
+    grunt.registerTask('meta-clean', function() {
+        grunt.task.run('clean');
+    });
+
+    grunt.registerTask('meta-concat', function() {
+        metaTaskSkeleton(function() {
+            return 'concat';
+        });
+    });
+
     grunt.registerTask('meta-replace', function() {
-        var currEnv = grunt.config('environment.env');
-        var tasks = ['replace:dev'];
+        metaTaskSkeleton(function(currEnv) {
+            var tasks = ['replace:dev'];
 
-        if (currEnv === 'uib') {
-            tasks.push('replace:uib');
-        } else if (currEnv === 'rqb') {
-            tasks.push('replace:rqb');
-        }
+            if (currEnv === 'uib') {
+                tasks.push('replace:uib');
+            } else if (currEnv === 'rqb') {
+                tasks.push('replace:rqb');
+            }
 
-        grunt.task.run(tasks);
+            return tasks;
+        });
     });
 
     grunt.registerTask('meta-strip', function() {
-        var currEnv = grunt.config('environment.env');
-
-        if (currEnv === 'lint' || currEnv === 'rqb') {
-            grunt.task.run('strip_code');
-        }
+        metaTaskSkeleton(function(currEnv) {
+            if (currEnv === 'lint' || currEnv === 'rqb') {
+                return 'strip_code';
+            }
+        });
     });
 
     grunt.registerTask('meta-lint', function() {
-        if (grunt.config('environment.env') === 'lint') {
-            grunt.task.run('jshint:light');
-        }
+        metaTaskSkeleton(function(currEnv) {
+            if (currEnv === 'lint') {
+                return 'jshint:light';
+            }
+        });
     });
 
     grunt.registerTask('meta-minify', function() {
-        if (grunt.config('environment.env') === 'rqb') {
-            grunt.task.run('closureCompiler:likeOld');
-        }
+        metaTaskSkeleton(function(currEnv) {
+            if (currEnv === 'rqb') {
+                return 'closureCompiler:likeOld';
+            }
+        });
     });
 
     grunt.registerTask('meta-iconv', function() {
-        if (grunt.config('environment.env') !== 'lint') {
-            grunt.task.run('transcode:main');
-        }
+        metaTaskSkeleton(function(currEnv) {
+            if (currEnv !== 'lint') {
+                return 'transcode:main';
+            }
+        });
     });
 
     grunt.registerTask('meta-naming', function() {
-        var currEnv = grunt.config('environment.env');
-
-        if (currEnv !== 'lint') {
-            grunt.task.run('copy:' + currEnv);
-        }
+        metaTaskSkeleton(function(currEnv) {
+            if (currEnv !== 'lint') {
+                return 'copy:' + currEnv;
+            }
+        });
     });
 
     grunt.registerTask('scriptOwned', function() {
