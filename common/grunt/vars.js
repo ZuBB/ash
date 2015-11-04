@@ -14,6 +14,11 @@ module.exports = function(grunt) {
         'dest': 'build/output/',
         'buildType': null,
 
+        'platform': null,
+        'environment': {
+            'env':null
+        },
+
         'mail': {
             'to': '',
             'cc': '',
