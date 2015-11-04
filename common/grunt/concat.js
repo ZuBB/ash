@@ -9,9 +9,11 @@ module.exports = function(grunt) {
             dest: '<%= prev_file.getNewDestFile() %>',
             filter: function(filepath) {
                 var currEnv = grunt.config.get('environment.env');
+                var platform = grunt.config.get('vars.platform');
                 var options = {
                     'release': currEnv === 'rqb',
-                    'lint': currEnv === 'lint'
+                    'lint': currEnv === 'lint',
+                    'platform': platform
                 };
 
                 return grunt.config('build.filterFunction')(filepath, options);
