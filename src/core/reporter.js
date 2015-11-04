@@ -10,7 +10,7 @@
  *
  * Each of these functions (`_rw`, `_rl`, `_rp`, `_rc`) accepts next params
  *
- * @param {String} [message] Text that need to be printed
+ * @param {String} message Text that need to be printed
  * @param {Object} [options] A dictionary with different types of options
  * that will turn plain text message into link to various resources of
  * Oscilloscope app
@@ -23,7 +23,7 @@
  * Color **must be** specified as 6 hex numbers. For example see annotation
  * of {@link Reporter#appendColors} method
  *
- * @param {Array} [controlChars.notation] An array with 2 numbers that
+ * @param {Array} [options.notation] An array with 2 numbers that
  * represent 'address' of the graphic that should be pointed to
  *
  * - 1st - index of view
@@ -31,7 +31,7 @@
  *
  * For example see annotation of {@link Reporter#insertLink2Notation} method
  *
- * @param {Array} [controlChars.oscillogram] An array with 1 number that
+ * @param {Array} [options.oscillogram] An array with 1 number that
  * represent position at oscillogram that should be shown
  *
  * For example see annotation of {@link Reporter#makeLink} method
@@ -44,8 +44,8 @@ Reporter = (function() {
      * It is recommended to use wrapper functions instead of this one.
      * But in case when you need to control everything youself you may use it.
      *
-     * @param {String} [phrase] text that should be printed
-     * @param {Object, optional} [options] Dictionary with various options.
+     * @param {String} phrase Text that should be printed
+     * @param {Object} [options] Dictionary with various options.
      * See detailed description in Class annotation
      */
     this.report = function(phrase, options) {

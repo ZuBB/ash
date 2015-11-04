@@ -10,9 +10,8 @@ Reporter = (function() {
     /**
      * Helper function that creates string that will be sent to output
      *
-     * @param {String} [text] string that need to be adjusted
-     * @param {Boolean} lfBefore - indicates if we need to append newline at end
-     * @param {Boolean} lfAfter - indicates if we need to append newline at start
+     * @param {String} text string that need to be adjusted
+     * @param {Object} options A dictionary with different types of options
      * @return {String} text with adjusted newlines if need
      */
     this.createOutputString = function(text, options) {
