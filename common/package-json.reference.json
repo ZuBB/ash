@@ -16,7 +16,6 @@
     "grunt-contrib-rename": "0.0.3",
     "grunt-contrib-watch": "0.6.1",
     "grunt-nodemailer": "0.3.0",
-    "grunt-prev-file": "0.1.0",
     "grunt-processhtml": "0.3.7",
     "grunt-release": "0.11.0",
     "grunt-shell": "1.1.2",
