@@ -12,7 +12,7 @@ module.exports = function(grunt, options) {
             dest: local,
         },
         dev: {
-            src: '<%= prev_file.script.getLastDestFile() %>',
+            src: '<%= prev_file.getLastDestFile() %>',
             dest: [
                 '<%= vars.dest %>',
                 '<%= vars.name %>',
@@ -22,7 +22,7 @@ module.exports = function(grunt, options) {
             ].join('')
         },
         uib: {
-            src: '<%= prev_file.script.getLastDestFile() %>',
+            src: '<%= prev_file.getLastDestFile() %>',
             dest: [
                 '<%= vars.dest %>',
                 '<%= vars.name %>',
@@ -39,7 +39,7 @@ module.exports = function(grunt, options) {
             ].join('')
         },
         rqb: {
-            src: '<%= prev_file.script.getLastDestFile() %>',
+            src: '<%= prev_file.getLastDestFile() %>',
             dest: [
                 '<%= vars.dest %>',
                 '<%= pkg.releaseFilename %>',

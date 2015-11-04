@@ -18,7 +18,7 @@ module.exports = {
         }
     },
     light: {
-        src: '<%= prev_file.script.getLastDestFile() %>',
+        src: '<%= prev_file.getLastDestFile() %>',
 
         options: {
             globals: {

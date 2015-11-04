@@ -16,7 +16,7 @@ module.exports = {
         ]
     },
     main: {
-        src: '<%= prev_file.script.getLastDestFile() %>',
-        dest: '<%= prev_file.script.getNewDestFile(grunt.task.current) %>',
+        src: '<%= prev_file.getLastDestFile() %>',
+        dest: '<%= prev_file.getNewDestFile() %>',
     }
 };

@@ -6,7 +6,7 @@ module.exports = function(grunt) {
         },
         single: {
             src: '<%= build.filesList %>',
-            dest: '<%= prev_file.script.getNewDestFile(grunt.task.current) %>',
+            dest: '<%= prev_file.getNewDestFile() %>',
             filter: function(filepath) {
                 var currEnv = grunt.config.get('environment.env');
                 var options = {
