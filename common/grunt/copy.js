@@ -17,6 +17,7 @@ module.exports = function(grunt, options) {
                 '<%= vars.dest %>',
                 '<%= vars.name %>',
                 '-cooked',
+                '[4' + '<%= vars.platform %>' + ']',
                 '.',
                 '<%= vars.ext %>'
             ].join('')
@@ -29,6 +30,7 @@ module.exports = function(grunt, options) {
                 '.',
                 'dev',
                 '-cooked',
+                '[4' + '<%= vars.platform %>' + ']',
                 '.',
                 '<%= vars.branch %>-',
                 '<%= vars.changesets %>',
@@ -45,6 +47,7 @@ module.exports = function(grunt, options) {
                 '<%= pkg.releaseFilename %>',
                 '.',
                 '<%= environment.env %>',
+                '[4' + '<%= vars.platform %>' + ']',
                 '-cooked',
                 '.',
                 '<%= vars.branch %>-',
