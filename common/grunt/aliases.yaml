@@ -1,9 +1,9 @@
 template:
-  - 'prev_file:script'
+  - 'prev_file'
   - 'meta-vars'
   - 'meta-git'
-  - 'clean'
-  - 'concat'
+  - 'meta-clean'
+  - 'meta-concat'
   - 'meta-replace'
   - 'meta-strip'
   - 'meta-lint'
