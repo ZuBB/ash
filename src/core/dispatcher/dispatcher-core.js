@@ -223,7 +223,7 @@ Dispatcher = (function() {
             profilerString += ' ' + profileTime.toString();
             profilerString += ' ms passed';
 
-            _rc(message, {lfAfter: true, colors: [0, color]});
+            _rc(message, {lfAfter: true, reportOnly: true, colors: [0, color]});
             _i(profilerString);
         };
 
