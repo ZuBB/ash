@@ -1,7 +1,7 @@
 module.exports = function(grunt) {
     function metaTaskSkeleton(taskFunction) {
         var currEnv = grunt.config('environment.env');
-        var platforms = grunt.config('pkg.platforms') || ['uos'];
+        var platforms = grunt.config('platform.getPlatforms')();
         var tasksToRun = null;
 
         platforms.forEach(function(platform) {

@@ -1,4 +1,5 @@
 template:
+  - 'platform'
   - 'prev_file'
   - 'meta-vars'
   - 'meta-git'
