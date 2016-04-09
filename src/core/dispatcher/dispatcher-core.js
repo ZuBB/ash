@@ -402,8 +402,8 @@ Dispatcher = (function() {
                 return itemA['index'] - itemB['index'];
             })
             .forEach(function(item) {
-                Dispatcher[item['method']].apply(this, item['params'] || []);
-            }, that);
+                Dispatcher[item['method']].apply(that, item['params'] || []);
+            });
     };
 
     /**
