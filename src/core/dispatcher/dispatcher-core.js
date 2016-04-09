@@ -88,32 +88,27 @@ Dispatcher = (function() {
      */
     this.registerNewTask = function(taskOpts) {
         //DEBUG_START
-        if (!taskOpts) {
-            _e('can not register empty graphic specs object!');
+        if (!taskOpts || taskOpts.constructor !== Object) {
+            _e('Can not register task with empty graphic specs object!');
             return false;
         }
         //DEBUG_STOP
 
         var taskObj = new Task(taskOpts);
-        var graphicFullName = taskObj.getTaskName();
+        var taskName = taskObj.getTaskName();
 
         //DEBUG_START
-        if (taskObj.isTaskNameValid() === false) {
-            return false;
-        }
-
-        if (graphicFullName in tasksHash) {
-            _e(graphicFullName, 'spec name duplication');
+        if (isTaskNameValid(taskName) === false) {
             return false;
         }
         //DEBUG_STOP
 
-        tasksHash[graphicFullName] = taskObj;
+        tasksHash[taskName] = taskObj;
         taskOpts = null;
         taskObj = null;
 
         //DEBUG_START
-        _d(graphicFullName, 'next graphic has been successfully registered');
+        _d(taskName, 'next graphic has been successfully registered');
         //DEBUG_STOP
         return true;
     };
@@ -167,6 +162,33 @@ Dispatcher = (function() {
         Input.getFilledInputs().forEach(function(input) {
             _d(Input.getValue(input), input);
         });
+    };
+
+    /**
+     * Checks if task's name is valid
+     *
+     * @param {String} specName A user defined name of task/spec
+     * @return {Boolean} result of the check
+     *
+     * @private
+     */
+    var isTaskNameValid = function(specName) {
+        if (!specName) {
+            _e('Passed spec misses name');
+            return false;
+        }
+
+        if (specName.indexOf(':') > -1) {
+            _e('Passed spec\'s name can not contain \':\'!');
+            return false;
+        }
+
+        if (tasksHash.hasOwnProperty(specName)) {
+            _e(specName, 'spec name duplication');
+            return false;
+        }
+
+        return true;
     };
     //DEBUG_STOP
 
