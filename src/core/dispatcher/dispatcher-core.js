@@ -213,66 +213,65 @@ Dispatcher = (function() {
         var sortFn = function(a, b) { return a.length - b.length; };
         padLen = Math.ceil(specs.sort(sortFn).last().length * 1.4);
 
+        // TODO would be nice to get rid of `-1` here
         var stopAfter = (Input.isInputNameKnown('stop_after') ?
             Input.getValue('stop_after') : 0) - 1;
 
-        var preProcess = function(specObj, ii) {
-            var specName = specObj.getTaskName();
-            var outputStr = [];
-
-            Profiler.start(specName);
-
-            outputStr.push('>'.repeat(15), ' Processing next (');
-            outputStr.push((ii + 1).toString().lpad(count.length));
-            outputStr.push('/' + count + ') spec: ');
-            outputStr.push(specName.rpad(padLen));
+        var preProcess = function(ii, specName) {
+            var outputStr = [
+                '>'.repeat(15), ' Processing next (',
+                (ii + 1).toString().lpad(count.length),
+                '/', count, ') spec: ',
+                specName.rpad(padLen)
+            ];
 
             _d('\n'.repeat(4));
             _rw(outputStr.join(''));
+
+            Profiler.start(specName);
         };
 
-        var postProcess = function(specObj) {
-            var taskStatus = specObj.getTaskStatus();
-            var specName = specObj.getTaskName();
-
+        var postProcess = function(specName, taskStatus) {
             var message = taskStatus ? '+' : '-';
             var color = taskStatus ? 0x44DD44 : 0xDD4444;
-
-            var profilerString = '';
-            var profileTime = Profiler.stop(specName);
-            profilerString += '<'.repeat(5) + ' ';
-            profilerString += specName.rpad(padLen);
-            profilerString += ' ' + profileTime.toString();
-            profilerString += ' ms passed';
+            var profilerString = [
+                '<'.repeat(5),
+                specName.rpad(padLen),
+                Profiler.stop(specName).toString(),
+                'ms passed'
+            ];
 
             _rc(message, {lfAfter: true, reportOnly: true, colors: [0, color]});
-            _i(profilerString);
+            _i(profilerString.join(' '));
         };
 
         _rl('');
         //DEBUG_STOP
 
-        for (var ii = 0, specObj; ii < length && $H_CC_inline; ii++) {
+        for (var ii = 0, specObj, specName; ii < length; ii++) {
             specObj = tasksHash[specNames[ii]];
+            specName = specObj.getTaskName();
 
             if (typeof that.stepProgressIn === 'function') {
                 that.stepProgressIn(_t('core.status.message', ii));
             }
 
             //DEBUG_START
-            preProcess(specObj, ii);
+            preProcess(ii, specName);
             //DEBUG_STOP
 
             specObj.process();
+
+            //DEBUG_START
+            postProcess(specName, specObj.getTaskStatus());
+            //DEBUG_STOP
 
             if (typeof that.stepProgressOut === 'function') {
                 that.stepProgressOut(ii);
             }
 
             //DEBUG_START
-            postProcess(specObj);
-
-            if (stopAfter > -1 && stopAfter === ii) {
+            if (stopAfter === ii) {
                 _rl('tasks queue terminated', {colors: [0, 0xFFAD00]});
                 break;
             }
