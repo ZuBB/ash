@@ -271,7 +271,7 @@ Dispatcher = (function() {
             }
 
             //DEBUG_START
-            if (stopAfter === ii) {
+            if (stopAfter === ii && ii !== length - 1) {
                 _rl('tasks queue terminated', {colors: [0, 0xFFAD00]});
                 break;
             }
