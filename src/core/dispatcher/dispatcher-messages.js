@@ -176,19 +176,7 @@ Dispatcher = (function() {
      * @private
      */
     this.printScriptHeader = function() {
-        var params = null;
-
-        if (Script.version.indexOf('VERSION') < 0) {
-            params = ['report.version.rel', Script.name, Script.version];
-        } else if (Script.buildID.indexOf('BUILD_ID') < 0) {
-            params = ['report.version.vcs_dev', Script.name,
-                Script.buildTimestamp.toLocaleString(), Script.buildID];
-        } else {
-            params = ['report.version.dev', Script.name,
-                Script.buildTimestamp.toLocaleString()];
-        }
-
-        _rp(_t.apply(null, params));
+        _rp(this.getScriptVersionString());
         //DEBUG_START
         _rp(_t('report.date', new Date().toLocaleString()));
         //DEBUG_STOP

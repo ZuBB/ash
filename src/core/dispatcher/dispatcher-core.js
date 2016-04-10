@@ -420,6 +420,22 @@ Dispatcher = (function() {
         preProcessMethods.push(item);
     };
 
+    this.getScriptVersionString = function() {
+        var params = null;
+
+        if (Script.version.indexOf('VERSION') < 0) {
+            params = ['report.version.rel', Script.name, Script.version];
+        } else if (Script.buildID.indexOf('BUILD_ID') < 0) {
+            params = ['report.version.vcs_dev', Script.name,
+                Script.buildTimestamp.toLocaleString(), Script.buildID];
+        } else {
+            params = ['report.version.dev', Script.name,
+                Script.buildTimestamp.toLocaleString()];
+        }
+
+        return _t.apply(null, params);
+    };
+
     return this;
 }).apply({});
 
